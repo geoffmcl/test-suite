@@ -11,7 +11,11 @@
 extern "C" {
 #endif
 
+#ifdef _MSC_VER
 extern size_t getline( char **pbuf, size_t *plen, FILE *fp );
+#else
+#include <stdio.h> // getline(), ...
+#endif
 #ifndef DEF_MEM_BUMP
 #define DEF_MEM_BUMP 256
 #endif

@@ -12,6 +12,7 @@
 #include <errno.h>
 #include "getline.h"
 
+#ifdef _MSC_VER
 size_t getline( char **pbuf, size_t *plen, FILE *fp )
 {
     int c;
@@ -76,4 +77,5 @@ size_t getline( char **pbuf, size_t *plen, FILE *fp )
     return off;
 }
 
+#endif // _MSC_VER only
 // eof

@@ -13,6 +13,8 @@
 #ifdef _MSC_VER
 #include <WinSock2.h>
 #include <sys/timeb.h>
+#else
+#include <sys/time.h> // gettimeofday(), ...
 #endif
 
 #include "sprtf.hxx"
