@@ -4,4 +4,11 @@ CMakeFiles/*
 Makefile
 cmake_install.cmake
 liblibutils.a
-
+*.vcxproj
+*.filters
+*.user
+Debug/*
+Release/*
+*.sln
+Win32/*
+*.dir/*
