@@ -12,14 +12,14 @@ care when and where I create variables...
 
 It is a cmake project so the 'build' is simple
 
-> cd build
-> build-me
+> cd build  
+> build-me  
 
 As can be seen in this build-me.bat file the process is
 
-> cmake ..
-> cmake --build . --config debug
-> cmake --build . --config release
+> cmake ..  
+> cmake --build . --config debug  
+> cmake --build . --config release  
 
 There is no install of this 'test' app... In fact most of the time I just run 
 the app in the MSVC IDE Debugger...
