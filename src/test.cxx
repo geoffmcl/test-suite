@@ -78,6 +78,17 @@ static const char *module = "test";
 typedef uint64_t UINT64;
 typedef uint32_t DWORD;
 typedef char TCHAR;
+typedef struct _ULARGE_INTEGER {
+    union {
+        struct {
+            DWORD LowPart;
+            DWORD HighPart;
+        };
+    };
+    unsigned long long QuadPart;
+}ULARGE_INTEGER;
+#define _UI64_MAX UINT64_MAX
+typedef uint64_t __int64;
 ///////////////////////////////////////////////////////////////////////////////////////////////
 #endif
 
@@ -384,7 +395,7 @@ void test_k_num()
     unsigned long g_file_clean = 75096;
     ULARGE_INTEGER g_total64_size = { 0 };
     g_total64_size.QuadPart = tot;
-    sprintf(sbuff,"%I64u", g_total64_size);
+    sprintf(sbuff,"%llu", g_total64_size.QuadPart);
     nice_num( dbuff, sbuff );
     cp = get_k_num64( g_total64_size );
     SPRTF( "Got %d dirs, %d files, total (approx) %s (%s bytes) ...\n",
@@ -393,7 +404,7 @@ void test_k_num()
         cp,
         dbuff );
     g_total64_size.QuadPart = _UI64_MAX;
-    sprintf(sbuff,"%I64u", g_total64_size);
+    sprintf(sbuff,"%llu", g_total64_size.QuadPart);
     nice_num( dbuff, sbuff );
     cp = get_k_num64( g_total64_size );
     SPRTF( "Max I64 total (approx) %s (%s bytes) ...\n",
