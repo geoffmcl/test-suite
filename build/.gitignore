@@ -1,0 +1,7 @@
+bldlog-1.txt
+CMakeCache.txt
+CMakeFiles/*
+Makefile
+cmake_install.cmake
+liblibutils.a
+
