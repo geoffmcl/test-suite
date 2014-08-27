@@ -12,3 +12,6 @@ Release/*
 *.sln
 Win32/*
 *.dir/*
+*.sdf
+*.suo
+ipch/*
