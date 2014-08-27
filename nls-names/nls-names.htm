@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        
+    <meta name="search.content.shortId" content="bb896001" />
+    <meta name="ms.shortidmsdn" content="bb896001" />
+    <meta name="search.content.locale" content="en-us" />
+    <meta name="MN" content="4B9B1F28-4:34:05 AM" />
+    <meta http-equiv="content-language" content="en" />
+    
+      <link rel="canonical" href="http://msdn.microsoft.com/en-us/goglobal/bb896001.aspx" />
+      
+      <meta name="NormalizedUrl" content="http://msdn.microsoft.com/en-us/goglobal/bb896001(d=default,l=en-us,v=MSDN.10).aspx" />
+      <meta name="ms.normalizedurl" content="http://msdn.microsoft.com/en-us/goglobal/bb896001(d=default,l=en-us,v=MSDN.10).aspx" />
+    
+        <meta name="Title" content="National Language Support (NLS) API Reference" />
+    
+        <meta name="Search.MSCategory" content="bb871627" />
+    
+        <meta name="Search.MSCategory" content="bb964398" />
+    
+        <meta name="Search.MSCategory" content="bb964401" />
+    
+        <meta name="Search.MSCategory" content="bb896001" />
+    
+        <meta name="Search.TocNodeId" content="bb896001" />
+    
+        <meta name="ROBOTS" content="INDEX,FOLLOW" />
+    
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js" data-do-not-move="true" data-provides="jQuery"></script>
+    <script type="text/javascript" src="http://i2.msdn.microsoft.com/Areas/Sto/Content/Scripts/jquery.partial.js" data-do-not-move="true" data-requires="jQuery" data-provides="jQuery.partial"></script>
+    
+    
+            <script type="text/javascript" src="http://i2.msdn.microsoft.com/Areas/Sto/Content/Scripts/modernizr2.js" data-do-not-move="true" data-provides="modernizr, modernizr2, yepnope">
+    </script>
+    
+    
+    <script type="text/javascript" data-do-not-move="true">
+        //<![CDATA[
+        
+        window.appInsightsId = '60854590-027a-4ae4-98be-2741a40f355f';
+        //]]>
+    </script>
+    
+
+    <title>National Language Support (NLS) API Reference</title>
+    <link rel="stylesheet" type="text/css" href="http://i3.msdn.microsoft.com/Combined.css?resources=0:Teaser,0:Search,0:LocaleSelector,1:TabStrip,0:Footer,0:RatingsOnly,0:NetReflector,1:NetReflector,0:CorporatePromoSpot,0:Default,1:Default,2:Default;/Areas/Sto/Content/Theming:0,/Areas/Sto/Content/Theming/msdn:1,/Areas/Sto/Content/Theming/msdn/msdn_grey:2&amp;amp;hashKey=9D9A0C90ABBCD12ACCDB38FFCF9584B3" /></head>
+    
+    <body id="MTPS_Body" class="MsdnPageBody">
+        
+        <div id="BodyBackground">
+            <div id="JelloSizer">
+                <div id="JelloExpander">
+                    <div id="JelloWrapper">
+                        <div class="Clear"> </div>
+                        <span class="skipnav"><a href="#MainContent">Skip to main content</a></span>
+                        
+<div class="Masthead">
+    
+<div class="BrandLogo">
+  <a title="Go Global Developer Center" href="http://msdn.microsoft.com/en-us/goglobal">
+    <span>
+      Go Global Developer Center
+    </span>
+  </a>
+</div>
+
+
+<div class="Search">    
+    <div class="SearchBox">
+    <form name="HeaderSearchForm" method="get" action="http://social.technet.microsoft.com/search/">
+        <input type="hidden" name="SearchAction" value="search" />
+        <input id="HeaderSearchTextBox" name="query" class="TextBoxSearch" type="text" title="Search MSDN" />
+        <input id="HeaderSearchButton" onclick="if (document.getElementById('HeaderSearchTextBox').value != document.getElementById('HeaderSearchTextBox').title) {window.location = 'http://social.msdn.microsoft.com/search/en-us/?query=' + document.getElementById('HeaderSearchTextBox').value; return true;} else return false;" class="SearchButton" type="button" alt="Click here to search" title="Click here to search" />
+        <span class="Bing"></span>
+        
+    </form>
+    </div>
+</div>
+
+    <div class="GlobalBar">
+        
+<div class="PassportScarab">
+    <a id="idPPScarab" href="https://login.live.com/login.srf?wa=wsignin1.0&amp;rpsnv=12&amp;ct=1405683245&amp;rver=6.0.5276.0&amp;wp=MCLBI&amp;wlcxt=msdn%24msdn%24msdn&amp;wreply=http%3a%2f%2fmsdn.microsoft.com%2fen-US%2fgoglobal%2fbb896001.aspx&amp;lc=1033&amp;id=254354&amp;mkt=en-US"><span id="idPPScarabSIT">Sign in</span></a>
+</div>
+<div id="LocaleSelector">
+    <form id="ChangeLocaleForm" action="/en-us/goglobal/SelectLocale?pageid=bb896001">    
+        <input type="hidden" name="fromPage" value="/en-US/goglobal/bb896001.aspx" />
+        <div id="FlyoutTop">
+            <a title="Change your language" href="#Change your language" onclick="$('#ChangeLocaleForm').submit();return false;" id="LinkCountryLanguage" class="LocaleManagementFlyoutStaticLink">
+                    United States (English)
+                </a>
+        </div>
+    </form>
+</div>
+
+        <div class="Clear">
+        </div>
+        
+    </div>
+    <div class="Clear">
+    </div>
+    
+<div class="networkTagLineArea NetworkLogo">
+  
+        <a title="Microsoft Developer Network" href="http://msdn.microsoft.com/en-us"></a>
+   
+</div>
+
+<div class="leftcap"></div>
+    <div class="internav">
+    
+<a href="http://msdn.microsoft.com/en-us/goglobal/default" class="normal" title="Home">
+Home</a>
+<a href="http://msdn.microsoft.com/library/dd318661" class="normal" title="Library">
+Library</a>
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb892890" class="active" title="Learn">
+Learn</a>
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb892893" class="normal" title="Downloads">
+Downloads</a>
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb980884" class="normal" title="Support">
+Support</a>
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb892937" class="normal" title="Community">
+Community</a>
+</div>
+<div class="rightcap"></div>
+<div class="Clear"></div>
+
+<div class="LocalNavigation">
+    <div class="localleftcap"></div>
+    <div class="HeaderTabs">
+    <div class="TabOff">
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb895995" class="normal" title="Get World-Ready">
+Get World-Ready</a></div><div class="TabOff">
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb688110" class="normal" title="Globalization Step-by-Step">
+Globalization Step-by-Step</a></div><div class="TabOff">
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb688100" class="normal" title="API References">
+API References</a></div><div class="TabOn">
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb964652" class="normal" title="Technical Reference ">
+Technical Reference </a></div><div class="TabOff">
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb688102" class="normal" title="World-Ready Software example">
+World-Ready Software example</a></div><div class="TabOff">
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb688171" class="normal" title="FAQs">
+FAQs</a></div><div class="TabOff">
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb688101" class="normal" title="Tools and Utilities ">
+Tools and Utilities </a></div>
+    </div>
+    <div class="localrightcap"></div>
+</div>
+
+</div>
+
+
+                        <div class="Clear"> </div>
+                        <div class="topleftcorner"> </div>
+                        <div class="toprightcorner"> </div>
+                        <div class="alley">
+                            <div class="wrapper">
+                                <div class="inner">
+                                  
+                                    <div class="Clear"> </div>
+                                    <div class="BreadCrumb"><div class="BreadCrumbInner EyebrowContainer">
+<a href="http://msdn.microsoft.com/en-us/goglobal/default" class="EyebrowLink" title="Go Global Developer Center">
+Go Global Developer Center</a> &gt; 
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb892890" class="EyebrowLink" title="Learn">
+Learn</a> &gt; 
+<a href="http://msdn.microsoft.com/en-us/goglobal/bb964652" class="EyebrowLink" title="Technical Reference ">
+Technical Reference </a> &gt; <span class="EyebrowElement">National Language Support (NLS) API Reference</span>
+    
+    </div></div>
+                                    <a name="MainContent"></a>
+                                    <div class="fullwidth">
+    <iframe id="c_c8e5631c431a4276b9033daf35e19818" src="http://www.microsoft.com/resources/msdn/goglobal/default.mspx" height="8400 px" width="100%" frameborder="0" scrolling="auto" marginwidth="0" marginheight="0"></iframe>
+</div>
+                                     
+    <div id="footerAd" style="margin-left:auto;margin-right:auto;display:table">
+        <div><p></p></div>
+    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ClearBottom"> </div>
+                        <div class="bottomleftcorner"> </div>
+                        <div class="bottomrightcorner"> </div>  
+                      <div class="FooterLinks"><span class="FooterCopyright" title="© 2012 Microsoft. All rights reserved.">© 2014 Microsoft. All rights reserved.</span>
+<a href="http://msdn.microsoft.com/cc300389.aspx" title="Terms of Use">
+Terms of Use</a><span class="Pipe"> | </span>
+<a href="http://www.microsoft.com/library/toolbar/3.0/trademarks/en-us.mspx" title="Trademarks">
+Trademarks</a><span class="Pipe"> | </span>
+<a href="http://go.microsoft.com/fwlink/?LinkId=248681" title="Privacy Statement">
+Privacy Statement</a> <span style="list-style-type:none;display:inline-block;">
+<li>
+    
+    <span class="Pipe"> | </span>
+    <a target="_blank" id="bottomsitefeedbacklink" title="Site Feedback" href="https://lab.msdn.microsoft.com/mailform/contactus.aspx?refurl=http%3a%2f%2fmsdn.microsoft.com%2fen-us%2fgoglobal%2fbb896001.aspx&amp;loc=en-us">Site Feedback</a>
+</li>
+</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+
+<noscript>
+<img alt="DCSIMG" width="1" height="1" src="http://m.webtrends.com/dcsmgru7m99k7mqmgrhudo0k8_8c6m/njs.gif?dcsuri=/nojavascript&amp;WT.js=No" />
+</noscript>
+
+
+<noscript><a href="http://www.omniture.com" title="Web Analytics">
+<img src="http://msstonojsmsdn.112.2o7.net/b/ss/msstonojsmsdn/1/H.20.2--NS/0" height="1" width="1" border="0" alt="" />
+</a></noscript>
+
+
+
+    <script type="text/javascript" class="mtps-injected">
+/*<![CDATA[*/
+(function(window,document){"use strict";function preload(scripts){for(var result=[],script,e,i=0;i<scripts.length;i++)script=scripts[i],script.hasOwnProperty("url")&&(e=document.createElement("script"),e.src=script.url,script.throwaway=e),result.push(script);return result}function inject(scripts,index){var script,elem;if(index>=scripts.length){delete mtps.injectScripts;return}script=scripts[index];elem=document.createElement("script");elem.className="mtps-injected";elem.async=!1;var isLoaded=!1,timeoutId=0,injectNextFnName="",injectNext=elem.onerror=function(){isLoaded||(isLoaded=!0,inject(scripts,index+1),window.clearTimeout(timeoutId),elem.onload=elem.onerror=elem.onreadystatechange=null,injectNextFnName&&delete mtps[injectNextFnName],elem.removeEventListener&&elem.removeEventListener("load",injectNext,!1))};elem.addEventListener?elem.addEventListener("load",injectNext,!1):elem.readyState==="uninitialized"?elem.onreadystatechange=function(){(this.readyState==="loaded"||this.readyState==="complete")&&injectNext()}:elem.onload=injectNext;script.hasOwnProperty("url")?(timeoutId=window.setTimeout(injectNext,12e4),elem.src=script.url):(injectNextFnName="_injectNextScript_"+index,mtps[injectNextFnName]=injectNext,timeoutId=window.setTimeout(injectNext,2e3),elem.text="try {\n"+script.txt+"\n} finally { MTPS."+injectNextFnName+" && MTPS."+injectNextFnName+"(); }");parent.appendChild(elem)}var mtps=window.MTPS||(window.MTPS={}),parent=document.getElementsByTagName("head")[0];mtps.injectScripts=function(scripts){inject(preload(scripts),0)}})(window,document);
+MTPS.injectScripts([
+	{ txt: "/**/\r\n(window.MTPS || (window.MTPS = {})).cdnDomains || (window.MTPS.cdnDomains = { \r\n\t\"image\": \"http://i.msdn.microsoft.com\", \r\n\t\"js\": \"http://i2.msdn.microsoft.com\", \r\n\t\"css\": \"http://i3.msdn.microsoft.com\", \r\n\t\"xap\": \"http://207.46.99.230\"\r\n});\r\n/**/" },
+	{ url: "http://i2.msdn.microsoft.com/Combined.js?resources=0:jquery.cookie,1:AppInsightsPerf;/Areas/Sto/Content/Scripts:0,/Areas/Epx/Content/Scripts:1\u0026amp;hashKey=996486AB9508DE7BAC3D116C3FCBFEC6" },
+	{ txt: "//\n    function SearchClick() {\n        window.location = \"http://social.msdn.microsoft.com/search/en-us/?query=\" + document.getElementById(\"HeaderSearchTextBox\").value();\n    }\n\n    function SearchClientClick() {\n        if (document.getElementById(\"HeaderSearchTextBox\").value == document.getElementById(\"HeaderSearchTextBox\").title) return false;\n        document.HeaderSearchForm.submit();return true;\n    }\n//" },
+	{ txt: "//\n            $(document).ready(function () {\n                var scriptElem = document.createElement(\u0027script\u0027);\n                scriptElem.src = \"http://i2.services.social.microsoft.com/search/Widgets/SearchBox.jss?boxid=HeaderSearchTextBox\\u0026btnid=HeaderSearchButton\\u0026brand=MSDN\\u0026loc=en-us\\u0026watermark=MSDN\\u0026focusOnInit=false\";\n                scriptElem.id = \"mscom.srch.searchBox\";\n                scriptElem.defer=\"defer\";\n                document.getElementsByTagName(\u0027head\u0027)[0].appendChild(scriptElem);\n            });\n        //" },
+	{ url: "http://i2.msdn.microsoft.com/Areas/Sto/Content/Scripts/SiteFeedback.js" },
+	{ txt: "/**/\n    \n      var wt_nvr_ru = \"WT_NVR_RU\";\n      var wt_fpcdom = \".microsoft.com\";\n      var wt_domlist = \"msdn.microsoft.com\";\n      var wt_pathlist = \"\";var wt_paramlist = \"DCSext.mtps_devcenter\";\n      var wt_siteid = \"MSDN\";\n      var gDomain=\"m.webtrends.com\";\n    var gDcsId = \"dcsmgru7m99k7mqmgrhudo0k8_8c6m\";\n    var gFpc = \"WT_FPC\";\n    if (document.cookie.indexOf(gFpc + \"=\") == -1) {\n        var scriptElem = document.createElement(\u0027script\u0027);\n        scriptElem.src = \"http\" + (window.location.protocol.indexOf(\u0027https:\u0027) == 0 ? \u0027s\u0027 : \u0027\u0027) + \"://\" + gDomain + \"/\" + gDcsId + \"/wtid.js\";\n        document.getElementsByTagName(\u0027head\u0027)[0].appendChild(scriptElem);\n    }\n    var detectedLocale = \"en-us\";\n    var wtsp = \"_sto_msdn_goglobal_\";\n    var gTrackEvents = \"0\";\n    /**/" },
+	{ url: "http://i2.msdn.microsoft.com/Areas/Sto/Content/Scripts/webtrendsscript.js" },
+	{ txt: "var omni_guid = \u0027c_50700805682a4516a9f8104001221452\u0027;" },
+	{ url: "http://i2.msdn.microsoft.com/Areas/Sto/Content/Scripts/omni_rsid.js" },
+	{ url: "http://js.microsoft.com/library/svy/sto/broker.js" }
+]);
+
+/*]]>*/
+</script></body>
+
+    
+<![CDATA[     
+Third party scripts and code linked to or referenced from this website are licensed to you by the parties that own such code, not by Microsoft.  See ASP.NET Ajax CDN Terms of Use – http://www.asp.net/ajaxlibrary/CDN.ashx.
+]]>
+</html>
