@@ -44,10 +44,10 @@ typedef uint64_t __int64;
 
 static const char *module = "test_knums";
 
-TCHAR * get_k_num64( ULARGE_INTEGER uli )
+TCHAR * get_k_num64( ULARGE_INTEGER *puli )
 {
-   long long byts = (uli.HighPart * 4294967296);
-   byts += uli.LowPart;
+   long long byts = (puli->HighPart * 4294967296);
+   byts += puli->LowPart;
    return get_k_num(byts);
 }
 
@@ -87,7 +87,7 @@ void test_k_num()
 
     sprintf(sbuff,"%llu", g_total64_size.QuadPart);
     nice_num( dbuff, sbuff );
-    cp = get_k_num64( g_total64_size );
+    cp = get_k_num64( &g_total64_size );
     SPRTF( "Got %d dirs, %d files, total (approx) %s (%s bytes) ...\n",
         g_dir_count,
         g_file_clean, // (g_do_clean[0] ? g_file_clean : g_file_count),
@@ -96,7 +96,7 @@ void test_k_num()
     g_total64_size.QuadPart = _UI64_MAX;
     sprintf(sbuff,"%llu", g_total64_size.QuadPart);
     nice_num( dbuff, sbuff );
-    cp = get_k_num64( g_total64_size );
+    cp = get_k_num64( &g_total64_size );
     SPRTF( "Max I64 total (approx) %s (%s bytes) ...\n",
         cp,
         dbuff );
