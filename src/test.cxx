@@ -1087,16 +1087,20 @@ char *get_file_name( char *path )
 
 void give_help( char *exe )
 {
-    SPRTF("Usage: %s [options] [test_index] [test_name]\n", get_file_name(exe));
+    SPRTF("\n");
+    SPRTF("Usage: %s [--help] [test_index] [test_name]\n", get_file_name(exe));
     SPRTF("options:\n");
     SPRTF(" --help (-h or -?) = This help and exit(2)\n");
-    SPRTF("List of index name available\n");
+    SPRTF("List of available tests\n");
     PTESTLIST ptl = &testList[0];
+    SPRTF("index name\n");
+    int cnt = 0;
     while (ptl->name) {
-        SPRTF(" %2d %s\n", ptl->index, ptl->name);
+        SPRTF(" %-4d %s\n", ptl->index, ptl->name);
         ptl++;
+        cnt++;
     }
-    SPRTF("%s: A special index of -1 or name of 'all' will do ALL avaiable tests\n");
+    SPRTF("%s: A special index of -1 or name of 'all' will do ALL %d available tests\n", module, cnt);
 }
 
 int parse_args( int argc, char **argv )
