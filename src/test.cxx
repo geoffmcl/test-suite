@@ -715,13 +715,28 @@ void show_sizes()
 }
 
 static bool forever = true;
+/* ------------------------------------------------------
+   Signal values
+   Seems windows ONLY implements a SMALL subset of signal values - from signal.h
+/ * Signal types * /
+#define SIGINT          2       / * interrupt * /
+#define SIGILL          4       / * illegal instruction - invalid function image * /
+#define SIGABRT_COMPAT  6       / * SIGABRT compatible with other platforms, same as SIGABRT * /
+#define SIGFPE          8       / * floating point exception * /
+#define SIGSEGV         11      / * segment violation * /
+#define SIGTERM         15      / * Software termination signal from kill * /
+#define SIGBREAK        21      / * Ctrl-Break sequence * /
+#define SIGABRT         22      / * abnormal termination triggered by abort call * /
 
+    The FULL unix list is given below - 1 to 30
+   ------------------------------------------------------ */
 void sigHandler( int sig )
 {
     const char *msg = "uncased";
     forever = false;
     switch (sig)
     {
+#if defined(_MSC_VER) // && defined(USE_WINDOWS_VALUES)
     case SIGINT:    //          2       /* interrupt */
         msg = "SIGINT - interrupt";
         break;
@@ -746,8 +761,40 @@ void sigHandler( int sig )
     case SIGABRT_COMPAT:    //  6       /* SIGABRT compatible with other platforms, same as SIGABRT */
         msg = "SIGABRT_COMPAT = SIGABRT";
         break;
+#else
+    case  1: msg = "SIGHUP! "; break;
+    case  2: msg = "SIGINT! "; break;
+    case  3: msg = "SIGQUIT! "; break;
+    case  4: msg = "SIGILL! "; break;
+    case  5: msg = "SIGTRAP! "; break;
+    case  6: msg = "SIGABRT! "; break;
+    case  7: msg = "SIGBUS! "; break;
+    case  8: msg = "SIGFPE! "; break;
+    case  9: msg = "SIGKILL! "; break;
+    case 10: msg = "SIGUSR1! "; break;
+    case 11: msg = "SIGSEGV! "; break;
+    case 12: msg = "SIGUSR2! "; break;
+    case 13: msg = "SIGPIPE! "; break;
+    case 14: msg = "SIGALRM! "; break;
+    case 15: msg = "SIGTERM! "; break;
+    case 16: msg = "SIGSTKFLT! "; break;
+    case 17: msg = "SIGCHLD! "; break;
+    case 18: msg = "SIGCONT! "; break;
+    case 19: msg = "SIGSTOP! "; break;
+    case 20: msg = "SIGTSTP! "; break;
+    case 21: msg = "SIGTTIN! "; break;
+    case 22: msg = "SIGTTOU! "; break;
+    case 23: msg = "SIGURG! "; break;
+    case 24: msg = "SIGXCPU! "; break;
+    case 25: msg = "SIGXFSZ! "; break;
+    case 26: msg = "SIGVTALRM! "; break;
+    case 27: msg = "SIGPROF! "; break;
+    case 28: msg = "SIGWINCH! "; break;
+    case 29: msg = "SIGIO! "; break;
+    case 30: msg = "SIGPWR! "; break;
+#endif
     }
-
+    forever = false;
     SPRTF("Signal %d %s\n", sig, msg );
 }
 
@@ -783,13 +830,38 @@ BOOL WINAPI ConsoleHandler(DWORD CEvent)
 
 #endif
 
+int millisleep(unsigned ms)
+{
+#if defined(WIN32)
+  SetLastError(0);
+  Sleep(ms);
+  return GetLastError() ?-1 :0;
+#elif defined(LINUX)
+  return usleep(1000 * ms);
+#else
+#error ("no milli sleep available for platform")
+  return -1;
+#endif
+}
+
 void test_signals()
 {
     unsigned long long val = 0;
-    signal(SIGABRT, &sigHandler);
-    signal(SIGTERM, &sigHandler);
-    signal(SIGINT, &sigHandler);
+	//
+	// catch some signals
+	//
+#ifdef _MSC_VER
+    signal(SIGABRT,  &sigHandler);
+    signal(SIGTERM,  &sigHandler);
+    signal(SIGINT,   &sigHandler);
     signal(SIGBREAK, &sigHandler);
+#else
+	signal (SIGINT,  sigHandler);
+	signal (SIGHUP,  sigHandler);
+	signal (SIGTERM, sigHandler);
+	signal (SIGCHLD, sigHandler);
+	signal (SIGPIPE, sigHandler);
+#endif
 #if (defined(_MSC_VER) && defined(ADD_HANDLER))
    if (SetConsoleCtrlHandler( (PHANDLER_ROUTINE)ConsoleHandler,TRUE)==FALSE) {
         // unable to install handler... 
@@ -805,7 +877,7 @@ void test_signals()
         if ((val % 10000) == 0) {
             SPRTF("Waiting Ctrl+c, Ctrl+break, etc, to continue...\n");
         }
-        Sleep(2);
+        millisleep(55);
     }
     SPRTF("Continuing after %I64u cycles\n", val );
 }
