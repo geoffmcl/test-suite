@@ -643,11 +643,11 @@ void show_sizes()
        size = ULLONG_MAX;
        msg = "ULLONG_MAX";
     }
-    char *cps = get_I64_Stg(size);
+    char *cps = get_I64u_Stg(size);
     char *cpd = GetNxtBuf();
     nice_num(cpd,cps);
     SPRTF("size_t has a size of %s, thus can hold a max %s %s (%s)\n",
-        get_I64_Stg(bytes), cpd, msg, get_k_num(size) );
+        get_I64u_Stg(bytes), cpd, msg, get_k_num(size) );
     if (strcmp(msg,"ULLONG_MAX")) {
         cps = get_I64u_Stg(ULLONG_MAX);
         cpd = GetNxtBuf();
@@ -1107,7 +1107,7 @@ int parse_args( int argc, char **argv )
 {
     int i, ind, iret = 0;
     char *arg;
-    bool fnd, an;
+    bool fnd, an, done = false;
     SPRTF("Running %s\n", argv[0] );
     show_time();
     show_sizes();
@@ -1130,11 +1130,15 @@ int parse_args( int argc, char **argv )
             } else {
                 fnd = find_by_name(arg);
             }
-            if (!fnd) {
+            if (fnd) {
+                done = true;
+            } else {
                 SPRTF("%s: WARNING: No test found for '%s'!\n", module, arg );
             }
         }
     }
+    if (!done)
+        SPRTF("%s: No valid tests found on the command line?\n", module );
     return iret;
 }
 
@@ -1184,7 +1188,7 @@ int main( int argc, char **argv )
     //init();
     //SPRTF("Protocol version %s\n", GetProtocolVerString().c_str());
 #if (defined(HAVE_SIMGEAR) && defined(TEST_MAG_VER))
-    test_magvar();
+    // test_magvar();
 #endif
     //SPRTF("The file descriptor for stdin  (%p) is %d\n", stdin,  _fileno( stdin )  );
     //SPRTF("The file descriptor for stdout (%p) is %d\n", stdout, _fileno( stdout ) );
@@ -1192,7 +1196,7 @@ int main( int argc, char **argv )
 
 #if (defined(DO_POSTGRESQL_TEST) && defined(ADD_POSTGRESQL_TEST))
     // for MSVC debug set PATH=C:\Program Files (x86)\PostgreSQL\9.1\bin;%PATH%
-    test_sql();
+    // test_sql();
 #endif
     //test_k_num();
 
@@ -1204,15 +1208,14 @@ int main( int argc, char **argv )
     //test_compares();
 
 #ifdef ADD_MPFR_TEST
-    check_mpfr();
+    // check_mpfr();
 #endif // #ifdef ADD_MPFR_TEST
 #ifdef ADD_CGAL_TEST
-   cgal_main();
+    // cgal_main();
 #endif
 //#ifdef ADD_CF_LOG_TEST
 //   iret = load_cf_log();
 //#endif
-
 //   iret = test_array();
    return iret;
 }
