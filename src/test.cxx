@@ -957,20 +957,173 @@ int test_stdint()
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// give all the test a number/name and have them selected by the command line
+typedef void (*TESTPTR) ();
+
+typedef struct _TESTLIST {
+    int index;
+    const char *name;
+    TESTPTR test;
+}TESTLIST, *PTESTLIST;
+
+static TESTLIST testList[] = {
+    { 1, "open", test_open },
+    { 2, "strtoimax", test_strtoimax },
+    { 3, "scanf", test_scanf },
+    { 4, "secs", test_secs },
+    { 5, "tmpnam", test_tmpnam },
+    { 6, "string_inc", test_string_inc },
+    { 7, "math", test_math },
+
+
+    // LAST ENTRY - TERMINATION
+    { 0, 0, 0 }
+};
+
+bool find_by_index(int index)
+{
+    bool bret = false;
+    PTESTLIST ptl = &testList[0];
+    if (index == -1) {
+        index = 0;
+        SPRTF("%s: Due to '-1' index, doing all available tests...\n", module);
+        while (ptl->name) {
+            ptl->test();
+            ptl++;
+            index++;
+        }
+        SPRTF("%s: Done all %d available tests...\n", module, index);
+        return true;
+    } else {
+        while (ptl->name) {
+            if (ptl->index == index) {
+                ptl->test();
+                return true;
+            }
+            ptl++;
+        }
+    }
+    return false;
+}
+bool find_by_name(char *name)
+{
+    bool bret = false;
+    PTESTLIST ptl = &testList[0];
+    if (strcmp(name,"all")) {
+        while (ptl->name) {
+            if (strcmp(ptl->name,name) == 0) {
+                ptl->test();
+                return true;
+            }
+            ptl++;
+        }
+    } else {
+        SPRTF("%s: Due to 'all', doing all available tests...\n", module);
+        int cnt = 0;
+        while (ptl->name) {
+            ptl->test();
+            ptl++;
+            cnt++;
+        }
+        SPRTF("%s: Done all %d available tests...\n", module, cnt);
+        return true;
+    }
+    return false;
+}
+
+
+#ifndef ISDIGIT
+#define ISDIGIT(a) (( a >= '0') && ( a <= '9' ))
+#endif
+
+bool is_all_nums( char *arg )
+{
+    size_t ii, len = strlen(arg);
+    for (ii = 0; ii < len; ii++) {
+        if ((arg[ii] == '-')&&(ii == 0))
+            continue;   // ignore beginning minus sign
+        if (!ISDIGIT(arg[ii]))
+            return false;
+    }
+    return true;
+}
+char *get_file_name( char *path )
+{
+    char *exe = path;
+    size_t ii, len = strlen(path);
+    int c;
+    for (ii = 0; ii < len; ii++) {
+        c = path[ii];
+        if (((c == '/') || (c =='\\')) && ((ii + 1) < len)){
+            exe = &path[ii+1];
+        }
+    }
+    return exe;
+}
+
+void give_help( char *exe )
+{
+    SPRTF("Usage: %s [options] [test_index] [test_name]\n", get_file_name(exe));
+    SPRTF("options:\n");
+    SPRTF(" --help (-h or -?) = This help and exit(2)\n");
+    SPRTF("List of index name available\n");
+    PTESTLIST ptl = &testList[0];
+    while (ptl->name) {
+        SPRTF(" %2d %s\n", ptl->index, ptl->name);
+        ptl++;
+    }
+    SPRTF("%s: A special index of -1 or name of 'all' will do ALL avaiable tests\n");
+}
+
+int parse_args( int argc, char **argv )
+{
+    int i, ind, iret = 0;
+    char *arg;
+    bool fnd, an;
+    SPRTF("Running %s\n", argv[0] );
+    show_time();
+    show_sizes();
+    for (i = 1; i < argc; i++) {
+        arg = argv[i];
+        an = is_all_nums(arg);
+        ind = atoi(arg);
+        if ((strcmp(arg,"--help") == 0)||
+            (strcmp(arg,"-h") == 0)||
+            (strcmp(arg,"-?") == 0)) {
+            give_help(argv[0]);
+            return 2;
+        } else if ((*arg == '-') && !an && (ind != -1)) {
+            SPRTF("%s: Unknown option argument '%s'! exit(1)\n", module);
+            return 1;
+        } else {
+            // bear argument
+            if (an) {
+                fnd = find_by_index(ind);
+            } else {
+                fnd = find_by_name(arg);
+            }
+            if (!fnd) {
+                SPRTF("%s: WARNING: No test found for '%s'!\n", module, arg );
+            }
+        }
+    }
+    return iret;
+}
 
 int main( int argc, char **argv )
 {
-    int iret = 0;
-    SPRTF("Running %s\n", argv[0] );
-
-    show_time();
-
-    show_sizes();
-
+    int iret = parse_args(argc,argv);
+    if (iret)
+        return iret;
+    
     //test_open();
     //test_strtoimax();
     //test_scanf();
     //test_secs();
+    //test_tmpnam();
+    //test_string_inc();
+    //test_math();
 
 #ifdef _MSC_VER
     // test_fullpath();
@@ -980,12 +1133,6 @@ int main( int argc, char **argv )
     //test_mmap();
 #endif
 #endif
-
-    //test_tmpnam();
-
-    //test_string_inc();
-
-    //test_math();
 
     //test_codeset( 1000 );
 
