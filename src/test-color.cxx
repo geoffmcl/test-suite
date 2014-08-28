@@ -691,6 +691,8 @@ std::string get_color_http()
 
 void test_color()
 {
+    SPRTF("\n");
+    SPRTF("%s: test color expansion...\n", module );
     show_distances();
     do_table_expansion();
     std::string html = get_color_http();
@@ -703,7 +705,7 @@ void test_color()
     } else {
         SPRTF("%s: Failed to open %s\n", module, view );
     }
-    exit(1);
+    SPRTF("%s: end test color expansion...\n", module );
 }
 
 //////////////////////////////////////////////////////////////////

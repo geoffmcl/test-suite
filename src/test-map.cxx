@@ -16,8 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
-// other includes
+#include "sprtf.hxx"
 #include "test-map.hxx"
 
 static const char *module = "test-map";
@@ -43,7 +42,9 @@ void test_map()
     APT apt;
     mNODESi iter;
     // generate a set of point
-
+    std::stringstream ss;
+    SPRTF("\n");
+    SPRTF("%s: test map ...\n", module );
     for (lat = -80.0; lat < 90.0; lat += 10.0) {
         for (lon = -170.0; lon < 180.0; lon += 10.0) {
             apt.lat = lat;
@@ -56,86 +57,90 @@ void test_map()
     for( iter = mNodes.begin(); iter != mNodes.end(); ++iter ) {
         apt = (*iter).second;
         ulid = (*iter).first;
-        //std::cout << ulid << " ";
-        //std::cout << apt.lat << "," << apt.lon << MEOL;
+        //ss << ulid << " ";
+        //ss << apt.lat << "," << apt.lon << MEOL;
     }
-    std::cout << MEOL;
+    ss << MEOL;
+    SPRTF("%s", ss.str().c_str());
+    ss.str("");
 
     ulid = 170290;
     //////////////////////////////////////////
-    std::cout << "Check for value " << ulid << MEOL;
-    std::cout << ".find(val)  ";
+    ss << "Check for value " << ulid << MEOL;
+    ss << ".find(val)  ";
     iter = mNodes.find(ulid);
     if (iter == mNodes.end()) {
-        std::cout << ulid << " NOT FOUND" << MEOL;
+        ss << ulid << " NOT FOUND" << MEOL;
     } else {
         apt = (*iter).second;
         ulid = (*iter).first;
-        std::cout << "Found " << ulid << " ";
-        std::cout << apt.lat << "," << apt.lon << MEOL;
+        ss << "Found " << ulid << " ";
+        ss << apt.lat << "," << apt.lon << MEOL;
     }
-    std::cout << ".count(val)  ";
+    ss << ".count(val)  ";
     if (mNodes.count(ulid)) {
         apt = mNodes[ulid]; // extract 
-        std::cout << ulid << " ";
-        std::cout << apt.lat << "," << apt.lon << MEOL;
+        ss << ulid << " ";
+        ss << apt.lat << "," << apt.lon << MEOL;
     } else {
-        std::cout << ulid << " DOES NOT EXIST" << MEOL;
+        ss << ulid << " DOES NOT EXIST" << MEOL;
     }
     apt = mNodes[ulid]; // extract valid
-    std::cout << "Extract[val] " << ulid << " ";
-    std::cout << apt.lat << "," << apt.lon << MEOL;
+    ss << "Extract[val] " << ulid << " ";
+    ss << apt.lat << "," << apt.lon << MEOL;
     /////////////////////////////////////////////////////
     
-    std::cout << MEOL;
+    ss << MEOL;
+    SPRTF("%s", ss.str().c_str());
+    ss.str("");
 
     ulid++; // invalid
     ////////////////////////////////////////////////
-    std::cout << "Check for value " << ulid << MEOL;
-    std::cout << ".find(val)  ";
+    ss << "Check for value " << ulid << MEOL;
+    ss << ".find(val)  ";
     iter = mNodes.find(ulid);
     if (iter == mNodes.end()) {
-        std::cout << ulid << " NOT FOUND" << MEOL;
+        ss << ulid << " NOT FOUND" << MEOL;
     } else {
         apt = (*iter).second;
         ulid = (*iter).first;
-        std::cout << "Found " << ulid << " ";
-        std::cout << apt.lat << "," << apt.lon << MEOL;
+        ss << "Found " << ulid << " ";
+        ss << apt.lat << "," << apt.lon << MEOL;
     }
-    std::cout << ".count(val)  ";
+    ss << ".count(val)  ";
     if (mNodes.count(ulid)) {
         apt = mNodes[ulid]; // extract 
-        std::cout << ulid << " ";
-        std::cout << apt.lat << "," << apt.lon << MEOL;
+        ss << ulid << " ";
+        ss << apt.lat << "," << apt.lon << MEOL;
     } else {
-        std::cout << ulid << " DOES NOT EXIST" << MEOL;
+        ss << ulid << " DOES NOT EXIST" << MEOL;
     }
     apt = mNodes[ulid]; // extract valid
-    std::cout << "Extract[val] " << ulid << " ";
-    std::cout << apt.lat << "," << apt.lon << MEOL;
-    std::cout << "And TAKE CARE, it seems after this 'extraction' it DOES exist! But as zero/nuls" << MEOL;
-    std::cout << ".find(val)  ";
+    ss << "Extract[val] " << ulid << " ";
+    ss << apt.lat << "," << apt.lon << MEOL;
+    ss << "And TAKE CARE, it seems after this 'extraction' it DOES exist! But as zero/nuls" << MEOL;
+    ss << ".find(val)  ";
     iter = mNodes.find(ulid);
     if (iter == mNodes.end()) {
-        std::cout << ulid << " NOT FOUND" << MEOL;
+        ss << ulid << " NOT FOUND" << MEOL;
     } else {
         apt = (*iter).second;
         ulid = (*iter).first;
-        std::cout << "Found " << ulid << " ";
-        std::cout << apt.lat << "," << apt.lon << MEOL;
+        ss << "Found " << ulid << " ";
+        ss << apt.lat << "," << apt.lon << MEOL;
     }
-    std::cout << ".count(val)  ";
+    ss << ".count(val)  ";
     if (mNodes.count(ulid)) {
         apt = mNodes[ulid]; // extract 
-        std::cout << ulid << " ";
-        std::cout << apt.lat << "," << apt.lon << MEOL;
+        ss << ulid << " ";
+        ss << apt.lat << "," << apt.lon << MEOL;
     } else {
-        std::cout << ulid << " DOES NOT EXIST" << MEOL;
+        ss << ulid << " DOES NOT EXIST" << MEOL;
     }
-
+    SPRTF("%s", ss.str().c_str());
     ////////////////////////////////////////////////
 
-    exit(1);
+    SPRTF("%s: end test map ...\n", module );
 }
 
 // eof = test-map.cxx

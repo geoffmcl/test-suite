@@ -298,6 +298,8 @@ void test_intersect()
     double x, y;
     double az1,az2,dist,rwlen,rwbrg,rwopp;
     int res;
+    SPRTF("\n");
+    SPRTF("%s: doing test intersect...\n", module );
     // runway = LOC - sort of...
     // 10L: 
     y1 = 37.62872250;
@@ -393,9 +395,6 @@ void test_intersect()
         break;
     }
 
-
-    exit (1);
-
 #if 0 // 00000000000000000000000000000
     for (;;) {
         printf( "X1, Y1: " );
@@ -420,6 +419,7 @@ void test_intersect()
         }
     }
 #endif // 00000000000000000000000000
+    SPRTF("%s: end test intersect...\n", module );
 
 
 } /* main */

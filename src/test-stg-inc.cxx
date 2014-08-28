@@ -51,7 +51,7 @@ char * increment_string_in_buffer(char *s)
             s = (char *)realloc(s, len + 2);
             if (!s) {
                 SPRTF("realloc(%d) FAILED!\n", len + 2 );
-                exit(1);
+                exit(1); // momory reallocations failure
             }
         }
 		s[0] = '1';
@@ -100,7 +100,7 @@ void string_test( std::string s )
     long long i;
     if (!cp) {
         SPRTF("memory allocation FAILED!\n");
-        exit(1);
+        exit(1);    // memory failure
     }
     std::string s2(s);
     strcpy(cp,s.c_str());

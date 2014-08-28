@@ -142,7 +142,7 @@ int   open_log_file( void )
    if( outfile == 0 ) {
       outfile = (FILE *)-1;
       sprtf("ERROR: Failed to open log file [%s] ...\n", logfile);
-      exit(1); /* failed */
+      exit(1); /* failed to open log file */
       return 0;   /* failed */
    }
    return 1; /* success */
@@ -277,7 +277,7 @@ static void oi( char * ps )
             fclose(outfile);
             outfile = (FILE *)-1;
             sprtf("WARNING: Failed write to log file [%s] ...\n", logfile);
-            exit(1);
+            exit(1);    // failed to write to log file
          } else if (addflush) {
             fflush( outfile );
          }

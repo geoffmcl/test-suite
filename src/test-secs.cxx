@@ -43,7 +43,7 @@ char *increment_string_in_buffer2(char *s)
             s = (char *)realloc(s, len + 2);
             if (!s) {
                 printf("realloc(%d) FAILED!\n", len + 2 );
-                exit(1);
+                exit(1); // memory realloc failure
             }
         }
           ============================= */

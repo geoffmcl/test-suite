@@ -89,8 +89,10 @@ void test_mmap1()
 
 void test_mmap()
 {
+    SPRTF("\n");
+    SPRTF("%s: doing mmap test...\n", module );
     test_mmap1();
-    //exit(1);
+    SPRTF("%s: done mmap test...\n", module );
 }
 
 

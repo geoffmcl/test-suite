@@ -506,6 +506,8 @@ void test_floor_ceil()
     int ilat,ilon;
     int ilat2,ilon2;
     int ilat3,ilon3;
+    SPRTF("\n");
+    SPRTF("%s: test floor-ceil...\n", module );
     if (lat < 0.0) {
         ilat = ceil(lat);
     } else {
@@ -538,7 +540,7 @@ void test_floor_ceil()
     ilat3 = ceil(lat);
     ilon3 = ceil(lon);
     SPRTF("For lat,lon %lf,%lf ilat,ilon %d,%d floor %d,%d ceil %d,%d\n", lat, lon, ilat, ilon, ilat2, ilon2, ilat3, ilon3 );
-    exit(1);
+    SPRTF("%s: end test floor-ceil...\n", module );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1023,7 +1025,6 @@ static TESTLIST testList[] = {
     { 21, "utf8", test_utf8 },
     { 22, "global", test_global },
 #ifdef ADD_CF_LOG_TEST
-    // SPRTF("Protocol version %s\n", GetProtocolVerString().c_str());
 #endif
 #if (defined(HAVE_SIMGEAR) && defined(TEST_MAG_VER))
     { 23, "magvar", test_magvar },
@@ -1045,6 +1046,7 @@ static TESTLIST testList[] = {
     { 30, "cgal", test_cgal },  // cgal_main();
 #endif
 #ifdef ADD_CF_LOG_TEST
+    // SPRTF("Protocol version %s\n", GetProtocolVerString().c_str());
     { 31, "cflog", test_cflog },    // iret = load_cf_log();
 #endif
     { 32, "array", test_array },

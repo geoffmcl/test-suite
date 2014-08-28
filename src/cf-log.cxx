@@ -1592,7 +1592,7 @@ int add_2_flights( CF_Pilot2 &p2 )
                 pp2->vpPsn = new vPSN;
                 if (pp2->vpPsn == 0) {
                     SPRTF("ERROR: Memory allocation FAILURE!\n");
-                    exit(1);
+                    exit(1); // memory allocation failure
                 }
             }
             pp2->vpPsn->push_back(pp2->p); // store previous in vector

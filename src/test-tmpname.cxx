@@ -44,7 +44,6 @@ void test_tmpnam()
     }
 
     SPRTF("%s: Done tempnam() and tmpnam() test.\n", module );
-    // exit(1);
 
 }
 

@@ -31,6 +31,7 @@
 using namespace std;
 
 static const char *module = "test-utf8";
+
 static const char *sample = "D:\\SAVES\\OSM\\pern-b2.295-48.7508-2.305-48.7608.osm";
 // A SAMPLE UTF-8 FILE from : http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
 static const char *sample2 = "C:\\FG\\17\\test\\utf8\\UTF-8-test.txt";
@@ -110,6 +111,8 @@ int line_by_line_main(const char *file)
 // implementation
 void test_utf8()
 {
+    SPRTF("\n");
+    SPRTF("%s: doing utf8 test...\n", module);
     if (valid_utf8_file(sample)) {
         SPRTF("%s: File '%s' is valid UTF-8\n", module, sample);
     } else {
@@ -127,6 +130,7 @@ void test_utf8()
     } else {
         SPRTF("%s: Unable to locate sample file '%s'! *** FIX ME ***\n", module, sample2);
     }
+    SPRTF("%s: done utf8 test...\n", module);
 }
 
 // eof = test-utf8.cxx
