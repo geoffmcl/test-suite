@@ -46,6 +46,13 @@ static const char *module = "test_knums";
 
 TCHAR * get_k_num64( ULARGE_INTEGER uli )
 {
+   long long byts = (uli.HighPart * 4294967296);
+   byts += uli.LowPart;
+   return get_k_num(byts);
+}
+
+TCHAR * get_k_num64_NSG( ULARGE_INTEGER uli )
+{
    static TCHAR _s_kbuf64[264];
    TCHAR * pb = _s_kbuf64;
    double byts = ((double)uli.HighPart * 4294967296.0);
@@ -64,7 +71,6 @@ TCHAR * get_k_num64( ULARGE_INTEGER uli )
    }
    return pb;
 }
-
 
 static char sbuff[1024];
 static char dbuff[1024];
