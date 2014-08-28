@@ -216,6 +216,7 @@ set( test_SRCS
     ${dir}/test-scanf.cxx
     ${dir}/strtoimax.cxx
     ${dir}/test-open.cxx
+    ${dir}/test-knums.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 
@@ -236,6 +237,7 @@ set( test_HDRS
     ${dir}/test-secs.hxx
     ${dir}/test-scanf.hxx
     ${dir}/test-open.hxx
+    ${dir}/test-knums.hxx
     )
 
 if (TEST_MMFIO)
