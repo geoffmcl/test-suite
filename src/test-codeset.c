@@ -10,6 +10,11 @@
 #define nl_item int
 #endif
 
+#ifndef _MSC_VER
+typedef __locale_t _locale_t;
+#endif
+
+
 #define DEF_CODESET 1000
 
 #define C_CODESET "UTF-8"     /* Return this as the default encoding */
@@ -356,6 +361,11 @@ typedef struct threadlocaleinfostruct {
 } threadlocinfo;
 
    ===================================================== */
+
+#ifdef _MSC_VER
+///////////////////////////////////////////////////////////////////////////
+
+   
 char *nl_langinfo(nl_item item)
 {
     char *l, *p;
@@ -501,5 +511,15 @@ int test_codeset( int CS )
 	return 0;
 }
 
+///////////////////////////////////////////////////////////////////////////
+#else // !_MSC_VER
+///////////////////////////////////////////////////////////////////////////
+int test_codeset( int CS )
+{
+    printf("This test test_codeset(int) NEEDS to be ported to linux!\n");
+    return -1;
+}
+///////////////////////////////////////////////////////////////////////////
+#endif // _MSC_VER
 // eof
 

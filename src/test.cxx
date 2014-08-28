@@ -14,6 +14,7 @@
 #else
 //////////////////////////////////////////////////////////////////////
 #include <sys/socket.h> // socklen_t, ...
+#include <unistd.h>
 //////////////////////////////////////////////////////////////////////
 #endif // _MSC_VER
 #include <stdlib.h>
@@ -89,6 +90,8 @@ typedef struct _ULARGE_INTEGER {
 }ULARGE_INTEGER;
 #define _UI64_MAX UINT64_MAX
 typedef uint64_t __int64;
+#define is_file_or_directory64 is_file_or_directory32
+#define get_last_file_size64 get_last_file_size32
 ///////////////////////////////////////////////////////////////////////////////////////////////
 #endif
 
@@ -836,11 +839,12 @@ int millisleep(unsigned ms)
   SetLastError(0);
   Sleep(ms);
   return GetLastError() ?-1 :0;
-#elif defined(LINUX)
-  return usleep(1000 * ms);
+//#elif defined(LINUX)
 #else
-#error ("no milli sleep available for platform")
-  return -1;
+  return usleep(1000 * ms);
+//#else
+//#error ("no milli sleep available for platform")
+//  return -1;
 #endif
 }
 
@@ -1036,7 +1040,6 @@ int main( int argc, char **argv )
 //#endif
 
 //   iret = test_array();
-    PRECT pr = 0;
    return iret;
 }
 

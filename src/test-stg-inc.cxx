@@ -8,9 +8,13 @@
 \*/
 
 #include <stdio.h>
+#ifndef _MSC_VER
+#include <string.h> // for strcmp(), ...
+#endif
 #include <cstdlib>
 #include <string>
 #include <sstream>
+
 #include "test-stg-inc.hxx"
 
 static const char *module = "test-stg-inc";

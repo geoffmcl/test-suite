@@ -7,6 +7,9 @@
 \*/
 
 #include <stdio.h>
+#ifndef _MSC_VER
+#include <stdlib.h> // for abs(), ...
+#endif
 #include <math.h>
 #include <limits>
 #include "sprtf.hxx"
@@ -152,7 +155,11 @@ bool absoluteIsZero(double x)
 {
     if (x == 0.0)
         return true;
+#ifdef _MSC_VER
     return std::fabs(x) <= std::numeric_limits<double>::epsilon() ;
+#else
+    return fabs(x) <= std::numeric_limits<double>::epsilon() ;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +167,11 @@ bool absoluteIsZero(double x)
 
 bool absoluteToleranceCompare(double x, double y)
 {
+#ifdef _MSC_VER
     return std::fabs(x - y) <= std::numeric_limits<double>::epsilon() ;
+#else
+    return fabs(x - y) <= std::numeric_limits<double>::epsilon() ;
+#endif
 }
 
 // from : http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect

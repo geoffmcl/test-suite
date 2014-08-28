@@ -7,6 +7,9 @@
 \*/
 
 #include <stdio.h>
+#ifndef _MSC_VER
+#include <stdlib.h> // for exit(), ...
+#endif
 #include <string>
 #include <vector>
 #include <map>

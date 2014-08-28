@@ -7,13 +7,21 @@
 \*/
 
 #include <stdio.h>
+#ifdef _MSC_VER
 #include <io.h>
+#else
+#include <unistd.h> // for close(), ...
+#endif
 #include <fcntl.h>
 #include "sprtf.hxx"
 #include "utils.hxx"
 #include "test-open.hxx"
 
 static const char *module = "test-open";
+
+#ifndef _MSC_VER
+#define is_file_or_directory64 is_file_or_directory32
+#endif
 
 void test_open()
 {

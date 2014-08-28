@@ -14,6 +14,10 @@
 #include <math.h>
 #ifdef _MSC_VER
 #include <WinSock2.h>   // includes <windows.h>
+#else
+#include <float.h> // for DBL_MAX, ...
+#include <string.h> // for memset, ...
+#include <stdlib.h> // for exit(), ...
 #endif  // _MSC_VER
 #include "sprtf.hxx"
 #include "test-color.hxx"

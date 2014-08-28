@@ -14,23 +14,14 @@
 #include <stdio.h>
 #include <errno.h>
 #include <ctype.h>
-#ifdef _MSC_VER
-//////////////////////////////////////////////////////////////////////////////
 #include <limits.h>
 #include <stdint.h>
 #include <sstream>
 #include <iomanip>
 #include <locale>
 #include <string> // this should be already included in <sstream>
-
-template <typename T>
-  std::string NumberToString ( T Number )
-  {
-     std::ostringstream ss;
-     ss << Number;
-     return ss.str();
-  }
-
+#ifdef _MSC_VER
+//////////////////////////////////////////////////////////////////////////////
 typedef int64_t intmax_t;
 typedef uint64_t uintmax_t;
 #ifndef INTMAX_MAX
@@ -50,6 +41,16 @@ typedef uint64_t uintmax_t;
 #include "sprtf.cxx"
 
 static const char *module = "strtoimax";
+
+template <typename T>
+  std::string NumberToString ( T Number )
+  {
+     std::ostringstream ss;
+     ss << Number;
+     return ss.str();
+  }
+
+
 
 /* Helper macros */
 

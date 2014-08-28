@@ -14,20 +14,20 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string>
+#include <stdint.h>
 #ifdef _MSC_VER
 #include <Windows.h>
-#include <stdint.h>
 #include "byid.hpp"
 #include "winErr.hpp"
-#include "sprtf.hxx"
-#include "utils.hxx"
 #include "MMFIODef.h"
 #else
 #include <sys/mman.h>
 #include <unistd.h>
-#include <osmium/storage/byid.hpp>
+#include "byid.hpp"
+// #include <osmium/storage/byid.hpp>
 #endif
-
+#include "sprtf.hxx"
+#include "utils.hxx"
 
 #ifdef _MSC_VER
 static void showlasterr(const char *msg)

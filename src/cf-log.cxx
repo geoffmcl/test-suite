@@ -14,7 +14,9 @@
 #include <stdint.h>
 #include <vector>
 #include <time.h>
+#ifdef _MSC_VER
 #include <io.h>
+#endif
 #include <map>
 
 #ifdef ADD_CF_LOG_TEST
