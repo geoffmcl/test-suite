@@ -1,1 +1,4 @@
 bldlog-1.txt
+liblibutils.a
+test
+
