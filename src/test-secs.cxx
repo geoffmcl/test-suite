@@ -222,7 +222,7 @@ void test_trim_secs()
 void test_secs()
 {
     //const char *s1 = "0.247109359793416";
-    SPRTF("%s: Just a test of seconds output...\n", module);
+    SPRTF("\n%s: Doing seconds output...\n", module);
     double secs = 0.00000001;
     test_trim_secs();
     //for ( ; secs < 1; secs += 0.0000001) {
@@ -232,6 +232,6 @@ void test_secs()
         SPRTF("Secs %lf in hh:mm:ss %s\n", secs, seconds_to_hhmmss_stg(secs));
     }
 
-    SPRTF("%s: End seconds test...\n", module);
+    SPRTF("%s: Done seconds test...\n", module);
 }
 // eof = test-secs.cxx

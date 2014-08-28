@@ -280,6 +280,8 @@ void test_angles();
 
 void test_math()
 {
+    SPRTF("\n");
+    SPRTF("%s: Doing various math tests...\n", module);
     double dist, expect, diff, dist2;
     double A[2];
     double B[2];
@@ -563,7 +565,7 @@ void test_math()
 
     SPRTF("%s: std::numeric_limits<double>::epsilon() = %g\n", module, std::numeric_limits<double>::epsilon() );
 
-    x1 = 0.0;
+    SPRTF("%s: Done various math tests...\n", module);
 }
 
 double Vec2_to_rads( Vec2 &p, Vec2 &v )

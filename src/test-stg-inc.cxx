@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
+#include "sprtf.hxx"
 
 #include "test-stg-inc.hxx"
 
@@ -49,7 +50,7 @@ char * increment_string_in_buffer(char *s)
 		if (!begin) {
             s = (char *)realloc(s, len + 2);
             if (!s) {
-                printf("realloc(%d) FAILED!\n", len + 2 );
+                SPRTF("realloc(%d) FAILED!\n", len + 2 );
                 exit(1);
             }
         }
@@ -98,36 +99,36 @@ void string_test( std::string s )
     char *cp = (char *)malloc( s.length() + 2 );
     long long i;
     if (!cp) {
-        printf("memory allocation FAILED!\n");
+        SPRTF("memory allocation FAILED!\n");
         exit(1);
     }
     std::string s2(s);
     strcpy(cp,s.c_str());
     std::istringstream(s) >> i;
     i++;
-    printf("text: %s ", s.c_str());
+    SPRTF("text: %s ", s.c_str());
     // NOTE LIMITS OF THIS METHOD
     std::ostringstream oss;
     if (oss << i) {
         s = oss.str();
-        printf("res1: %s ", s.c_str());
+        SPRTF("res1: %s ", s.c_str());
     } else {
-        printf("FAILED!");
+        SPRTF("FAILED!");
     }
-    printf("\n");
+    SPRTF("\n");
 
     cp = increment_string_in_buffer(cp);
-    printf("res2: %s ", cp);
+    SPRTF("res2: %s ", cp);
     increment_numerical_string(s2);
-    printf("res3: %s ", s2.c_str());
+    SPRTF("res3: %s ", s2.c_str());
 
-    printf("\n");
+    SPRTF("\n");
     free(cp);
 }
 
 void test_string_inc()
 {
-
+    SPRTF("\n%s: Testing in buffer string incrementing...\n", module );
 	string_test("+0");
 	string_test("-1");
 	string_test("-41");
@@ -138,6 +139,7 @@ void test_string_inc()
 	string_test("-100000000000000000000000000000000000000000000");
     std::string big_number = "123456789012345678901234567899";
     string_test(big_number);
+    SPRTF("%s: End testing in buffer string incrementing...\n", module );
 }
 
 // eof = test-stg-inc.cxx

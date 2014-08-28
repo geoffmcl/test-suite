@@ -190,7 +190,7 @@ void test_strtoimax()
     const char *bs = "-9999999999";
     std::string s, s2, s3, s4;
 
-    SPRTF("%s: testing strtoimax function...\n", module );
+    SPRTF("\n%s: testing strtoimax function...\n", module );
     for (i = 0; i < 12; i++) {
         j = i;
         strcpy(stg1,bs);

@@ -27,7 +27,7 @@ void test_tmpnam()
 {
     char *tn;
     char *temp = getenv("TEMP");
-    SPRTF("%s: Doing tempnam() and tmpnam() test.\n", module );
+    SPRTF("\n%s: Doing tempnam() and tmpnam() test.\n", module );
     
     tn = _tempnam(temp,"filio");
     if (tn) {
