@@ -7,6 +7,7 @@
 \*/
 
 #include <stdio.h>
+#include <stdint.h>
 #ifdef _MSC_VER
 //////////////////////////////////////////////////////////////////////
 #include <WinSock2.h>
@@ -19,6 +20,27 @@
 #include "sprtf.hxx"
 #include "utils.hxx"
 #include "test-knums.hxx"
+
+#ifndef _MSC_VER
+///////////////////////////////////////////////////////////////////////////////////////////////
+typedef uint64_t UINT64;
+typedef uint32_t DWORD;
+typedef char TCHAR;
+typedef struct _ULARGE_INTEGER {
+    union {
+        struct {
+            DWORD LowPart;
+            DWORD HighPart;
+        };
+    };
+    unsigned long long QuadPart;
+}ULARGE_INTEGER;
+#define _UI64_MAX UINT64_MAX
+typedef uint64_t __int64;
+#define is_file_or_directory64 is_file_or_directory32
+#define get_last_file_size64 get_last_file_size32
+///////////////////////////////////////////////////////////////////////////////////////////////
+#endif // !_MSC_VER
 
 static const char *module = "test_knums";
 
