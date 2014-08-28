@@ -45,6 +45,7 @@ if(WIN32 AND MSVC)
     set(NOMINMAX 1)
 else()
     set(TEST_MMFIO 0)
+    message(STATUS "*** Memory mapping still to be ported to unix mmap")
     set(WARNING_FLAGS "${WARNING_FLAGS} -Wno-trigraphs")
 endif()
 
@@ -211,7 +212,6 @@ set( test_SRCS
     ${dir}/test-stg-inc.cxx
     ${dir}/test-color.cxx
     ${dir}/test-tmpname.cxx
-    ${dir}/test-mmap.cxx
     ${dir}/test-secs.cxx
     ${dir}/test-scanf.cxx
     ${dir}/strtoimax.cxx
@@ -233,11 +233,15 @@ set( test_HDRS
     ${dir}/test-stg-inc.hxx
     ${dir}/test-color.hxx
     ${dir}/test-tmpname.hxx
-    ${dir}/test-mmap.hxx
     ${dir}/test-secs.hxx
     ${dir}/test-scanf.hxx
     ${dir}/test-open.hxx
     )
+
+if (TEST_MMFIO)
+    list(APPEND test_SRCS ${dir}/test-mmap.cxx)
+    list(APPEND test_HDRS ${dir}/test-mmap.hxx)
+endif ()    
 if (TEST_POSTGRESQL)
     list(APPEND test_SRCS ${dir}/test-sql.cxx)
     list(APPEND test_HDRS ${dir}/test-sql.hxx)
