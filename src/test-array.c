@@ -2,20 +2,26 @@
 #ifdef _MSC_VER
 #pragma warning ( disable : 4996 ) // : This function or variable may be unsafe
 #endif
-#include "test-array.h"
 #include <stdlib.h>
 #include <stdio.h>
+#ifndef __cplusplus
+typedef char bool;
+#endif
+#include "sprtf.hxx"
+#include "test-array.h"
+
+static const char *module = "test-array";
 
 #ifndef __cplusplus
 #ifdef _MSC_VER
-#pragma message("Not c++ == C compile")
+#pragma message("Not C++ == C compile")
 #endif
 typedef struct Geom      Geom;		/* Complete OOGL object */
 typedef struct GeomClass GeomClass;	/* Virtual func tbl for Geom */
 typedef struct GeomIter  GeomIter;	/* opaque iteration handle */
 #else
 #ifdef _MSC_VER
-#pragma message("Is C++ compile")
+#pragma message("Is a C++ compile")
 #endif
 struct Geom;
 struct GeomClass;
@@ -114,13 +120,15 @@ void drawer_post_xform(int id, Transform T, Geom *g )
 }
 
 
-int test_array()
+void test_array()
 {
     Transform t1;
     Geom g;
+    SPRTF("\n");
+    SPRTF("%s: doing test array..\n", module );
     drawer_post_xform(1,t1, &g);
-
-	return 1;
+    SPRTF("%s: done test array..\n", module );
+	return;
 }
 
 

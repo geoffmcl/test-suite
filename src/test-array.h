@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-extern int test_array(void);
+extern void test_array();
 
 #ifdef __cplusplus
 }

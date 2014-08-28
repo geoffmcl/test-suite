@@ -9,6 +9,8 @@ typedef int bool;
 #include "sprtf.hxx"
 #include <stdio.h>
 
+static const char *module = "gettimeofday";
+
 // preprocessor definitions
 #ifdef _WIN64
    //define something for Windows (64-bit)
@@ -213,14 +215,14 @@ double get_elapsed_secs( struct timeval *tv1, struct timeval *tv2 )
 
 void show_elapsed( struct timeval *tv1, struct timeval *tv2 )
 {
-    printf(" elapsed %.4f secs", get_elapsed_secs( tv1, tv2 ));
+    SPRTF(" elapsed %.4f secs", get_elapsed_secs( tv1, tv2 ));
 }
 
 void show_timeval( struct timeval *tv, char *msg )
 {
     double secs = tv->tv_sec;
     secs += ((double)tv->tv_usec / 1000000.0);
-    printf("%.4f secs - %s", secs, msg );
+    SPRTF("%.4f secs - %s", secs, msg );
 
 }
 
@@ -238,8 +240,8 @@ void test_gettimeofday()
     struct timeval boost2;
     struct timeval tt;
     struct timeval tt2;
-
-    printf("Testing various implementations of gettimeofday\n");
+    SPRTF("\n");
+    SPRTF("%s: Testing various implementations of gettimeofday\n", module);
 
     gettimeofday_cf( &cf, 0 );
     //gettimeofday_ac2gl( &ac2gl, 0 );
@@ -255,7 +257,7 @@ void test_gettimeofday()
     show_timeval( &tt, "tt\n" );
     //show_timeval( &flu, "flu" );
 
-    printf("Sleeping for 1 second\n");
+    SPRTF("Sleeping for 1 second\n");
     sleep(1000);
 
     gettimeofday_cf( &cf2, 0 );
@@ -268,25 +270,25 @@ void test_gettimeofday()
 
     show_timeval( &cf2, "cf" );
     show_elapsed( &cf, &cf2 );
-    printf("\n");
+    SPRTF("\n");
 
     //show_timeval( &ac2gl2, "ac2gl" );
     //show_elapsed( &ac2gl, &ac2gl2 );
-    //printf("\n");
+    //SPRTF("\n");
 
     show_timeval( &blender2, "blender" );
     show_elapsed( &blender, &blender2 );
-    printf("\n");
+    SPRTF("\n");
 
     show_timeval( &boost, "boost" );
     show_elapsed( &boost, &boost2 );
-    printf("\n");
+    SPRTF("\n");
 
     show_timeval( &tt2, "tt" );
     show_elapsed( &tt, &tt2 );
-    printf("\n");
+    SPRTF("\n");
     //show_timeval( &flu2, "flu" );
-
+    SPRTF("%s: end testing various implementations of gettimeofday\n", module);
 }
 
 static struct timeval start = { 0 };

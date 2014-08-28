@@ -33,6 +33,7 @@
 using namespace std;
 
 static const char *mod_name = "cf-log.cxx";
+#define module mod_name
 
 #ifdef _MSC_VER
 static const char *log_file = "C:\\Users\\user\\Downloads\\logs\\fgx-cf\\cf_raw.log";
@@ -2308,6 +2309,14 @@ int load_cf_log()
     vPackets.clear();
     free(tb);
     return 0;
+}
+
+void test_cflog()
+{
+    SPRTF("\n");
+    SPRTF("%s: doing cf log test...\n", module );
+    load_cf_log();
+    SPRTF("%s: done cf log test...\n", module );
 }
 
 #endif // #ifdef ADD_CF_LOG_TEST

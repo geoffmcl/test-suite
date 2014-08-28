@@ -99,14 +99,15 @@ int check_tables(PGconn *conn)
 
 void test_sql()
 {
+    SPRTF("\n");
+    SPRTF("%s: test sql connection...\n", module );
     PGconn *conn;
     conn = PQsetdbLogin(ip_address, port, pgoptions, pgtty, database, user, pwd);
 
     if (PQstatus(conn) != CONNECTION_OK) {
         char *err = PQerrorMessage(conn);
         SPRTF("%s: Connection FAILED! - %s\n", module, err );
-        PQfinish(conn);
-        return;
+        goto cleanup;
     }
 
     SPRTF("%s: Got connection on ip=%s, port=%s, db=%s, usr=%s\n", module,
@@ -118,7 +119,12 @@ void test_sql()
     } else {
         SPRTF("succeeded.\n");
     }
+
+cleanup:
+
     PQfinish(conn);
+   
+    SPRTF("%s: end test sql connection...\n", module );
 
 }
 

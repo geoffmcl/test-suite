@@ -248,6 +248,13 @@ int cgal_main() {
 
 }
 
+void test_cgal()
+{
+    SPRTF("\n");
+    SPRTF("%s: testing cgal...\n", module );
+    cgal_main();
+    SPRTF("%s: end testing cgal...\n", module );
+}
 
 #endif
 
@@ -267,6 +274,8 @@ void check_mpfr()
 
 void test_compares()
 {
+    SPRTF("\n");
+    SPRTF("%s: testing compares...\n", module);
     SPRTF("Comparing %p with %p... ", iaxc_sendto, sendto);
     if (iaxc_sendto == (iaxc_sendto_t)sendto)
         SPRTF("ok\n");
@@ -290,6 +299,7 @@ void test_compares()
         SPRTF("ok\n");
     else
         SPRTF("FAILED!\n");
+    SPRTF("%s: end testing compares...\n", module);
 
 }
 
@@ -322,13 +332,15 @@ char *get_dw_stg( DWORD ret )
 }
 
 static int do_freopen = 1;
-DWORD test_wait_for()
+void test_wait_for()
 {
     DWORD ret, count = 0;
     FILE *fd_stdin;
     FILE *fd_stdout;
     FILE *fd_stderr;
     int timeout_ms = 1000;
+    SPRTF("\n");
+    SPRTF("%s: test wait for...\n", module );
     if (do_freopen) {
         if (AllocConsole()) {
             SPRTF("AllocConsole() SUCCEEDED!\n");
@@ -362,7 +374,7 @@ DWORD test_wait_for()
             SPRTF("Wait return %d (%s), after %f secoonds (cumm)\n", ret, cp, d);
         }
     }
-    return ret;
+    SPRTF("%s: end test wait for...\n", module );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
 #endif // _MSC_VER
@@ -398,6 +410,9 @@ void test_k_num()
     unsigned long g_file_clean = 75096;
     ULARGE_INTEGER g_total64_size = { 0 };
     g_total64_size.QuadPart = tot;
+    SPRTF("\n");
+    SPRTF("%s: test k numbers...\n", module);
+
     sprintf(sbuff,"%llu", g_total64_size.QuadPart);
     nice_num( dbuff, sbuff );
     cp = get_k_num64( g_total64_size );
@@ -413,7 +428,7 @@ void test_k_num()
     SPRTF( "Max I64 total (approx) %s (%s bytes) ...\n",
         cp,
         dbuff );
-
+    SPRTF("%s: end test k numbers...\n", module);
 
 }
 
@@ -426,6 +441,7 @@ void test_magvar()
     int dd = 13;
     double field[6];
     double var1, var2;
+    SPRTF("\n%s: test magvar...\n", module );
     /* Convert date to Julian day    1950-2049 */
     unsigned long jd = yymmdd_to_julian_days( yy, mm, dd );
 
@@ -465,18 +481,20 @@ void test_magvar()
 #endif
 
     SPRTF("\n");
+    SPRTF("%s: end test magvar...\n", module );
 
 }
 #endif
 
 // #endif // 0
-void init() 
+void test_global()
 {
+    SPRTF("\n%s: test global\n", module );
     pg = new global;
     int val = pg->foo();
     int val2 = pg->var;
     SPRTF("global var = %d, foo() returned %d\n", val2, val);
-
+    SPRTF("%s: end test global\n", module );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -586,7 +604,7 @@ void test_dist()
 void test_string()
 {
     std::string s = "obsXXX"; // set up an observer
-
+    SPRTF("\n%s: testing string...\n", module );
     // current code
     if (s.compare(0,3,"obs",3) == 0) {
         SPRTF("ok1: 'obs' found in '%s'\n",s.c_str());
@@ -621,7 +639,8 @@ void test_string()
     } else {
         SPRTF("NZ5: 'ob' not found in '%s'\n",s.c_str());
     }
-    exit(1);
+
+    SPRTF("%s: end testing string...\n", module );
 }
 
 #if 0
@@ -851,6 +870,7 @@ int millisleep(unsigned ms)
 void test_signals()
 {
     unsigned long long val = 0;
+    SPRTF("%s: test signal catching...\n", module);
 	//
 	// catch some signals
 	//
@@ -884,21 +904,24 @@ void test_signals()
         millisleep(55);
     }
     SPRTF("Continuing after %I64u cycles\n", val );
+    SPRTF("%s: Done test signal catching...\n", module);
 }
 
 
 #define MAX_CNT 200
 //#define strtoull _strtoi64
-int test_getline()
+void test_getline()
 {
+
     char *cp = 0;
     size_t len = 0;
-    printf("Input a file name : ");
+    SPRTF("\n%s: Test getline()\n", module);
+    SPRTF("Input a file name : ");
     size_t bytes = getline( &cp, &len, stdin );
     size_t total_bytes = 0;
     if (bytes == 0) {
-        printf("No input file given!\n");
-        return 0;
+        SPRTF("No input file given!\n");
+        return;
     }
     if (bytes != EOF) {
         if ( cp[bytes - 1] == '\n') {
@@ -907,7 +930,7 @@ int test_getline()
         }
         
         //strtoull(buf);
-        printf("Got name : '%s'\n",cp);
+        SPRTF("Got name : '%s'\n",cp);
         if (is_file_or_directory64(cp) == DT_FILE) {
             uint64_t full_file = get_last_file_size64();
             FILE *fp = fopen(cp,"rb");
@@ -923,22 +946,23 @@ int test_getline()
                     }
                     count = getline( &cp, &len, fp );
                 }
-                printf("Counted %d lines in file. Approx. %d bytes... file total %llu\n", 
+                SPRTF("Counted %d lines in file. Approx. %d bytes... file total %llu\n", 
                     line_count, (int)total_bytes, full_file);
                 fclose(fp);
             } else {
-                printf("Can NOT open file!\n");
+                SPRTF("Can NOT open file!\n");
             }
         } else {
-            printf("Can NOT 'stat' file!\n");
+            SPRTF("Can NOT 'stat' file!\n");
         }
     } else {
-        printf("Got EOF!\n");
+        SPRTF("Got EOF!\n");
     }
     if (cp)
         free(cp);
     bytes = 0;
-    return bytes;
+    SPRTF("\n%s: End test getline()\n", module);
+    return;
 }
 
 //////////////////////////////////////////
@@ -975,8 +999,57 @@ static TESTLIST testList[] = {
     { 5, "tmpnam", test_tmpnam },
     { 6, "string_inc", test_string_inc },
     { 7, "math", test_math },
+#ifdef _MSC_VER
+    { 8, "fullpath", test_fullpath },
+    { 9, "redon", test_redon },
+#ifdef ADD_MMFIO_TEST
+    { 10, "mmap", test_mmap },
+#endif
+#endif
+#ifdef WIN32
+    { 11, "wildcard", test_wildcard },
+#endif
+    { 12, "getline", test_getline },
+    { 13, "signals", test_signals },
+    { 14, "string", test_string },
+    { 15, "color", test_color },
+    { 16, "floor-ceil", test_floor_ceil },
+#ifdef HAVE_SIMGEAR  // indication simgear found
+    { 17, "intersect", test_intersect },
+    { 18, "dist", test_dist },
+#endif // #ifdef HAVE_SIMGEAR  // indication simgear found
+    { 19, "array", array_test },
+    { 20, "map", test_map },
+    { 21, "utf8", test_utf8 },
+    { 22, "global", test_global },
+#ifdef ADD_CF_LOG_TEST
+    // SPRTF("Protocol version %s\n", GetProtocolVerString().c_str());
+#endif
+#if (defined(HAVE_SIMGEAR) && defined(TEST_MAG_VER))
+    { 23, "magvar", test_magvar },
+#endif
+#if (defined(DO_POSTGRESQL_TEST) && defined(ADD_POSTGRESQL_TEST))
+    // for MSVC debug set PATH=C:\Program Files (x86)\PostgreSQL\9.1\bin;%PATH%
+    { 24, "sql", test_sql },
+#endif
+    { 25, "k_num", test_k_num },
+#ifdef _MSC_VER
+    { 26, "gettimeofday", test_gettimeofday },
+    { 27, "wait_for", test_wait_for },
+#endif
+    { 28, "compares", test_compares },
+#ifdef ADD_MPFR_TEST
+    { 29, "mpfr", check_mpfr },
+#endif // #ifdef ADD_MPFR_TEST
+#ifdef ADD_CGAL_TEST
+    { 30, "cgal", test_cgal },  // cgal_main();
+#endif
+#ifdef ADD_CF_LOG_TEST
+    { 31, "cflog", test_cflog },    // iret = load_cf_log();
+#endif
+    { 32, "array", test_array },
 
-
+    //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION
     { 0, 0, 0 }
 };
