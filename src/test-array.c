@@ -7,12 +7,16 @@
 #include <stdio.h>
 
 #ifndef __cplusplus
+#ifdef _MSC_VER
 #pragma message("Not c++ == C compile")
+#endif
 typedef struct Geom      Geom;		/* Complete OOGL object */
 typedef struct GeomClass GeomClass;	/* Virtual func tbl for Geom */
 typedef struct GeomIter  GeomIter;	/* opaque iteration handle */
 #else
+#ifdef _MSC_VER
 #pragma message("Is C++ compile")
+#endif
 struct Geom;
 struct GeomClass;
 struct GeomIter;
