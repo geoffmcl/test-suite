@@ -32,8 +32,8 @@ typedef struct _ULARGE_INTEGER {
             DWORD LowPart;
             DWORD HighPart;
         };
+        unsigned long long QuadPart;
     };
-    unsigned long long QuadPart;
 }ULARGE_INTEGER;
 #define _UI64_MAX UINT64_MAX
 typedef uint64_t __int64;
