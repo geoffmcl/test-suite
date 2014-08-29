@@ -78,17 +78,6 @@ static const char *module = "test";
 #else
 ///////////////////////////////////////////////////////////////////////////////////////////////
 typedef uint64_t UINT64;
-typedef uint32_t DWORD;
-typedef char TCHAR;
-typedef struct _ULARGE_INTEGER {
-    union {
-        struct {
-            DWORD LowPart;
-            DWORD HighPart;
-        };
-    };
-    unsigned long long QuadPart;
-}ULARGE_INTEGER;
 #define _UI64_MAX UINT64_MAX
 typedef uint64_t __int64;
 #define is_file_or_directory64 is_file_or_directory32
