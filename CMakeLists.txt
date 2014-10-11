@@ -175,11 +175,13 @@ set(${name}_SRCS
     ${dir}/sprtf.cxx
     ${dir}/utils.cxx
     ${dir}/getline.c
+    ${dir}/sg-maths.cxx
     )
 set(${name}_HDRS
     ${dir}/sprtf.hxx
     ${dir}/utils.hxx
     ${dir}/getline.h
+    ${dir}/sg-maths.hxx
     )
 if (MSVC)
     list(APPEND ${name}_SRCS ${dir}/winErr.cpp)
@@ -217,6 +219,8 @@ set( test_SRCS
     ${dir}/strtoimax.cxx
     ${dir}/test-open.cxx
     ${dir}/test-knums.cxx
+    ${dir}/test-trim.cxx
+    ${dir}/test-area.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 
@@ -238,6 +242,8 @@ set( test_HDRS
     ${dir}/test-scanf.hxx
     ${dir}/test-open.hxx
     ${dir}/test-knums.hxx
+    ${dir}/test-trim.hxx
+    ${dir}/test-area.hxx
     )
 
 if (TEST_MMFIO)

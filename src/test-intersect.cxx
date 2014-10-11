@@ -8,6 +8,10 @@
 
 #include <stdlib.h> // for exit(n)
 #include <stdio.h>
+#include "sprtf.hxx"
+#include "test-intersect.hxx"
+
+static const char *module = "test-intersect";
 
 #ifdef HAVE_SIMGEAR  // indication simgear found
 
@@ -15,10 +19,6 @@
 #include <simgear/sg_inlines.h>
 #include <simgear/math/SGMath.hxx>
 #include <simgear/math/sg_geodesy.hxx>
-#include "sprtf.hxx"
-#include "test-intersect.hxx"
-
-static const char *module = "test-intersect";
 
 /* lines_intersect:  AUTHOR: Mukesh Prasad
  *
@@ -153,7 +153,8 @@ int lines_intersect( double x1, double y1,   /* First line segment */
     *y = ( num < 0 ? num - offset : num + offset ) / denom;
 
     return ( DO_INTERSECT );
-    } /* lines_intersect */
+    
+} /* lines_intersect */
 
 /* A main program to test the function.
  */
@@ -292,14 +293,14 @@ void show_dist( double lat1, double lon1, double lat2, double lon2 )
 
 }
 
-void test_intersect()
+void test_intersect_sg()
 {
     double x1, x2, x3, x4, y1, y2, y3, y4;
     double x, y;
     double az1,az2,dist,rwlen,rwbrg,rwopp;
     int res;
     SPRTF("\n");
-    SPRTF("%s: doing test intersect...\n", module );
+    SPRTF("%s: doing test intersect simgear...\n", module );
     // runway = LOC - sort of...
     // 10L: 
     y1 = 37.62872250;
@@ -419,7 +420,7 @@ void test_intersect()
         }
     }
 #endif // 00000000000000000000000000
-    SPRTF("%s: end test intersect...\n", module );
+    SPRTF("%s: end test intersect simgear...\n", module );
 
 
 } /* main */
@@ -427,4 +428,84 @@ void test_intersect()
 
 #endif // #ifdef HAVE_SIMGEAR
 
+// from : http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test
+/* ----------------------------------------------------------------------------
+    The easiest way is to use ray casting, since it can handle all the polygons, 
+    no special handling is necessary and it still provides good speed. 
+    The idea of the algorithm is pretty simple: 
+    Draw a virtual ray from anywhere outside the polygon to your point and count 
+    how often it hits any side of the polygon. 
+    If the number of hits is even, it's outside of the polygon, if it's odd, it's inside.
+  ----------------------------------------------------------------------------- */
+#define RET_NO 0
+#define RET_YES 1
+#define RET_COLLINEAR 2
+
+int areIntersecting(
+    double v1x1, double v1y1, double v1x2, double v1y2,
+    double v2x1, double v2y1, double v2x2, double v2y2)
+{
+    double d1, d2;
+    double a1, a2, b1, b2, c1, c2;
+
+    // Convert vector 1 to a line (line 1) of infinite length.
+    // We want the line in linear equation standard form: A*x + B*y + C = 0
+    // See: http://en.wikipedia.org/wiki/Linear_equation
+    a1 = v1y2 - v1y1;
+    b1 = v1x1 - v1x2;
+    c1 = (v1x2 * v1y1) - (v1x1 * v1y2);
+
+    // Every point (x,y), that solves the equation above, is on the line,
+    // every point that does not solve it, is either above or below the line.
+    // We insert (x1,y1) and (x2,y2) of vector 2 into the equation above.
+    d1 = (a1 * v2x1) + (b1 * v2y1) + c1;
+    d2 = (a1 * v2x2) + (b1 * v2y2) + c1;
+
+    // If d1 and d2 both have the same sign, they are both on the same side of
+    // our line 1 and in that case no intersection is possible. Careful, 0 is
+    // a special case, that's why we don't test ">=" and "<=", but "<" and ">".
+    if (d1 > 0 && d2 > 0) return RET_NO;
+    if (d1 < 0 && d2 < 0) return RET_NO;
+
+    // We repeat everything above for vector 2.
+    // We start by calculating line 2 in linear equation standard form.
+    a2 = v2y2 - v2y1;
+    b2 = v2x1 - v2x2;
+    c2 = (v2x2 * v2y1) - (v2x1 * v2y2);
+
+    // Calulate d1 and d2 again, this time using points of vector 1
+    d1 = (a2 * v1x1) + (b2 * v1y1) + c2;
+    d2 = (a2 * v1x2) + (b2 * v1y2) + c2;
+
+    // Again, if both have the same sign (and neither one is 0),
+    // no intersection is possible.
+    if (d1 > 0 && d2 > 0) return RET_NO;
+    if (d1 < 0 && d2 < 0) return RET_NO;
+
+    // If we get here, only three possibilities are left. Either the two
+    // vectors intersect in exactly one point or they are collinear
+    // (they both lie both on the same infinite line), in which case they
+    // may intersect in an infinite number of points or not at all.
+    if ((a1 * b2) - (a2 * b1) == 0.0f) return RET_COLLINEAR;
+
+    // If they are not collinear, they must intersect in exactly one point.
+    return RET_YES;
+}
+
+// Polgon (30.4998635139406,122.013360248033,29.5337881864316,122.320684676771,30.5997309223615,122.255392915135,29.7812282643568,122.921499744166)
+// BBOX = 122.013360248033,29.5337881864316,122.921499744166,30.5997309223615
+void test_intersect_nosg()
+{
+
+
+}
+
+
+void test_intersect()
+{
+#ifdef HAVE_SIMGEAR  // indication simgear found
+    test_intersect_sg();
+#endif
+    test_intersect_nosg();
+}
 // eof = test-intersect.cxx

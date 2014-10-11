@@ -34,6 +34,7 @@
 #endif
 #include "cf-log.hxx"
 #include "sprtf.hxx"
+#include "sg-maths.hxx"
 #include "test.hxx"
 #include "test-array.h"
 #include "gettimeofday.h"
@@ -59,6 +60,8 @@
 #include "test-scanf.hxx"
 #include "test-open.hxx"
 #include "test-knums.hxx"
+#include "test-trim.hxx"
+#include "test-area.hxx"
 
 extern void test_strtoimax();
 
@@ -495,49 +498,6 @@ void array_test()
       SPRTF("\n");
 }
 
-#ifdef HAVE_SIMGEAR  // indication simgear found
-
-///////////////////////////////////////////////////////////////////////////
-/* output
-expected values are from : http://www.gpsvisualizer.com/calculators
-From EGLL to KSFO Haversine = 8616.42, SG = 8638.65, expect 8638.65
-From EGLL to LFPO Haversine = 365.44, SG = 365.87, expect 365.87
-From LFPG to LFPO Haversine = 34.46, SG = 34.48, expect 34.48
- */
-
-void test_dist()
-{
-    // EGLL - Heatrow
-    double lat1 = 51.468301015;
-    double lon1 = -0.457598533;
-    // KSFO
-    double lat2 = 37.618674211;
-    double lon2 = -122.375007609;
-    // expect 8638.65
-    double dist1 = distance_km(lat1,lon1,lat2,lon2);
-    double dist2 = SGDistance_km(lat1,lon1,lat2,lon2);
-    SPRTF("\n");
-    SPRTF("Run some distance tests comparing Haversine and SimGear (Vincenty) results.\n");
-
-    SPRTF("From EGLL to KSFO Haversine = %.2lf, SG = %.2lf, expect 8638.65\n", dist1, dist2);
-    // LFPO
-    lat2 = 48.726969293;
-    lon2 = 2.369992317;
-    dist1 = distance_km(lat1,lon1,lat2,lon2);
-    dist2 = SGDistance_km(lat1,lon1,lat2,lon2);
-    SPRTF("From EGLL to LFPO Haversine = %.2lf, SG = %.2lf, expect 365.87\n", dist1, dist2);
-    lat1 = 49.009742158;
-    lon1 = 2.562619395;
-    dist1 = distance_km(lat1,lon1,lat2,lon2);
-    dist2 = SGDistance_km(lat1,lon1,lat2,lon2);
-    SPRTF("From LFPG to LFPO Haversine = %.2lf, SG = %.2lf, expect 34.48\n", dist1, dist2);
-
-    SPRTF("\n");
-
-}
-
-#endif // #ifdef HAVE_SIMGEAR  // indication simgear found
-
 /////////////////////////////////////////////////
 // 
 void test_string()
@@ -953,8 +913,8 @@ static TESTLIST testList[] = {
     { 14, "string", test_string },
     { 15, "color", test_color },
     { 16, "floor-ceil", test_floor_ceil },
+    { 17, "intersect", test_intersect },    // SG and NOT SG maths
 #ifdef HAVE_SIMGEAR  // indication simgear found
-    { 17, "intersect", test_intersect },
     { 18, "dist", test_dist },
 #endif // #ifdef HAVE_SIMGEAR  // indication simgear found
     { 19, "array", array_test },
@@ -987,6 +947,10 @@ static TESTLIST testList[] = {
     { 31, "cflog", test_cflog },    // iret = load_cf_log();
 #endif
     { 32, "array", test_array },
+    { 33, "euler", compare_maths },
+    { 34, "trim_string", test_trim },
+    { 35, "area_wgs84", test_area },
+    { 36, "dist_pt2line", test_dist2 },
 
     //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION

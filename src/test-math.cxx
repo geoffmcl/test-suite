@@ -4,6 +4,10 @@
  * Copyright (c) 2014 - Geoff R. McLane
  * Licence: GNU GPL version 2
  *
+ * Lots of math tests
+ *
+ * 20140918: Convert lat,lon,orientation to heading, pitch and roll
+ *
 \*/
 
 #include <stdio.h>
@@ -14,15 +18,13 @@
 #include <limits>
 #include "sprtf.hxx"
 #include "utils.hxx"
-#include "test-math.hxx"
-
-#ifndef M_PI
-#define M_PI       3.14159265358979323846
+#ifdef HAVE_SIMGEAR
+#include <simgear/compiler.h>
+#include <simgear/constants.h>
+#include <simgear/math/SGMath.hxx>
 #endif
-
-#define RAD2DEG ( 180.0 / M_PI )
-#define DEG2RAD ( M_PI / 180.0 )
-
+#include "sg-maths.hxx"
+#include "test-math.hxx"
 
 static const char *module = "test-math";
 
@@ -646,5 +648,665 @@ void test_angles()
     SPRTF("(fx %s)\n", double_to_stg(degs));
 
 }
+
+///////////////////////////////////////////////////////////////////////
+// 20140918:
+/* =============================================================================
+    Using the 'complicated' SimGear maths got this line
+    Victor at 37.405960,-122.042817,42, orien 2.366594,1.994152,1.443017, in 777-200ER hdg=338 spd=3 pkts=1/0 
+    OK-JVK at 47.802738,11.996773,19171, orien -1.121633,-2.214272,0.591599, in 777-200 hdg=65 spd=427 pkts=1/0 
+    MCA0340 at 8.382262,90.018088,38160, orien -0.630049,-2.556933,2.186189, in 757-200PF hdg=117 spd=533 pkts=1/0 
+    AHGM at -5.514906,-34.887578,200, orien -1.121828,-1.020800,0.361874, in DO-J-II-r hdg=61 spd=103 pkts=1/0 
+    F-BLCK at 12.847165,-30.467642,16001, orien -1.824425,2.236964,2.139209, in m2000-5 hdg=252 spd=487 pkts=1/0 
+    Canseco at 40.804990,1.186377,33061, orien -2.244615,1.214249,1.228393, in m2000-5 hdg=215 spd=655 pkts=2/0 Est=652 kt 0 nm 
+    Using alternate maths, got slightly different answers
+    Victor at 37.405960,-122.042817,42, orien 2.366594,1.994152,1.443017, in 777-200ER hdg=270 spd=3 pkts=1/0 
+    OK-JVK at 47.802738,11.996773,19171, orien -1.121633,-2.214272,0.591599, in 777-200 hdg=344 spd=427 pkts=1/0 
+    MCA0340 at 8.382262,90.018088,38160, orien -0.630049,-2.556933,2.186189, in 757-200PF hdg=39 spd=533 pkts=1/0 
+    AHGM at -5.514906,-34.887578,200, orien -1.121828,-1.020800,0.361874, in DO-J-II-r hdg=67 spd=103 pkts=1/0 
+    F-BLCK at 12.847165,-30.467642,16001, orien -1.824425,2.236964,2.139209, in m2000-5 hdg=45 spd=487 pkts=1/0 
+    Canseco at 40.804990,1.186377,33061, orien -2.244615,1.214249,1.228393, in m2000-5 hdg=66 spd=655 pkts=2/0 Est=652 kt 0 nm 
+
+    from : http://stackoverflow.com/questions/24026418/how-to-convert-latitude-and-longitude-to-orientation-yaw-pitch-roll
+    d(x,y,z) = (Destination(x,y,z) - Origin(x,y,z))
+    double yaw   = -Math.atan2(dx,-dz);
+    double pitch = Math.atan2(dy, Math.sqrt((dx * dx) + (dz * dz)));
+
+   ============================================================================= */
+typedef double t_Point3D;
+typedef double sgdQuat [ 4 ] ;
+#define MY_MIN_VAL 0.00000001
+#ifndef DEG2RAD
+#define DEG2RAD     M_PI / 180.0
+#endif
+#ifndef RAD2DEG
+#define RAD2DEG     180.0 / M_PI
+#endif
+
+enum qoff { QX, QY, QZ, QW };
+
+class Point3D
+{
+public:
+    Point3D();
+    void clear();
+	void Set ( const t_Point3D& X, const t_Point3D& Y, const t_Point3D& Z );
+	t_Point3D m_X;
+	t_Point3D m_Y;
+	t_Point3D m_Z;
+
+};
+
+Point3D::Point3D()
+{
+    clear();
+}
+
+void Point3D::clear ()
+{
+	m_X = 0.0;
+	m_Y = 0.0;
+	m_Z = 0.0;
+}
+void Point3D::Set ( const t_Point3D& X, const t_Point3D& Y, const t_Point3D& Z )
+{
+    m_X = X;
+    m_Y = Y;
+    m_Z = Z;
+}
+
+class dQuat 
+{
+public:
+    dQuat();
+    dQuat(double x, double y, double z, double w) { data[0] = x; data[1] = y; data[2] = z; data[3] = w; }
+    void clear();
+    double x() { return data[QX]; }
+    double y() { return data[QY]; }
+    double z() { return data[QZ]; }
+    double w() { return data[QW]; }
+
+    double data[4];
+};
+
+dQuat::dQuat()
+{
+    clear();
+}
+void dQuat::clear()
+{
+    data[QX] = 0.0;
+    data[QY] = 0.0;
+    data[QZ] = 0.0;
+    data[QW] = 0.0;
+}
+
+double m_dot(const Point3D & v1, const Point3D & v2)
+{ return (v1.m_X*v2.m_X) + (v1.m_Y*v2.m_Y) + (v1.m_Z*v2.m_Z); }
+
+double m_norm(const Point3D & v)
+{ return sqrt(m_dot(v, v)); }
+
+// { return SGQuat<T>(-v(0), -v(1), -v(2), v(3)); }
+sgdQuat *m_conj(const sgdQuat & v)
+{
+    static sgdQuat q;
+    q[0] = -v[0];
+    q[1] = -v[1];
+    q[2] = -v[2];
+    q[3] =  v[3];
+    return &q;
+}
+
+/// write the euler angles into the references
+void m_getEulerRad(sgdQuat *pq, double *zRad, double *yRad, double *xRad)
+{
+    sgdQuat q;
+    memcpy(&q,pq,sizeof(sgdQuat));
+    double sqrQW = q[QW] * q[QW];   // w()*w();
+    double sqrQX = q[QX] * q[QX];   // x()*x();
+    double sqrQY = q[QY] * q[QY];   // y()*y();
+    double sqrQZ = q[QZ] * q[QZ];   // z()*z();
+
+    double num = 2 * (q[QY]*q[QZ] + q[QW]*q[QX]); // 2*(y()*z() + w()*x());
+    double den = sqrQW - sqrQX - sqrQY + sqrQZ;
+    if (fabs(den) <= MY_MIN_VAL &&
+        fabs(num) <= MY_MIN_VAL)
+      *xRad = 0;
+    else
+      *xRad = atan2(num, den);
+
+    double tmp = 2 * (q[QX]*q[QZ] - q[QW]*q[QY]); // 2*(x()*z() - w()*y());
+    if (tmp <= -1)
+      *yRad = 0.5 * M_PI;   // SGMisc<T>::pi();
+    else if (1 <= tmp)
+      *yRad = - (0.5 * M_PI);    // SGMisc<T>::pi();
+    else
+      *yRad = -asin(tmp);
+
+    num = 2 * (q[QX]*q[QY] + q[QW]*q[QZ]);    // 2*(x()*y() + w()*z());
+    den = sqrQW + sqrQX - sqrQY - sqrQZ;
+    if (fabs(den) <= MY_MIN_VAL &&
+        fabs(num) <= MY_MIN_VAL)
+      *zRad = 0;
+    else {
+      double psi = atan2(num, den);
+      if (psi < 0)
+        psi += 2 * M_PI;    //SGMisc<T>::pi();
+      *zRad = psi;
+    }
+}
+
+void m_getEulerDeg(sgdQuat *q, double *zDeg, double *yDeg, double *xDeg)
+{
+    double zRad,yRad,xRad;
+    m_getEulerRad(q, &zRad, &yRad, &xRad);
+    *zDeg = RAD2DEG * zRad;
+    *yDeg = RAD2DEG * yRad;
+    *xDeg = RAD2DEG * xRad;
+}
+
+/// Scalar multiplication
+//template<typename S, typename T>
+//inline
+//SGVec3<T>
+//operator*(S s, const SGVec3<T>& v)
+//{ return SGVec3<T>(s*v(0), s*v(1), s*v(2)); }
+Point3D *scalar_mult( double s, const Point3D & v )
+{
+    static Point3D p;
+    p.m_X = s * v.m_X;
+    p.m_Y = s * v.m_Y;
+    p.m_Z = s * v.m_Z;
+    return &p;
+}
+
+/// Return a quaternion from real and imaginary part
+//  static SGQuat fromRealImag(T r, const SGVec3<T>& i)
+//  {
+//    SGQuat q;
+//    q.w() = r;
+//    q.x() = i.x();
+//    q.y() = i.y();
+//    q.z() = i.z();
+//    return q;
+//  }
+
+  /// Create a quaternion from the angle axis representation where the angle
+  /// is stored in the axis' length
+static sgdQuat *m_fromAngleAxis(const Point3D & axis)
+{
+    static sgdQuat q;
+    double nAxis = m_norm(axis);
+    if (nAxis < MY_MIN_VAL) {
+        q[0] = 0.0;
+        q[1] = 0.0;
+        q[2] = 0.0;
+        q[3] = 0.0;
+        return &q;
+    }
+    double angle2 = 0.5 * nAxis;
+    double r    = cos(angle2);
+    double sin2 = sin(angle2);
+    double val  = sin2 / nAxis;
+    Point3D *i = scalar_mult( val, axis );
+    //q.w() = r;
+    //q.x() = i.x();
+    //q.y() = i.y();
+    //q.z() = i.z();
+    q[QW] = r;
+    q[QX] = i->m_X;
+    q[QY] = i->m_Y;
+    q[QZ] = i->m_Z;
+    return &q;
+}
+
+static sgdQuat *m_fromLonLatRad(double lon, double lat)
+{
+    static sgdQuat q;
+    double zd2 = 0.5*lon;
+    double yd2 = (-0.25 * M_PI) - (0.5 *lat);
+    double Szd2 = sin(zd2);
+    double Syd2 = sin(yd2);
+    double Czd2 = cos(zd2);
+    double Cyd2 = cos(yd2);
+    q[3] = Czd2*Cyd2;   // w
+    q[0] = -Szd2*Syd2;  // x
+    q[1] = Czd2*Syd2;   // y
+    q[2] = Szd2*Cyd2;   // z
+    return &q;
+}
+
+sgdQuat *m_mult(const sgdQuat & v1, const sgdQuat & v2)
+{
+    static sgdQuat v;
+    //v.x() = v1.w()*v2.x() + v1.x()*v2.w() + v1.y()*v2.z() - v1.z()*v2.y();
+    v[QX]   = v1[QW]*v2[QX] + v1[QX]*v2[QW] + v1[QY]*v2[QZ] - v1[QZ]*v2[QY];
+    //v.y() = v1.w()*v2.y() - v1.x()*v2.z() + v1.y()*v2.w() + v1.z()*v2.x();
+    v[QY]   = v1[QW]*v2[QY] - v1[QX]*v2[QZ] + v1[QY]*v2[QW] + v1[QZ]*v2[QX];
+    //v.z() = v1.w()*v2.z() + v1.x()*v2.y() - v1.y()*v2.x() + v1.z()*v2.w();
+    v[QZ]   = v1[QW]*v2[QZ] + v1[QX]*v2[QY] - v1[QY]*v2[QX] + v1[QZ]*v2[QW];
+    //v.w() = v1.w()*v2.w() - v1.x()*v2.x() - v1.y()*v2.y() - v1.z()*v2.z();
+    v[QW]   = v1[QW]*v2[QW] - v1[QX]*v2[QX] - v1[QY]*v2[QY] - v1[QZ]*v2[QZ];
+    return &v;
+}
+
+sgdQuat *m_mult2(const sgdQuat & v1, const sgdQuat & v2) 
+{
+    static sgdQuat v;
+    v[QX] = v1[QW]*v2[QX] + v1[QX]*v2[QW] + v1[QY]*v2[QZ] - v1[QZ]*v2[QY];
+    v[QY] = v1[QW]*v2[QY] - v1[QX]*v2[QZ] + v1[QY]*v2[QW] + v1[QZ]*v2[QX];
+    v[QZ] = v1[QW]*v2[QZ] + v1[QX]*v2[QY] - v1[QY]*v2[QX] + v1[QZ]*v2[QW];
+    v[QW] = v1[QW]*v2[QW] - v1[QX]*v2[QX] - v1[QY]*v2[QY] - v1[QZ]*v2[QZ];
+    return &v;
+}
+
+void m_euler_get( double lat, double lon, double ox, double oy, double oz, double *phead, double *ppitch, double *proll )
+{
+    Point3D v;
+    v.Set( ox, oy, oz );
+    sgdQuat *recOrient = m_fromAngleAxis(v);
+    // ESPRTF("From Point3D %s, got sgdQuat %s\n", get_point3d_stg2(&v), get_quat_stg2(recOrient));
+    double lat_rad, lon_rad;
+    lat_rad = lat * DEG2RAD;
+    lon_rad = lon * DEG2RAD;
+    sgdQuat *qEc2Hl = m_fromLonLatRad(lon_rad, lat_rad);
+    // ESPRTF("From lat/lon %f,%f, rad %f,%f, fromLonLatRad %s\n", lat, lon, lat_rad, lon_rad, get_quat_stg(qEc2Hl));
+    sgdQuat *con = m_conj(*qEc2Hl);
+    sgdQuat *rhlOr = m_mult(*con, *recOrient);
+    // ESPRTF("From quat_conj %s, from mult_quats %s\n", get_quat_stg(con), get_quat_stg(rhlOr));
+    m_getEulerDeg(rhlOr, phead, ppitch, proll );
+    // ESPRTF("getEulerDeg returned h=%f, p=%f, r=%f\n", *phead, *ppitch, *proll);
+}
+
+/* ===========================================================
+   Sample data
+FRST AirChav at 53.362321,-2.257193,273, orien -2.882832,1.458704,1.007460, in CRJ1000 hdg=231 spd=3 pkts=1/0 
+FRST OK-JVK at 47.802738,11.996773,19171, orien -1.121633,-2.214272,0.591599, in 777-200 hdg=65 spd=427 pkts=1/0 
+FRST D-AHGM at -5.514906,-34.887578,200, orien -1.121828,-1.020800,0.361874, in DO-J-II-r hdg=61 spd=103 pkts=1/0 
+FRST Hueq-22 at 37.550137,-122.236544,10208, orien 1.295645,2.458253,1.364842, in Bravo hdg=294 spd=326 pkts=1/0 
+FRST TICO at 5.883552,-74.843681,24344, orien -1.386105,1.211009,1.523141, in A330-223 hdg=189 spd=492 pkts=1/0 
+    ========================================================== */
+typedef struct tagTD {
+    const char *t1;
+    double lat,lon,alt;
+    const char *t2;
+    double ox,oy,oz;
+    const char *t3;
+    double exp;
+    const char *t4;
+}TD, *PTD;
+
+static TD test_data[] = {
+    { "FRST AirChav at", 53.362321,-2.257193,273, "orien", -2.882832,1.458704,1.007460, "in CRJ1000 hdg=",231,"spd=3 pkts=1/0" },
+    { "FRST OK-JVK at", 47.802738,11.996773,19171, "orien", -1.121633,-2.214272,0.591599, "in 777-200 hdg=", 65, "spd=427 pkts=1/0" },
+    { "FRST D-AHGM at", -5.514906,-34.887578,200, "orien", -1.121828,-1.020800,0.361874, "in DO-J-II-r hdg=", 61, "spd=103 pkts=1/0" },
+    { "FRST Hueq-22 at", 37.550137,-122.236544,10208, "orien", 1.295645,2.458253,1.364842, "in Bravo hdg=", 294, "spd=326 pkts=1/0" },
+    { "FRST TICO at", 5.883552,-74.843681,24344, "orien", -1.386105,1.211009,1.523141, "in A330-223 hdg=", 189, "spd=492 pkts=1/0" },
+    { 0 }
+};
+
+void compare_maths()
+{
+    double lat,lon,alt;
+    float ox,oy,oz;
+    float heading, pitch, roll, exp;
+    double hdg,pit,rol;
+    int diff;
+    PTD ptd = &test_data[0];
+    while (ptd->t1) {
+        lat = ptd->lat;
+        lon = ptd->lon;
+        alt = ptd->alt;
+        ox  = ptd->ox;
+        oy  = ptd->oy;
+        oz  = ptd->oz;
+        exp = ptd->exp;
+        SPRTF("lat,lon %lf,%lf, and xyz %f,%f,%f\n",
+            lat, lon, ox, oy, oz );
+#ifdef HAVE_SIMGEAR
+        SGVec3f angleAxis(ox,oy,oz);
+        SGQuatf ecOrient = SGQuatf::fromAngleAxis(angleAxis);
+        SGQuatf qEc2Hl = SGQuatf::fromLonLatRad((float)lon * DEG2RAD,
+                                              (float)lat * DEG2RAD);
+        // The orientation wrt the horizontal local frame
+        SGQuatf hlOr = conj(qEc2Hl)*ecOrient;
+        float hDeg, pDeg, rDeg;
+        hlOr.getEulerDeg(hDeg, pDeg, rDeg);
+        heading = (double)((int)(hDeg + 0.5));
+        pitch   = pDeg;
+        roll    = rDeg;
+        diff = (int)(((heading > exp) ? heading - exp : exp - heading) + 0.5);
+        SPRTF("SGM gives p %f, r %f, hdg %d, expect %d, diff %d\n",
+            pitch, roll, (int)heading, (int)exp, diff );
+#endif
+        m_euler_get( lat, lon, ox, oy, oz, &hdg, &pit, &rol );
+        heading = (double)((int)(hdg + 0.5));
+        pitch   = pit;
+        roll    = rol;
+        diff = (heading > exp) ? heading - exp : exp - heading;
+        SPRTF("ALT gives p %f, r %f, hdg %d, expect %d, diff %d\n",
+            pitch, roll, (int)heading, (int)exp, diff );
+
+        ptd++;
+    }
+    diff = 0.0;
+
+}
+
+void compare_maths2()
+{
+    double lat,lon,alt;
+    float ox,oy,oz;
+    float heading, pitch, roll, exp;
+    // Victor at 37.405960,-122.042817,42, orien 2.366594,1.994152,1.443017 hdg = 338
+
+    lat = 37.405960;
+    lon = -122.042817;
+    alt = 42.0;
+    ox = 2.366594;
+    oy = 1.994152;
+    oz = 1.443017;
+    exp = 338;
+    // FRST AirChav at 53.362321,-2.257193,273, orien -2.882832,1.458704,1.007460, in CRJ1000 hdg=231 spd=3 pkts=1/0 
+    lat = 53.362321;
+    lon = -2.257193;
+    alt = 273;
+    // orien 
+    ox = -2.882832;
+    oy = 1.458704;
+    oz = 1.007460;
+    // in CRJ1000 hdg=
+    exp = 231;
+    SPRTF("lat,lon %lf,%lf, and xyz %f,%f,%f\n",
+        lat, lon, ox, oy, oz );
+#ifdef HAVE_SIMGEAR
+    SGVec3f angleAxis(ox,oy,oz);
+    SGQuatf ecOrient = SGQuatf::fromAngleAxis(angleAxis);
+    SGQuatf qEc2Hl = SGQuatf::fromLonLatRad((float)lon * DEG2RAD,
+                                          (float)lat * DEG2RAD);
+    // The orientation wrt the horizontal local frame
+    SGQuatf hlOr = conj(qEc2Hl)*ecOrient;
+    float hDeg, pDeg, rDeg;
+    hlOr.getEulerDeg(hDeg, pDeg, rDeg);
+    heading = hDeg;
+    pitch   = pDeg;
+    roll    = rDeg;
+    SPRTF("SGM gives p %f, r %f, hdg %d, expect %d\n",
+        pitch, roll, (int)(heading + 0.5), (int)exp );
+#endif
+    double hdg,pit,rol;
+    m_euler_get( lat, lon, ox, oy, oz, &hdg, &pit, &rol );
+    heading = hdg;
+    pitch   = pit;
+    roll    = rol;
+    SPRTF("ALT gives p %f, r %f, hdg %d, expect %d\n",
+        pitch, roll, (int)(heading + 0.5), (int)exp );
+
+}
+
+////////////////////////////////////////////////////////////////////
+// from : http://forums.codeguru.com/showthread.php?194400-Distance-between-point-and-line-segment
+
+void DistanceFromLine(double cx, double cy, double ax, double ay ,
+					  double bx, double by, double &distanceSegment,
+					  double &distanceLine)
+{
+
+	//
+	// find the distance from the point (cx,cy) to the line
+	// determined by the points (ax,ay) and (bx,by)
+	//
+	// distanceSegment = distance from the point to the line segment
+	// distanceLine = distance from the point to the line (assuming
+	//					infinite extent in both directions
+	//
+
+/*
+
+Subject 1.02: How do I find the distance from a point to a line?
+
+
+    Let the point be C (Cx,Cy) and the line be AB (Ax,Ay) to (Bx,By).
+    Let P be the point of perpendicular projection of C on AB.  The parameter
+    r, which indicates P's position along AB, is computed by the dot product 
+    of AC and AB divided by the square of the length of AB:
+    
+    (1)     AC dot AB
+        r = ---------  
+            ||AB||^2
+    
+    r has the following meaning:
+    
+        r=0      P = A
+        r=1      P = B
+        r<0      P is on the backward extension of AB
+        r>1      P is on the forward extension of AB
+        0<r<1    P is interior to AB
+    
+    The length of a line segment in d dimensions, AB is computed by:
+    
+        L = sqrt( (Bx-Ax)^2 + (By-Ay)^2 + ... + (Bd-Ad)^2)
+
+    so in 2D:   
+    
+        L = sqrt( (Bx-Ax)^2 + (By-Ay)^2 )
+    
+    and the dot product of two vectors in d dimensions, U dot V is computed:
+    
+        D = (Ux * Vx) + (Uy * Vy) + ... + (Ud * Vd)
+    
+    so in 2D:   
+    
+        D = (Ux * Vx) + (Uy * Vy) 
+    
+    So (1) expands to:
+    
+            (Cx-Ax)(Bx-Ax) + (Cy-Ay)(By-Ay)
+        r = -------------------------------
+                          L^2
+
+    The point P can then be found:
+
+        Px = Ax + r(Bx-Ax)
+        Py = Ay + r(By-Ay)
+
+    And the distance from A to P = r*L.
+
+    Use another parameter s to indicate the location along PC, with the 
+    following meaning:
+           s<0      C is left of AB
+           s>0      C is right of AB
+           s=0      C is on AB
+
+    Compute s as follows:
+
+            (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
+        s = -----------------------------
+                        L^2
+
+
+    Then the distance from C to P = |s|*L.
+
+*/
+
+
+	double r_numerator = (cx-ax)*(bx-ax) + (cy-ay)*(by-ay);
+	double r_denomenator = (bx-ax)*(bx-ax) + (by-ay)*(by-ay);
+	double r = r_numerator / r_denomenator;
+//
+    double px = ax + r*(bx-ax);
+    double py = ay + r*(by-ay);
+//     
+    double s =  ((ay-cy)*(bx-ax)-(ax-cx)*(by-ay) ) / r_denomenator;
+
+	distanceLine = fabs(s)*sqrt(r_denomenator);
+
+//
+// (xx,yy) is the point on the lineSegment closest to (cx,cy)
+//
+	double xx = px;
+	double yy = py;
+
+	if ( (r >= 0) && (r <= 1) )
+	{
+		distanceSegment = distanceLine;
+	}
+	else
+	{
+
+		double dist1 = (cx-ax)*(cx-ax) + (cy-ay)*(cy-ay);
+		double dist2 = (cx-bx)*(cx-bx) + (cy-by)*(cy-by);
+		if (dist1 < dist2)
+		{
+			xx = ax;
+			yy = ay;
+			distanceSegment = sqrt(dist1);
+		}
+		else
+		{
+			xx = bx;
+			yy = by;
+			distanceSegment = sqrt(dist2);
+		}
+
+
+	}
+
+	return;
+}
+
+void test_dist2()
+{
+    double lat1 = -31.696845765;
+    double lon1 = 148.636770758;
+    double lat2 = -33.949273000;
+    double lon2 = 151.181346833;
+    //my ($p3,$p123,$dist,$az1,$az2,$res,$clat,$clon,$nlat,$nlon,$factor);
+    double mdist = 10000;
+    double dist, az1, az2;
+    int res;
+    //my $p1 = [$lon1,$lat1]; # YGIL
+    //my $p2 = [$lon2,$lat2]; # YSSY
+    //prt("p1 = ".join(",",@{$p1}).", p2 = ".join(",",@{$p2})."\n");
+    double tot_dist = 0;
+    //# anno 149.12444400 -33.38305600 NDB ORANGE NDB
+    double orlat = -33.38305600;
+    double orlon = 149.12444400;
+    //$p3 = [$orlon,$orlat]; # Orange
+    //$p123 = [$p1,$p2,$p3];
+    //###my $dist = DistanceToLine($p1,$p2,$p3);
+    //$dist = DistanceToLine($p123);
+    //void DistanceFromLine(double cx, double cy, double ax, double ay ,
+	//				  double bx, double by, double &distanceSegment,
+	//				  double &distanceLine)
+    DistanceFromLine(orlon, orlat, lon1, lat1,
+					  lon2, lat2, dist, az1 );
+
+    SPRTF("ORANGE NDB: Dist %lf (%lf)\n",dist, az1);
+    tot_dist += abs(dist);
+    //# anno 150.83103300 -32.03474700 NDB SCONE NDB
+    double sclat = -32.03474700;
+    double sclon = 150.83103300;
+    //$p3 = [$sclon,$sclat]; # Scone
+    //$p123 = [$p1,$p2,$p3];
+    //$dist = DistanceToLine($p123);
+    DistanceFromLine(sclon, sclat, lon1, lat1,
+					  lon2, lat2, dist, az1 );
+
+    SPRTF("SCONE NDB: Dist %lf (%lf)\n",dist, az1);
+    //prt("SCONE NDB: Dist $dist\n");
+    tot_dist += abs(dist);
+#ifdef HAVE_SIMGEAR
+    //$res = fg_geo_inverse_wgs_84( $orlat, $orlon, $sclat, $sclon, \$az1, \$az2, \$dist );
+    dist = SGDistance_km( orlat, orlon, sclat, sclon );
+    az1 = distance_km( orlat, orlon, sclat, sclon );
+    double factor = dist / tot_dist;
+    //prt("fg dist $dist, sum $tot_dist, factor $factor\n");
+    SPRTF("fg dist %lf (%lf), sum %lf, factor %lf\n", dist, az1, tot_dist, factor);
+#endif // HAVE_SIMGEAR
+    //# anno 149.59368900 -32.56092800 VOR MUDGEE VOR
+    double mulat = -32.56092800;
+    double mulon = 149.59368900;
+    //$p3 = [$mulon,$mulat]; # Mudgee
+    //$p123 = [$p1,$p2,$p3];
+    //$dist = DistanceToLine($p123);
+    //prt("MUDGEE VOR: Dist $dist\n");
+    DistanceFromLine(mulon, mulat, lon1, lat1,
+					  lon2, lat2, dist, az1 );
+
+    SPRTF("MDUGEE VOR NDB: Dist %lf (%lf)\n",dist, az1);
+    double clat,clon;
+
+    res = sg_geo_inverse_wgs_84( lat1, lon1, lat2, lon2, &az1, &az2, &dist );
+    res = sg_geo_direct_wgs_84( lat1, lon1, az1, (dist/2), &clat, &clon, &az2 );
+    //$p3 = [$clon,$clat]; # Center
+    //$p123 = [$p1,$p2,$p3];
+    //$dist = DistanceToLine($p123);
+    DistanceFromLine(clon, clat, lon1, lat1,
+					  lon2, lat2, dist, az2 );
+    SPRTF("Center: Dist %lf\n", dist);
+    double nlat, nlon;
+
+    az1 += 90;
+    if (az1 >= 360)
+        az1 -= 360;
+    res = sg_geo_direct_wgs_84( clat, clon, az1, mdist, &nlat, &nlon, &az2 );
+    //$p3 = [$nlon,$nlat]; # Center
+    //$p123 = [$p1,$p2,$p3];
+    //$dist = abs(DistanceToLine($p123));
+    DistanceFromLine(nlon, nlat, lon1, lat1,
+					  lon2, lat2, dist, az1 );
+    mdist /= 1000;
+    factor = abs(mdist / dist);
+    SPRTF("Known: SG %lf, Dist %lf, factor %lf\n", mdist, dist, factor);
+
+
+}
+
+#ifdef HAVE_SIMGEAR  // indication simgear found
+
+///////////////////////////////////////////////////////////////////////////
+/* output
+expected values are from : http://www.gpsvisualizer.com/calculators
+From EGLL to KSFO Haversine = 8616.42, SG = 8638.65, expect 8638.65
+From EGLL to LFPO Haversine = 365.44, SG = 365.87, expect 365.87
+From LFPG to LFPO Haversine = 34.46, SG = 34.48, expect 34.48
+ */
+
+void test_dist()
+{
+    // EGLL - Heatrow
+    double lat1 = 51.468301015;
+    double lon1 = -0.457598533;
+    // KSFO
+    double lat2 = 37.618674211;
+    double lon2 = -122.375007609;
+    // expect 8638.65
+    double dist1 = distance_km(lat1,lon1,lat2,lon2);
+    double dist2 = SGDistance_km(lat1,lon1,lat2,lon2);
+    SPRTF("\n");
+    SPRTF("Run some distance tests comparing Haversine and SimGear (Vincenty) results.\n");
+
+    SPRTF("From EGLL to KSFO Haversine = %.2lf, SG = %.2lf, expect 8638.65\n", dist1, dist2);
+    // LFPO
+    lat2 = 48.726969293;
+    lon2 = 2.369992317;
+    dist1 = distance_km(lat1,lon1,lat2,lon2);
+    dist2 = SGDistance_km(lat1,lon1,lat2,lon2);
+    SPRTF("From EGLL to LFPO Haversine = %.2lf, SG = %.2lf, expect 365.87\n", dist1, dist2);
+    lat1 = 49.009742158;
+    lon1 = 2.562619395;
+    dist1 = distance_km(lat1,lon1,lat2,lon2);
+    dist2 = SGDistance_km(lat1,lon1,lat2,lon2);
+    SPRTF("From LFPG to LFPO Haversine = %.2lf, SG = %.2lf, expect 34.48\n", dist1, dist2);
+
+    SPRTF("\n");
+
+}
+
+#endif // #ifdef HAVE_SIMGEAR  // indication simgear found
+
+
 
 // eof = test-math.cxx

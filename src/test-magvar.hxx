@@ -52,10 +52,6 @@ extern double calc_magvar( double lat, double lon, double h, long dat, double* f
 extern double SGMagVarOrig( double lat, double lon, double h, long dat, double* field );
 #endif
 
-extern double distance_km(double lat1, double lon1, double lat2, double lon2);
-extern double SGDistance_km(double lat1, double lon1, double lat2, double lon2);
-
-
 #ifdef __cplusplus
 }
 #endif
