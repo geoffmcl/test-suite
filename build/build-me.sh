@@ -14,6 +14,14 @@ fi
 ##############################################
 TMPOPTS="-DCMAKE_INSTALL_PREFIX=$HOME"
 #############################################
+
+#############################################
+### *****  NOTE THE SIMGEAR INSTALL ***** ###
+### Change to suit your taste, environment ###
+##############################################
+TMPOPTS="$TMPOPTS -DCMAKE_PREFIX_PATH:PAHT=/media/Disk2/FG/fg21/install/simgear"
+#############################################
+
 # Use -DCMAKE_BUILD_TYPE=Debug to add gdb symbols
 # Use -DCMAKE_VERBOSE_MAKEFILE=ON
 

@@ -17,4 +17,5 @@ Win32/*
 ipch/*
 *.opensdf
 test
+magvar
 
