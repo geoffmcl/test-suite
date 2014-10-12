@@ -1181,6 +1181,7 @@ Subject 1.02: How do I find the distance from a point to a line?
 
 void test_dist2()
 {
+    SPRTF("%s: *** WARNING *** this test_dist2() test is still NOT valid! WIP!\n",module);
     double lat1 = -31.696845765;
     double lon1 = 148.636770758;
     double lat2 = -33.949273000;
@@ -1265,6 +1266,8 @@ void test_dist2()
     SPRTF("Known: SG %lf, Dist %lf, factor %lf\n", mdist, dist, factor);
 #endif // HAVE_SIMGEAR
 
+    SPRTF("%s: *** WARNING *** this test_dist2() test is still NOT valid! WIP!\n",module);
+    SPRTF("%s: The 'units' from the DistanceFromLine() service need to be corrected!\n",module);
 
 }
 
