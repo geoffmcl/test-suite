@@ -12,7 +12,10 @@
 
 #include <stdio.h>
 #ifndef _MSC_VER
+/////////////////////////////////////////////////////////
 #include <stdlib.h> // for abs(), ...
+#include <string.h> // for memcpy(), ...
+/////////////////////////////////////////////////////////
 #endif
 #include <math.h>
 #include <limits>
@@ -1236,8 +1239,8 @@ void test_dist2()
 					  lon2, lat2, dist, az1 );
 
     SPRTF("MDUGEE VOR NDB: Dist %lf (%lf)\n",dist, az1);
+#ifdef HAVE_SIMGEAR
     double clat,clon;
-
     res = sg_geo_inverse_wgs_84( lat1, lon1, lat2, lon2, &az1, &az2, &dist );
     res = sg_geo_direct_wgs_84( lat1, lon1, az1, (dist/2), &clat, &clon, &az2 );
     //$p3 = [$clon,$clat]; # Center
@@ -1260,6 +1263,7 @@ void test_dist2()
     mdist /= 1000;
     factor = abs(mdist / dist);
     SPRTF("Known: SG %lf, Dist %lf, factor %lf\n", mdist, dist, factor);
+#endif // HAVE_SIMGEAR
 
 
 }

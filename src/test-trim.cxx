@@ -17,6 +17,10 @@
 #include <functional> // not1(), ptr_fun<...>, ..
 #include <cctype>
 #include <iostream>
+#ifndef _MSC_VER
+#include <string.h> // for strlen(), ...
+// #define auto size_t // seems gcc does not support 'auto'!
+#endif
 #include "test-trim.hxx"
 
 static const char *module = "test-trim";
@@ -208,12 +212,12 @@ void test3()
 std::string trim_ws(const std::string& str,
                  const std::string& whitespace = " \t")
 {
-    const auto strBegin = str.find_first_not_of(whitespace);
+    const size_t strBegin = str.find_first_not_of(whitespace);
     if (strBegin == std::string::npos)
         return ""; // no content
 
-    const auto strEnd = str.find_last_not_of(whitespace);
-    const auto strRange = strEnd - strBegin + 1;
+    const size_t strEnd = str.find_last_not_of(whitespace);
+    const size_t strRange = strEnd - strBegin + 1;
 
     return str.substr(strBegin, strRange);
 }
@@ -223,18 +227,18 @@ std::string reduce(const std::string& str,
                    const std::string& whitespace = " \t")
 {
     // trim first
-    auto result = trim_ws(str, whitespace);
+    std::string result = trim_ws(str, whitespace);
 
     // replace sub ranges
-    auto beginSpace = result.find_first_of(whitespace);
+    size_t beginSpace = result.find_first_of(whitespace);
     while (beginSpace != std::string::npos)
     {
-        const auto endSpace = result.find_first_not_of(whitespace, beginSpace);
-        const auto range = endSpace - beginSpace;
+        const size_t endSpace = result.find_first_not_of(whitespace, beginSpace);
+        const size_t range = endSpace - beginSpace;
 
         result.replace(beginSpace, range, fill);
 
-        const auto newStart = beginSpace + fill.length();
+        const size_t newStart = beginSpace + fill.length();
         beginSpace = result.find_first_of(whitespace, newStart);
     }
 
@@ -430,3 +434,4 @@ void test_trim()
 
 
 // eof = test-trim.cxx
+
