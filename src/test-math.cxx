@@ -1179,6 +1179,71 @@ Subject 1.02: How do I find the distance from a point to a line?
 	return;
 }
 
+/* --------------------------------------------------
+    nlat[0],nlon[0]             nlat[1],nlon[1]
+                    clat,clon       
+    nlat[3],nlon[3]             nlat[2],nlon[2]
+
+   See http://stackoverflow.com/a/1253545/1964221 for the answer to this question.
+
+    Latitude: 1 deg = 110.54 km
+    Longitude: 1 deg = 111.320 * cos(latitude) km
+
+    To go the other direction, I wonder if we can do this(my algebra is rusty):
+    Latitude: 1 km = 1 deg / 110.54 km
+    Longitude: 1 km = 1 deg / (111.320 * cos(latitude) km) 
+
+    To keep it really straight forward, we should assume the earth is spherical, 
+    so that the answer is independent of location. I'm using mean radius 3,958.761 miles.
+
+    One radian is the angle for a line 3,958.761 miles long, so the angle for a 
+    line m miles long is m/3,958.761 radians. Use Math.toDegrees if you want 
+    the angle in degrees.
+
+  -------------------------------------------------- */
+void test_dist3()
+{
+#ifdef HAVE_SIMGEAR
+    double clat = -31.696845765;
+    double clon = 148.636770758;
+    //double mdist = 10000;
+    double dist1, dist2, az1, az2, seg;
+    int i, res;
+    double nlat[4];
+    double nlon[4];
+    i = 0;
+    nlat[i] = clat + 0.5;
+    nlon[i] = clon - 0.5;
+    i++;
+    nlat[i] = clat + 0.5;
+    nlon[i] = clon + 0.5;
+    i++;
+    nlat[i] = clat - 0.5;
+    nlon[i] = clon + 0.5;
+    i++;
+    nlat[i] = clat - 0.5;
+    nlon[i] = clon - 0.5;
+    // have 4 points
+    SPRTF("Square: ");
+    for (i = 0; i < 4; i++) {
+        SPRTF("%d: %lf,%lf ", i, nlat[i], nlon[i]);
+    }
+    SPRTF("\n");
+    DistanceFromLine(nlon[1],nlat[1], 
+        nlon[0],nlat[0], nlon[3],nlat[3],
+        dist1, seg );
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf is %lf (seg=%lf)\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], dist1, seg );
+
+    res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf is %lf (az=%lf)\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], dist2, az1 );
+
+
+    SPRTF("\n");
+#endif // #ifdef HAVE_SIMGEAR
+}
+
 void test_dist2()
 {
     SPRTF("%s: *** WARNING *** this test_dist2() test is still NOT valid! WIP!\n",module);
@@ -1197,6 +1262,7 @@ void test_dist2()
     //# anno 149.12444400 -33.38305600 NDB ORANGE NDB
     double orlat = -33.38305600;
     double orlon = 149.12444400;
+    test_dist3();
     //$p3 = [$orlon,$orlat]; # Orange
     //$p123 = [$p1,$p2,$p3];
     //###my $dist = DistanceToLine($p1,$p2,$p3);
