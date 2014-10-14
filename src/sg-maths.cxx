@@ -132,8 +132,11 @@ int sg_geo_direct_wgs_84 ( double lat1, double lon1, double az1, double s,
 
 // avoid an 'unused parameter' compiler warning.
 #define SG_UNUSED(x) (void)x
-#define _EQURAD 6378137.0
+#define _EQURAD 6378137.0       // meters (6,371 km)
 #define _FLATTENING 298.257223563
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
 
 double rad2deg(double val) { return val*180/M_PI; }
 double deg2rad(double val) { return val*M_PI/180; }

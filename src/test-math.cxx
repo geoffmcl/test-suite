@@ -1194,20 +1194,33 @@ Subject 1.02: How do I find the distance from a point to a line?
     Longitude: 1 km = 1 deg / (111.320 * cos(latitude) km) 
 
     To keep it really straight forward, we should assume the earth is spherical, 
-    so that the answer is independent of location. I'm using mean radius 3,958.761 miles.
+    so that the answer is independent of location.
+    I'm using mean radius 3,958.761 miles. (google 6371008.2628) (SG 6378137.0 m) 
 
     One radian is the angle for a line 3,958.761 miles long, so the angle for a 
     line m miles long is m/3,958.761 radians. Use Math.toDegrees if you want 
     the angle in degrees.
 
   -------------------------------------------------- */
+#ifndef EARTH_EQURAD
+#define EARTH_EQURAD 6378137.0       // meters (6,371 km)
+#endif
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
+#ifndef RAD2DEG
+#define RAD2DEG 180 / M_PI
+#endif
+#ifndef DEG2RAD
+#define DEG2RAD M_PI / 180
+#endif
+
 void test_dist3()
 {
-#ifdef HAVE_SIMGEAR
     double clat = -31.696845765;
     double clon = 148.636770758;
     //double mdist = 10000;
-    double dist1, dist2, az1, az2, seg;
+    double degs, dist2, az1, az2, seg, arc;
     int i, res;
     double nlat[4];
     double nlon[4];
@@ -1231,17 +1244,35 @@ void test_dist3()
     SPRTF("\n");
     DistanceFromLine(nlon[1],nlat[1], 
         nlon[0],nlat[0], nlon[3],nlat[3],
-        dist1, seg );
-    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf is %lf (seg=%lf)\n",
-        nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], dist1, seg );
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], degs, arc );
 
+#ifdef HAVE_SIMGEAR
     res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
-    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf is %lf (az=%lf)\n",
-        nlat[1],nlon[1], nlat[0],nlon[0], dist2, az1 );
+#else // !#ifdef HAVE_SIMGEAR
+    res = fg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], az1, dist2 );
 
+    DistanceFromLine(nlon[2],nlat[2], 
+        nlon[0],nlat[0], nlon[3],nlat[3],
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf\n",
+        nlat[2],nlon[2], nlat[0],nlon[0], nlat[3],nlon[3], degs, arc );
+
+#ifdef HAVE_SIMGEAR
+    res = sg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#else // !#ifdef HAVE_SIMGEAR
+    res = fg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf\n",
+        nlat[2],nlon[2], nlat[3],nlon[3], az1, dist2 );
 
     SPRTF("\n");
-#endif // #ifdef HAVE_SIMGEAR
 }
 
 void test_dist2()
