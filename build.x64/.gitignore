@@ -10,4 +10,8 @@ bldlog-1.txt
 cmake_install.cmake
 *.dir/*
 x64/*
+*.sdf
+*.suo
+ipch/*
+
 
