@@ -1202,6 +1202,10 @@ Subject 1.02: How do I find the distance from a point to a line?
     the angle in degrees.
 
   -------------------------------------------------- */
+// from http://en.wikipedia.org/wiki/Earth_radius
+// Distances from points on the surface to the center range 
+// from 6,353 km to 6,384 km (3,947–3,968 mi). (Av. 6,368.5 km)
+// ============================================================
 #ifndef EARTH_EQURAD
 #define EARTH_EQURAD 6378137.0       // meters (6,371 km)
 #endif
@@ -1215,67 +1219,209 @@ Subject 1.02: How do I find the distance from a point to a line?
 #define DEG2RAD M_PI / 180
 #endif
 
-void test_dist3()
+void test_dist2()
 {
     double clat = -31.696845765;
     double clon = 148.636770758;
     //double mdist = 10000;
-    double degs, dist2, az1, az2, seg, arc;
+    double dev;
+    double degs, dist2, dist3, dist4, az1, az2, seg, arc;
     int i, res;
     double nlat[4];
     double nlon[4];
+
+    dev = (1.0 / 1200.0) / 2.0;
     i = 0;
-    nlat[i] = clat + 0.5;
-    nlon[i] = clon - 0.5;
+    nlat[i] = clat + dev;
+    nlon[i] = clon - dev;
     i++;
-    nlat[i] = clat + 0.5;
-    nlon[i] = clon + 0.5;
+    nlat[i] = clat + dev;
+    nlon[i] = clon + dev;
     i++;
-    nlat[i] = clat - 0.5;
-    nlon[i] = clon + 0.5;
+    nlat[i] = clat - dev;
+    nlon[i] = clon + dev;
     i++;
-    nlat[i] = clat - 0.5;
-    nlon[i] = clon - 0.5;
+    nlat[i] = clat - dev;
+    nlon[i] = clon - dev;
     // have 4 points
-    SPRTF("Square: ");
+    SPRTF("\nSquare: ");
     for (i = 0; i < 4; i++) {
         SPRTF("%d: %lf,%lf ", i, nlat[i], nlon[i]);
     }
-    SPRTF("\n");
+    SPRTF("dev=%lf\n",dev * 2.0);
+    // Horizontal
     DistanceFromLine(nlon[1],nlat[1], 
         nlon[0],nlat[0], nlon[3],nlat[3],
         degs, seg );
     arc = (DEG2RAD * degs) * EARTH_EQURAD;
-    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf\n",
-        nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], degs, arc );
+    dist3 = degs *  111320.0 * cos(DEG2RAD * nlat[1]);
 
-#ifdef HAVE_SIMGEAR
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
+
+    dist3 = distance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
+#ifdef HAVE_SIMGEAR // 
+    dist4 = SGDistance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
+    dist4 = 0;
     res = fg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
 #endif // #ifdef HAVE_SIMGEAR y/n
-    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf\n",
-        nlat[1],nlon[1], nlat[0],nlon[0], az1, dist2 );
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], az1, dist2, dist4, dist3 );
 
     DistanceFromLine(nlon[2],nlat[2], 
         nlon[0],nlat[0], nlon[3],nlat[3],
         degs, seg );
     arc = (DEG2RAD * degs) * EARTH_EQURAD;
-    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf\n",
-        nlat[2],nlon[2], nlat[0],nlon[0], nlat[3],nlon[3], degs, arc );
-
+    dist3 = degs *  111320.0 * cos(DEG2RAD * nlat[2]);
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[2],nlon[2], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
+    dist3 = distance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
 #ifdef HAVE_SIMGEAR
+    dist4 = SGDistance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
+    res = sg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#else // !#ifdef HAVE_SIMGEAR
+    dist4 = 0.0;
+    res = fg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[2],nlon[2], nlat[3],nlon[3], az1, dist2, dist4, dist3 );
+
+    // vertical
+    DistanceFromLine(nlon[0],nlat[0], 
+        nlon[3],nlat[3], nlon[2],nlat[2],
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    dist3 = degs *  110540.0;
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[0],nlon[0], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
+    dist3 = distance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
+#ifdef HAVE_SIMGEAR
+    dist4 = SGDistance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
+    res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#else // !#ifdef HAVE_SIMGEAR
+    dist4 = 0.0;
+    res = fg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[0],nlon[0], nlat[3],nlon[3], az1, dist2, dist4, dist3 );
+
+    DistanceFromLine(nlon[1],nlat[1], 
+        nlon[3],nlat[3], nlon[2],nlat[2],
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    dist3 = degs *  110540.0;
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
+    dist3 = distance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
+#ifdef HAVE_SIMGEAR
+    dist4 = SGDistance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
+    res = sg_geo_inverse_wgs_84( nlat[1],nlon[1], nlat[2],nlon[2], &az1, &az2, &dist2 );
+#else // !#ifdef HAVE_SIMGEAR
+    res = fg_geo_inverse_wgs_84( nlat[1],nlon[1], nlat[2],nlon[2], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[2],nlon[2], az1, dist2, dist4, dist3 );
+
+    dev = 0.5;
+    i = 0;
+    nlat[i] = clat + dev;
+    nlon[i] = clon - dev;
+    i++;
+    nlat[i] = clat + dev;
+    nlon[i] = clon + dev;
+    i++;
+    nlat[i] = clat - dev;
+    nlon[i] = clon + dev;
+    i++;
+    nlat[i] = clat - dev;
+    nlon[i] = clon - dev;
+    // have 4 points
+    SPRTF("\nSquare: ");
+    for (i = 0; i < 4; i++) {
+        SPRTF("%d: %lf,%lf ", i, nlat[i], nlon[i]);
+    }
+    SPRTF("dev=%lf\n",dev * 2.0);
+    // Horizontal
+    DistanceFromLine(nlon[1],nlat[1], 
+        nlon[0],nlat[0], nlon[3],nlat[3],
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    dist3 = degs *  111320.0 * cos(DEG2RAD * nlat[1]);
+
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
+
+    dist3 = distance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
+#ifdef HAVE_SIMGEAR
+    dist4 = SGDistance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
+    res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
+#else // !#ifdef HAVE_SIMGEAR
+    res = fg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[0],nlon[0], az1, dist2, dist4, dist3 );
+
+    DistanceFromLine(nlon[2],nlat[2], 
+        nlon[0],nlat[0], nlon[3],nlat[3],
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    dist3 = degs *  111320.0 * cos(DEG2RAD * nlat[2]);
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[2],nlon[2], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
+    dist3 = distance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
+#ifdef HAVE_SIMGEAR
+    dist4 = SGDistance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
     res = fg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
 #endif // #ifdef HAVE_SIMGEAR y/n
-    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf\n",
-        nlat[2],nlon[2], nlat[3],nlon[3], az1, dist2 );
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[2],nlon[2], nlat[3],nlon[3], az1, dist2, dist4, dist3 );
+
+    // vertical
+    DistanceFromLine(nlon[0],nlat[0], 
+        nlon[3],nlat[3], nlon[2],nlat[2],
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    dist3 = degs *  110540.0;
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[0],nlon[0], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
+    dist3 = distance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
+#ifdef HAVE_SIMGEAR
+    dist4 = SGDistance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
+    res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#else // !#ifdef HAVE_SIMGEAR
+    res = fg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[3],nlon[3], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[0],nlon[0], nlat[3],nlon[3], az1, dist2, dist4, dist3 );
+
+
+
+    DistanceFromLine(nlon[1],nlat[1], 
+        nlon[3],nlat[3], nlon[2],nlat[2],
+        degs, seg );
+    arc = (DEG2RAD * degs) * EARTH_EQURAD;
+    dist3 = degs *  110540.0;
+    SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
+    dist3 = distance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
+#ifdef HAVE_SIMGEAR
+    dist4 = SGDistance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
+    res = sg_geo_inverse_wgs_84( nlat[1],nlon[1], nlat[2],nlon[2], &az1, &az2, &dist2 );
+#else // !#ifdef HAVE_SIMGEAR
+    res = fg_geo_inverse_wgs_84( nlat[1],nlon[1], nlat[2],nlon[2], &az1, &az2, &dist2 );
+#endif // #ifdef HAVE_SIMGEAR y/n
+    SPRTF("SG: Distance of pt %lf,%lf to pt %lf,%lf, az=%lf,\n is %lf %lf (%lf)\n",
+        nlat[1],nlon[1], nlat[2],nlon[2], az1, dist2, dist4, dist3 );
+
 
     SPRTF("\n");
 }
 
-void test_dist2()
+void test_dist2_DEPRECIATED()
 {
     SPRTF("%s: *** WARNING *** this test_dist2() test is still NOT valid! WIP!\n",module);
     double lat1 = -31.696845765;
@@ -1293,7 +1439,6 @@ void test_dist2()
     //# anno 149.12444400 -33.38305600 NDB ORANGE NDB
     double orlat = -33.38305600;
     double orlon = 149.12444400;
-    test_dist3();
     //$p3 = [$orlon,$orlat]; # Orange
     //$p123 = [$p1,$p2,$p3];
     //###my $dist = DistanceToLine($p1,$p2,$p3);
