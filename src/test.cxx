@@ -68,7 +68,7 @@ extern void test_strtoimax();
 
 extern void test_mmap();
 
-static const char *module = "test";
+static const char *module = "tests";
 
 // from : http://www.highprogrammer.com/alan/windev/visualstudio.html
 #define Stringize( L )			#L
