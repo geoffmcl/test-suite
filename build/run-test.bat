@@ -1,5 +1,5 @@
 @setlocal
-@set TMPEXE=Release\test.exe
+@set TMPEXE=Release\tests.exe
 @if NOT EXIST %TMPEXE% goto NOEXE
 @set TMPPG=C:\Program Files (x86)\PostgreSQL\9.1\bin
 @if NOT EXIST "%TMPPG%" goto NOPG
