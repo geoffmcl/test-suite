@@ -24,10 +24,10 @@ option( USE_CURL_LIB     "Turn ON the use CURL library."             ON  )
 message( STATUS "*** USING CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 message( STATUS "*** System: ${CMAKE_SYSTEM_NAME}" )
 
-# to distinguish between debug and release lib in windows
-if (WIN32)
+# to distinguish between debug and release lib in windows MSVC build
+if (MSVC)
     set( CMAKE_DEBUG_POSTFIX "d" ) # little effect in unix
-endif (WIN32)
+endif ()
 
 # Setup MSVC 3rd party directories
 include( ConfigureMsvc3rdParty )
@@ -227,6 +227,7 @@ list(APPEND EXTRA_LIBS ${name})
 ######################################################
 ### EXECUTABLE 
 ###############
+set(name tests)
 set( test_SRCS 
     ${dir}/test.cxx 
     ${dir}/cf-log.cxx
@@ -290,13 +291,20 @@ if (MSVC)
     list(APPEND test_HDRS ${dir}/test-fullpath.hxx ${dir}/test-redon.hxx)
 endif ()
 
-add_executable( test ${test_SRCS} ${test_HDRS} )
+add_executable( ${name} ${test_SRCS} ${test_HDRS} )
 if (EXTRA_LIBS)
-    target_link_libraries( test ${EXTRA_LIBS} )
-    message(STATUS "*** target_link_libraries( test ${EXTRA_LIBS} )")
-endif (EXTRA_LIBS)
-set_target_properties( test PROPERTIES DEBUG_POSTFIX d )
-
+    target_link_libraries( ${name} ${EXTRA_LIBS} )
+    message(STATUS "*** target_link_libraries( ${name} ${EXTRA_LIBS} )")
+endif ()
+if (MSVC)
+    set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+endif ()
+# deal with install - *** FIXME: NOTE SPECIAL PERSONAL INSTALL LOCATION ***
+if (MSVC)
+    install( TARGETS ${name} DESTINATION C:/MDOS )
+else ()
+    install( TARGETS ${name} DESTINATION bin )
+endif ()
 
 if (SIMGEAR_FOUND)
     set(name magvar)
@@ -310,7 +318,9 @@ if (SIMGEAR_FOUND)
         )
     add_executable( ${name} ${${name}_SRCS} ${${name}_HDRS} )
     target_link_libraries( ${name} ${EXTRA_LIBS} )
-    set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+    if (MSVC)
+        set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+    endif ()    
     # deal with install - *** FIXME: NOTE SPECIAL PERSONAL INSTALL LOCATION ***
     if (MSVC)
         install( TARGETS ${name} DESTINATION C:/MDOS )
@@ -345,3 +355,4 @@ message(STATUS "*** set CMAKE_EXE_LINKER_FLAGS = ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "*** set CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
 
 # eof
+
