@@ -23,6 +23,11 @@
 @set TMPPRJ=Test
 @set TMPLOG=bldlog-1.txt
 @set BUILD_RELDBG=0
+@REM ***************************************************
+@REM NOTE WELL: FIXME: NOTE SPECIAL INSTALL PREFIX
+@REM ***************************************************
+@set TMPINST=C:/MDOS
+@REM ***************************************************
 
 @call chkmsvc %TMPPRJ%
 
@@ -49,14 +54,7 @@ set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
 @set CMOPTS=
 @set CMOPTS=%CMOPTS% -DZLIB_ROOT=%ZLIBDIR%
 @set CMOPTS=%CMOPTS% -DCMAKE_PREFIX_PATH=%SIMGEAR_DIR%
-
-
-
-@REM ***************************************************
-@REM NOTE WELL: FIXME: NOTE SPECIAL INSTALL PREFIX
-@REM ***************************************************
-@set CMOPTS=%CMOPTS% -DCMAKE_INSTALL_PREFIX=C:/MDOS
-@REM ***************************************************
+@set CMOPTS=%CMOPTS% -DCMAKE_INSTALL_PREFIX=%TMPINST%
 
 @echo Commence build %DATE% at %TIME% > %TMPLOG%
 @echo set Qt4_DIR=%Qt4_DIR% >> %TMPLOG%
@@ -78,7 +76,19 @@ cmake --build . --config RelWithDebInfo >> %TMPLOG% 2>&1
 cmake --build . --config Release >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR3
 
-@echo Appears successful...
+@echo Appears successful build of %TMPPRJ%...
+@echo.
+@echo Continue to install Release magvar and tests into %TMPINST%
+@echo Only Ctrl+C aborts... all other keys continue..
+@echo.
+@pause
+
+cmake --build . --config Release --target INSTALL >> %TMPLOG% 2>&1
+@if ERRORLEVEL 1 goto ERR5
+
+@echo.
+@echo Done build and install... see %TMPLOG% for details...
+@echo.
 
 @goto END
 
@@ -108,6 +118,10 @@ cmake --build . --config Release >> %TMPLOG% 2>&1
 
 :ERR4
 @echo ERROR: cmake build Debug
+@goto ISERR
+
+:ERR5
+@echo ERROR: cmake install
 @goto ISERR
 
 :NOXDIR
