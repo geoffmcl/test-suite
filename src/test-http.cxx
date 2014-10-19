@@ -28,6 +28,10 @@
 
 static const char *module = "test-http";
 
+// Define to get extra output on CURL http GET test
+// #define EXTRA_DEBUG
+
+
 #ifndef EOL
 #define EOL std::endl;
 #endif
@@ -211,7 +215,9 @@ static bool done_hdr_msg = false;
 size_t header_callback(char *ptr,   size_t size,   size_t nitems,   void *userdata)
 {
     size_t len = (size * nitems);
+#ifdef EXTRA_DEBUG
     SPRTF("%s: CURL header callback with len %d\n", module, (int)len);
+#endif
     if ((len == 2) && (ptr[0] == '\r') && (ptr[1] == '\n')) {
         had_curl_hdr = 1;
         SPRTF("\nHad http GET header...\n\n");
@@ -224,7 +230,9 @@ size_t header_callback(char *ptr,   size_t size,   size_t nitems,   void *userda
 size_t write_callback(char *ptr, size_t size, size_t nitems, void *userdata)
 {
     size_t len = (size * nitems);
+#ifdef EXTRA_DEBUG
     SPRTF("%s: CURL data callback with len %d\n", module, (int)len);
+#endif
     process_data( ptr, len, 0);
     return len;
 }
@@ -332,18 +340,28 @@ int win_fetch()
 
 void test_http()
 {
+#if !defined(HAVE_CURL_LIB) && !defined(WIN32)
+/////////////////////////////////////////////////////////////////////////////////////
+    SPRTF("%s: Not WIN32, and NO CURL lib found, so not tests here!\n", module );
+/////////////////////////////////////////////////////////////////////////////////////
+#else
+/////////////////////////////////////////////////////////////////////////////////////
+
+    // we have 1 or both these tests
     read_conf_ini_file();
 
 #ifdef HAVE_CURL_LIB
-    SPRTF("%s: Doing a GET from %s using CURL...\n", module, host_url);
+    SPRTF("\n%s: Doing a GET from %s using CURL...\n", module, host_url);
     curl_fetch();
 #endif
 
 #ifdef WIN32
-    SPRTF("%s: Doing a GET from %s using WinSock2...\n", module, host_url);
+    SPRTF("\n%s: Doing a GET from %s using WinSock2...\n", module, host_url);
     int res = win_fetch();
 #endif
 
+/////////////////////////////////////////////////////////////////////////////////////
+#endif // got some tests y/n
 
 }
 
