@@ -1076,7 +1076,7 @@ int parse_args( int argc, char **argv )
             give_help(argv[0]);
             return 2;
         } else if ((*arg == '-') && !an && (ind != -1)) {
-            SPRTF("%s: Unknown option argument '%s'! exit(1)\n", module);
+            SPRTF("%s: Unknown option argument '%s'! exit(1)\n", module, arg);
             return 1;
         } else {
             // bear argument
