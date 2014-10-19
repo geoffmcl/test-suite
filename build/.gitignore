@@ -16,7 +16,8 @@ Win32/*
 *.suo
 ipch/*
 *.opensdf
-test
+tests
 magvar
 install_manifest.txt
+cf_tracker.log
 
