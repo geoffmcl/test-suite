@@ -312,7 +312,11 @@ if (SIMGEAR_FOUND)
     target_link_libraries( ${name} ${EXTRA_LIBS} )
     set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
     # deal with install - *** FIXME: NOTE SPECIAL PERSONAL INSTALL LOCATION ***
-    install( TARGETS ${name} DESTINATION C:/MDOS )
+    if (MSVC)
+        install( TARGETS ${name} DESTINATION C:/MDOS )
+    else ()
+        install( TARGETS ${name} DESTINATION bin )
+    endif ()
 endif ()
 
 if (MSVC)
