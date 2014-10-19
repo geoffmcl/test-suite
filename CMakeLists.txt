@@ -1,6 +1,6 @@
 # test - 20130316 - Just testing CMAKE and other things
 
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.8)
 
 include (CheckFunctionExists)
 include (CheckCSourceCompiles)
@@ -18,8 +18,8 @@ option( TEST_CF_LOG      "Turn ON to add CF LOG test."               OFF )
 option( USE_WSOCK2_LIB   "Turn ON to use Winsock2.h and ws2_32.lib"  ON  )
 option( TEST_POSTGRESQL  "Turn ON to add test-sql connection"        OFF )
 option( TEST_MAG_VAR     "Turn ON to add test_magvar."               OFF  )
-option( TEST_MMFIO       "Trun ON to test memory mapping file IO"    ON   )
-
+option( TEST_MMFIO       "Turn ON to test memory mapping file IO"    ON   )
+option( USE_CURL_LIB     "Turn ON the use CURL library."             ON  )
 
 message( STATUS "*** USING CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 message( STATUS "*** System: ${CMAKE_SYSTEM_NAME}" )
@@ -96,6 +96,27 @@ if (TEST_CGAL)
     include_directories( C:/FG/17/3rdParty/include )
     link_directories( C:/FG/17/3rdParty/lib C:/FG/17/boost_1_53_0/lib )
     list(APPEND EXTRA_LIBS optimized CGAL_Core-vc100-mt-4.1.lib debug CGAL_Core-vc100-mt-gd-4.1.lib)
+endif ()
+
+#  CURL_INCLUDE_DIRS   - where to find curl/curl.h, etc.
+#  CURL_LIBRARIES      - List of libraries when using curl.
+#  CURL_FOUND          - True if curl found.
+#  CURL_VERSION_STRING - the version of curl found (since CMake 2.8.8)
+if (USE_CURL_LIB)
+    find_package(CURL)
+    if (CURL_FOUND)
+        message(STATUS "*** Found CURL library version ${CURL_VERSION_STRING}" )
+        include_directories( ${CURL_INCLUDE_DIRS} )
+        ###link_directories( C:/FG/17/3rdParty/lib )
+        list(APPEND EXTRA_LIBS ${CURL_LIBRARIES} )
+        message(STATUS "*** CURL lib ${CURL_LIBRARIES} inc ${CURL_INCLUDE_DIRS}" )
+        add_definitions( -DHAVE_CURL_LIB )
+    else ()
+        message(STATUS "*** Search for CURL library FAILED" )
+    
+    endif ()
+else ()
+    message(STATUS "*** No search for CURL library" )
 endif ()
 
 # SIMGEAR_FOUND, if false, do not try to link to SimGear
@@ -229,6 +250,7 @@ set( test_SRCS
     ${dir}/test-knums.cxx
     ${dir}/test-trim.cxx
     ${dir}/test-area.cxx
+    ${dir}/test-http.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 
@@ -252,6 +274,7 @@ set( test_HDRS
     ${dir}/test-knums.hxx
     ${dir}/test-trim.hxx
     ${dir}/test-area.hxx
+    ${dir}/test-http.hxx
     )
 
 if (TEST_MMFIO)

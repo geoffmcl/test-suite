@@ -62,6 +62,7 @@
 #include "test-knums.hxx"
 #include "test-trim.hxx"
 #include "test-area.hxx"
+#include "test-http.hxx"
 
 extern void test_strtoimax();
 
@@ -951,6 +952,7 @@ static TESTLIST testList[] = {
     { 34, "trim_string", test_trim },
     { 35, "area_wgs84", test_area },
     { 36, "dist_pt2line", test_dist2 },
+    { 37, "http_get", test_http },
 
     //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION
