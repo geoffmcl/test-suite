@@ -421,6 +421,78 @@ void test7()
 
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// not exactly a 'trim', but an important 'split' function
+
+vSTG split_whitespace( const std::string &str, int maxsplit )
+{
+    vSTG result;
+    std::string::size_type len = str.length();
+    std::string::size_type i = 0;
+    std::string::size_type j;
+    int countsplit = 0;
+    while (i < len) {
+        while (i < len && isspace((unsigned char)str[i])) {
+		    i++;
+		}
+        j = i;  // next non-space
+        while (i < len && !isspace((unsigned char)str[i])) {
+		    i++;
+		}
+
+		if (j < i) {
+            result.push_back( str.substr(j, i-j) );
+		    ++countsplit;
+		    while (i < len && isspace((unsigned char)str[i])) {
+                i++;
+            }
+
+		    if (maxsplit && (countsplit >= maxsplit) && i < len) {
+                result.push_back( str.substr( i, len-i ) );
+                i = len;
+		    }
+		}
+    }
+    return result;
+}
+/**
+  * split a string per a separator - if no sep, use space - split_whitespace 
+  */
+vSTG string_split( const std::string& str, const char* sep, int maxsplit )
+{
+    if (sep == 0)
+        return split_whitespace( str, maxsplit );
+
+	vSTG result;
+	int n = (int)strlen( sep );
+	if (n == 0) {
+	    // Error: empty separator string
+	    return result;
+	}
+	const char* s = str.c_str();
+	std::string::size_type len = str.length();
+	std::string::size_type i = 0;
+	std::string::size_type j = 0;
+	int splitcount = 0;
+
+	while ((i + n) <= len) {
+    	if ((s[i] == sep[0]) && (n == 1 || memcmp(s+i, sep, n) == 0)) {
+            result.push_back( str.substr(j,i-j) );
+		    i = j = i + n;
+		    ++splitcount;
+		    if (maxsplit && (splitcount >= maxsplit))
+                break;
+	    } else {
+		    ++i;
+	    }
+	}
+	result.push_back( str.substr(j,len-j) );
+	return result;
+}
+
+///////////////////////////////////////////////////////////////
+
+
 void test_trim()
 {
     test1();
