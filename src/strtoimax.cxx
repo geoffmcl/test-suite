@@ -210,14 +210,14 @@ void test_strtoimax()
             (end && *end) ? *end : '0',
             s.c_str());
         SPRTF("NumtoText: %s\n", s3.c_str());
-        sprintf(stg2,"%lld",res);
+        sprintf(stg2,"%lld",(long long)res);
         SPRTF("sprintf  : %s\n", stg2);
 
         SPRTF("strtoll  : %-25s,\ngot      : %-22lld, end %c\ngot      : %s\n", stg1, res2, 
             (end2 && *end2) ? *end2 : '0',
             s2.c_str());
         SPRTF("NumtoText: %s\n", s4.c_str());
-        sprintf(stg2,"%lld",res2);
+        sprintf(stg2,"%lld",(long long)res2);
         SPRTF("sprintf  : %s\n", stg2);
     }
 

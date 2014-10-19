@@ -11,7 +11,9 @@
 #include <istream>
 #include <string>
 #include <algorithm>
-
+#ifndef _MSC_VER
+#include <string.h> // for strcmp(), ...
+#endif
 #include <stdio.h>
 #ifdef WIN32
 #include <winsock2.h>

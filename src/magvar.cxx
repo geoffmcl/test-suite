@@ -136,7 +136,7 @@ int parse_args(int argc, char **argv)
                 break;
             default:
                 printf("Unknown argument %s!. Have already had lat %f, lon %f, alt %f, month %d, day %d, year %d!\n",
-                    deg_lat, deg_lon, alt_m, month, day, year );
+                    arg, deg_lat, deg_lon, alt_m, month, day, year );
                 return 1;
             }
             cnt++;
@@ -192,3 +192,4 @@ int main( int argc, char **argv )
 }
 
 // eof
+

@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
+#ifndef _MSC_VER
+#include <float.h> // for DBL_MIN, ...
+#endif
 #ifdef HAVE_SIMGEAR  // indication simgear found
 #include <simgear/constants.h>
 #include <simgear/sg_inlines.h>
