@@ -35,8 +35,59 @@ static mNODES mNodes;
 #endif
 
 // implementation
+
+// add strings to a map, and keep count of repeats
+typedef std::map<std::string,int> mSTGINT;
+typedef mSTGINT::iterator iSTGINT;
+const char *map_stgs[] = {
+    { "one" },
+    { "two" },
+    { "three" },
+    { "two" },
+    { "three" },
+    { "three" },
+    { 0 }
+};
+
+
+void test_map2() 
+{
+    mSTGINT *pms = new mSTGINT;
+    iSTGINT ii;
+    std::string s,s2;
+    int i,cnt;
+    bool fnd = false;
+    for (i = 0; map_stgs[i]; i++) {
+        s = map_stgs[i];
+        fnd = false;
+        for (ii = pms->begin(); ii != pms->end(); ii++) {
+            cnt = (*ii).second;
+            s2  = (*ii).first;
+            if (s == s2) {
+                fnd = true;
+                cnt++;
+                (*ii).second = cnt;
+                break;
+            }
+        }
+        if (!fnd) {
+            (*pms)[s] = 1;
+        }
+
+    }
+    SPRTF("%s: test_map2 results...\n", module);
+    for (ii = pms->begin(); ii != pms->end(); ii++) {
+        cnt = (*ii).second;
+        s2  = (*ii).first;
+        SPRTF("test_map2: string %s count %d\n", s2.c_str(), cnt );
+    }
+    SPRTF("%s: Done test_map2...\n", module);
+
+}
+
 void test_map()
 {
+    test_map2();
     double lat,lon;
     unsigned long ulid;
     APT apt;

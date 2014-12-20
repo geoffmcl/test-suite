@@ -1070,6 +1070,7 @@ int parse_args( int argc, char **argv )
         arg = argv[i];
         an = is_all_nums(arg);
         ind = atoi(arg);
+        //ind = strtoll(arg);
         if ((strcmp(arg,"--help") == 0)||
             (strcmp(arg,"-h") == 0)||
             (strcmp(arg,"-?") == 0)) {
@@ -1097,6 +1098,8 @@ int parse_args( int argc, char **argv )
     return iret;
 }
 
+// Debug setup
+// PATH=C:\FG\17\3rdParty\bin;%PATH%
 int main( int argc, char **argv )
 {
     int iret = parse_args(argc,argv);
