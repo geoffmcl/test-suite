@@ -40,14 +40,13 @@ static mNODES mNodes;
 typedef std::map<std::string,int> mSTGINT;
 typedef mSTGINT::iterator iSTGINT;
 const char *map_stgs[] = {
-    { "one" },
-    { "two" },
-    { "three" },
-    { "two" },
-    { "three" },
-    { "three" },
-    { 0 }
-};
+    "one",
+    "two",
+    "three",
+    "two",
+    "three",
+    "three",
+    0 };
 
 
 void test_map2() 
