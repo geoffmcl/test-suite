@@ -224,7 +224,7 @@ std::string trim_ws(const std::string& str,
 
 std::string reduce(const std::string& str,
                    const std::string& fill = " ",
-                   const std::string& whitespace = " \t")
+                   const std::string& whitespace = " \t\r\n")
 {
     // trim first
     std::string result = trim_ws(str, whitespace);
