@@ -543,13 +543,31 @@ void test_string()
     SPRTF("%s: end testing string...\n", module );
 }
 
-#if 0
+#ifdef _MSC_VER
+#define round(x) ((x - floor(x)) > 0.5 ? ceil(x) : floor(x))
+#endif
+// from : http://www.gamedev.net/topic/436496-mathh-round-and-windows-vs2005-pro/
+inline double round2(double x) { return ( x - floor(x)) > 0.5 ? ceil(x) : floor(x); }
+
 void test_round()
 {
+    SPRTF("%s: Test round() function, and alternative for MSVC\n");
     double d = 5.67;
     int val = (int)round(d);
+    SPRTF("Double %lf rounded to an int is %d\n", d, val);
+    d = -5.67;
+    val = (int)round(d);
+    SPRTF("Double %lf rounded to an int is %d\n", d, val);
+
+    double i = 5.4;
+    double res;
+    res = round(++i);  // <- i is incremented three times! BAD
+    SPRTF("Double %lf with pre-increment macro rounded to %lf\n", i, res);
+
+    i = 5.4;
+    res = round2(++i); // okay
+    SPRTF("Double %lf with pre-increment rounded to %lf in round2\n", i, res);
 }
-#endif
 
 void show_time()
 {
@@ -1100,12 +1118,15 @@ int parse_args( int argc, char **argv )
 
 // Debug setup
 // PATH=C:\FG\17\3rdParty\bin;%PATH%
+// error: The application was unable to start correctly (0xc000007b).
+// This happens if compiled in 64-bits but run with 32-bit libraries
+// PATH=X:\3rdParty.x64\bin;%PATH%
 int main( int argc, char **argv )
 {
     int iret = parse_args(argc,argv);
     if (iret)
         return iret;
-    
+    //test_round();    
     //test_open();
     //test_strtoimax();
     //test_scanf();
