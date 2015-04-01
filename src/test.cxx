@@ -63,6 +63,7 @@
 #include "test-trim.hxx"
 #include "test-area.hxx"
 #include "test-http.hxx"
+#include "test-ofstream.hxx"
 
 extern void test_strtoimax();
 
@@ -971,6 +972,7 @@ static TESTLIST testList[] = {
     { 35, "area_wgs84", test_area },
     { 36, "dist_pt2line", test_dist2 },
     { 37, "http_get", test_http },
+    { 38, "ofstream", test_ofstream },
 
     //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION
@@ -1117,10 +1119,10 @@ int parse_args( int argc, char **argv )
 }
 
 // Debug setup
-// PATH=C:\FG\17\3rdParty\bin;%PATH%
+// 32-bit - PATH=C:\FG\17\3rdParty\bin;%PATH%
 // error: The application was unable to start correctly (0xc000007b).
 // This happens if compiled in 64-bits but run with 32-bit libraries
-// PATH=X:\3rdParty.x64\bin;%PATH%
+// 64-bit - PATH=X:\3rdParty.x64\bin;%PATH%
 int main( int argc, char **argv )
 {
     int iret = parse_args(argc,argv);
