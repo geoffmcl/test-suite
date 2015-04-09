@@ -1,8 +1,10 @@
 @setlocal
-@set TMPEXE=Release\test.exe
+@set TMPEXE=Release\tests.exe
 @if NOT EXIST %TMPEXE% goto NOEXE
 @set TMPPG=C:\Program Files (x86)\PostgreSQL\9.1\bin
 @if NOT EXIST "%TMPPG%" goto NOPG
+@set TMP3RD=F:\Projects\fg-64\3rdParty.x64\bin
+@if NOT EXIST %TMP3RD%\nul goto NO3RD
 
 @set TMPCMD=
 :RPT
@@ -12,7 +14,7 @@
 @goto RPT
 :GOTCMD
 
-@set PATH=%TMPPG%;%PATH%
+@set PATH=%TMP3RD%;%TMPPG%;%PATH%
 
 %TMPEXE% %TMPCMD%
 
@@ -25,6 +27,10 @@
 
 :NOPG
 @echo Error: Can NOT locate %TMPPG%! *** FIX ME *** for your environment
+@goto END
+
+:NO3RD
+@echo Error: Can NOT locate %TMP3RD%! *** FIX ME *** for your environment
 @goto END
 
 :END
