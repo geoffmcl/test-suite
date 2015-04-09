@@ -1,6 +1,10 @@
 @setlocal
-@set TMPEXE=Release\test.exe
+@set TMPEXE=Release\tests.exe
 @if NOT EXIST %TMPEXE% goto NOEXE
+@set TMP3RD=C:\FG\17\3rdParty\bin
+@if NOT EXIST %TMP3RD%\nul goto NO3RD
+
+
 @set TMPCMD=
 :RPT
 @if "%~1x" == "x" goto GOTCMD
@@ -9,8 +13,14 @@
 @goto RPT
 :GOTCMD
 
+@set PATH=%TMP3RD%;%PATH%
+
 %TMPEXE% %TMPCMD%
 
+@goto END
+
+:NO3RD
+@echo Can NOT find %TMP3RD%! Where is say libcurl DLL?
 @goto END
 
 :NOEXE
