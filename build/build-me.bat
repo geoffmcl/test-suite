@@ -86,6 +86,8 @@ cmake --build . --config Release >> %TMPLOG% 2>&1
 cmake --build . --config Release --target INSTALL >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR5
 
+@fa4 " -- " %TMPLOG%
+
 @echo.
 @echo Done build and install... see %TMPLOG% for details...
 @echo.
