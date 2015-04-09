@@ -27,7 +27,7 @@ void test_open()
 {
     SPRTF("%s: test io open...\n", module );
     const char *dir = "CMakeFiles";
-    if (is_file_or_directory64(dir) == DT_DIR) {
+    if (is_file_or_directory64(dir) == MDT_DIR) {
         SPRTF("dir %s exists...\n",dir);
     } else {
         SPRTF("dir %s does not exists...\n",dir);
