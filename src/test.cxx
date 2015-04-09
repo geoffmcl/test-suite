@@ -81,6 +81,19 @@ static const char *module = "tests";
 ///////////////////////////////////////////////////////////////////////////////////////////////
 #pragma message(Reminder "Show a 'reminder' message, with file and line!")
 ///////////////////////////////////////////////////////////////////////////////////////////////
+#if (defined(WIN64) || defined(_WIN64))
+#if (defined(WIN64) && defined(_WIN64))
+#pragma message("Note, Both WIN64 and _WIN64 are defined")
+#else
+#ifdef _WIN64
+#pragma message("Note, _WIN64 is defined, not WIN64")
+#else
+#pragma message("Note, WIN64 is defined, not _WIN64")
+#endif
+#endif
+#else
+#pragma message("Note, WIN64 is ***NOT*** defined")
+#endif
 #else
 ///////////////////////////////////////////////////////////////////////////////////////////////
 typedef uint64_t UINT64;
