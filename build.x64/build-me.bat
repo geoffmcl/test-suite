@@ -123,6 +123,18 @@
 
 @goto END
 
+:NOSETUP
+@echo MSVC setup FAILED!
+@goto ISERR
+
+:NOBAT
+@echo Can not locate "%VC_BAT%"! *** FIX ME *** for your environment
+@goto ISERR
+
+:NOVS
+@echo Can not locate "%VS_PATH%"! *** FIX ME *** for your environment
+@goto ISERR
+
 :NOSGD
 @echo Note: Simgear directory %SIMGEAR_DIR% does NOT EXIST!  *** FIX ME ***
 @goto ISERR
@@ -143,7 +155,7 @@
 :ERR2
 @echo ERROR: cmake build Debug
 @echo ERROR: cmake build Debug >> %TMPLOG%
-@if %CONTONERR% EQU 1 goto DNDEBBLD
+@if %CONTONERR% EQU 1 goto DNDBGBLD
 @goto ISERR
 
 :ERR3
