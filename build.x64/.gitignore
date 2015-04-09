@@ -13,5 +13,6 @@ x64/*
 *.sdf
 *.suo
 ipch/*
+*.opensdf
 
 
