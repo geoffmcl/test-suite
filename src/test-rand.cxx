@@ -34,7 +34,7 @@ void RangedRandDemo( int range_min, int range_max, int n )
    int i;
    for ( i = 0; i < n; i++ )
    {
-      int u = (double)rand() / (RAND_MAX + 1) * (range_max - range_min)
+      int u = (double)rand() / ((double)RAND_MAX + 1) * (range_max - range_min)
             + range_min;
       printf( "  %6d\n", u);
    }
