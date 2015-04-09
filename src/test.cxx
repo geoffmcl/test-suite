@@ -64,6 +64,7 @@
 #include "test-area.hxx"
 #include "test-http.hxx"
 #include "test-ofstream.hxx"
+#include "test-rand.hxx"
 
 extern void test_strtoimax();
 
@@ -850,7 +851,7 @@ void test_getline()
         
         //strtoull(buf);
         SPRTF("Got name : '%s'\n",cp);
-        if (is_file_or_directory64(cp) == DT_FILE) {
+        if (is_file_or_directory64(cp) == MDT_FILE) {
             uint64_t full_file = get_last_file_size64();
             FILE *fp = fopen(cp,"rb");
             if (fp) {
@@ -973,6 +974,7 @@ static TESTLIST testList[] = {
     { 36, "dist_pt2line", test_dist2 },
     { 37, "http_get", test_http },
     { 38, "ofstream", test_ofstream },
+    { 39, "test_rand", test_rand },
 
     //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION

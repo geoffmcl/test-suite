@@ -253,6 +253,7 @@ set( test_SRCS
     ${dir}/test-area.cxx
     ${dir}/test-http.cxx
     ${dir}/test-ofstream.cxx
+    ${dir}/test-rand.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 
@@ -278,6 +279,7 @@ set( test_HDRS
     ${dir}/test-area.hxx
     ${dir}/test-http.hxx
     ${dir}/test-ofstream.hxx
+    ${dir}/test-rand.hxx
     )
 
 if (TEST_MMFIO)
