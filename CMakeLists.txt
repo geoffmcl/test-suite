@@ -24,11 +24,6 @@ option( USE_CURL_LIB     "Turn ON the use CURL library."             ON  )
 message( STATUS "*** USING CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 message( STATUS "*** System: ${CMAKE_SYSTEM_NAME}" )
 
-# to distinguish between debug and release lib in windows MSVC build
-if (MSVC)
-    set( CMAKE_DEBUG_POSTFIX "d" ) # little effect in unix
-endif ()
-
 # Setup MSVC 3rd party directories
 include( ConfigureMsvc3rdParty )
 
@@ -43,6 +38,8 @@ if(WIN32 AND MSVC)
     #    set( MSVC_LD_FLAGS "/FORCE:MULTIPLE" )
     #endif ()
     set(NOMINMAX 1)
+    # to distinguish between debug and release lib in windows MSVC build
+    set( CMAKE_DEBUG_POSTFIX "d" ) # little effect in unix
 else()
     set(TEST_MMFIO 0)
     message(STATUS "*** Memory mapping still to be ported to unix mmap")
