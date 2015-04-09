@@ -16,9 +16,9 @@
 #endif
 
 enum DiskType {
-    DT_NONE,
-    DT_FILE,
-    DT_DIR
+    MDT_NONE,
+    MDT_FILE,
+    MDT_DIR
 };
 
 extern DiskType is_file_or_directory32 ( const char * path );

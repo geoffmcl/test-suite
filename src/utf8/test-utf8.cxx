@@ -121,10 +121,10 @@ void test_utf8()
     if (do_line_test)
         line_by_line_main(sample);
 
-    if (is_file_or_directory32(sample3) == DT_FILE) {
+    if (is_file_or_directory32(sample3) == MDT_FILE) {
         SPRTF("%s: Found and testing '%s'\n", module, sample3 );
         line_by_line_main(sample3);
-    } else if (is_file_or_directory32(sample2) == DT_FILE) {
+    } else if (is_file_or_directory32(sample2) == MDT_FILE) {
         SPRTF("%s: Found and testing '%s'\n", module, sample2 );
         line_by_line_main(sample2);
     } else {
