@@ -25,8 +25,11 @@ private:
 public:
     Log(std::ostream& os = std::cout): os(&os), dynamic(false) { }
     Log(std::string filename) : dynamic(true) {
+#ifdef WIN32
         std::ofstream* ofs = new std::ofstream(filename);
-
+#else
+        std::ofstream* ofs = new std::ofstream(filename.c_str());
+#endif
         if (!ofs->is_open()) {
             // do errorry things and deallocate ofs if necessary
             delete ofs;
