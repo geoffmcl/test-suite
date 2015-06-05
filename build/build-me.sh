@@ -24,16 +24,22 @@ TMPOPTS="$TMPOPTS -DCMAKE_PREFIX_PATH:PATH=/media/Disk2/FG/fg21/install/simgear"
 
 # Use -DCMAKE_BUILD_TYPE=Debug to add gdb symbols
 # Use -DCMAKE_VERBOSE_MAKEFILE=ON
+ADDEDDBG=0
 
 for arg in $@; do
 	if [ "$arg" = "VERBOSE" ]; then
 		TMPOPTS="$TMPOPTS -DCMAKE_VERBOSE_MAKEFILE=ON"
 	elif [ "$arg" = "DEBUG" ]; then
 		TMPOPTS="$TMPOPTS -DCMAKE_BUILD_TYPE=Debug"
+		ADDEDDBG=1
 	else
 		TMPOPTS="$TMPOPTS $arg"
 	fi
 done
+
+if [ ! "$ADDEDDBG" = "1" ]; then
+    TMPOPTS="$TMPOPTS -DCMAKE_BUILD_TYPE=Release"
+fi    
 
 echo "$BN: Doing: 'cmake .. $TMPOPTS' to $BLDLOG"
 cmake .. $TMPOPTS >> $BLDLOG 2>&1
