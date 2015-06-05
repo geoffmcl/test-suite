@@ -72,6 +72,13 @@ extern void test_mmap();
 
 static const char *module = "tests";
 
+# ifndef NDEBUG
+#pragma message("NDEBUG is NOT defined")
+# elsedef
+#pragma message("NDEBUG is defined")
+# endif
+
+
 // from : http://www.highprogrammer.com/alan/windev/visualstudio.html
 #define Stringize( L )			#L
 #define MakeString( M, L )		M(L)
