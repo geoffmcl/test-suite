@@ -1,5 +1,8 @@
 @setlocal
-
+@set TMPPRJ=Test
+@set TMPLOG=bldlog-1.txt
+@set BUILD_RELDBG=0
+@echo Build of '%TMPPRJ% in 64-bits 
 @REM if NOT EXIST X:\nul goto NOXDIR
 @set CONTONERR=1
 
@@ -53,14 +56,10 @@
 @set QTDIR=%Qt4_DIR%
 @REM set QTDIR=C:\QtSDK\Desktop\Qt\4.8.0\msvc2010
 
-@set TMPPRJ=Test
-@set TMPLOG=bldlog-1.txt
-@set BUILD_RELDBG=0
-
 @call chkmsvc %TMPPRJ%
 @call setupqt64
 
-@echo Built project %TMPORJ%... all ouput to %TMPLOG%
+@echo Built project %TMPPRJ% 64-bits... all ouput to %TMPLOG%
 
 @REM A 64-bit build of simgear
 @set SIMGEAR_DIR=F:\Projects\fg-64\install\SimGear
@@ -90,7 +89,7 @@
 @set CMOPTS=%CMOPTS% -DCMAKE_PREFIX_PATH=%ZLIBDIR%
 @REM set CMOPTS=%CMOPTS% -DCMAKE_PREFIX_PATH=%SIMGEAR_DIR%
 
-@echo Commence build %DATE% at %TIME% > %TMPLOG%
+@echo Build of '%TMPPRJ% in 64-bits being %DATE% at %TIME% > %TMPLOG%
 @echo set Qt4_DIR=%Qt4_DIR% >> %TMPLOG%
 @echo Set SIMGEAR_DIR=%SIMGEAR_DIR%
 @echo Set QTDIR=%QTDIR% >> %TMPLOG%

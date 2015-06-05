@@ -1,5 +1,8 @@
 @setlocal
 
+@set TMPPRJ=Test
+@set TMPLOG=bldlog-1.txt
+@set BUILD_RELDBG=0
 @REM if NOT EXIST X:\nul goto NOXDIR
 
 @REM To help find Qt4
@@ -20,9 +23,6 @@
 @set QTDIR=%Qt4_DIR%
 @REM set QTDIR=C:\QtSDK\Desktop\Qt\4.8.0\msvc2010
 
-@set TMPPRJ=Test
-@set TMPLOG=bldlog-1.txt
-@set BUILD_RELDBG=0
 @REM ***************************************************
 @REM NOTE WELL: FIXME: NOTE SPECIAL INSTALL PREFIX
 @REM ***************************************************
@@ -31,7 +31,7 @@
 
 @call chkmsvc %TMPPRJ%
 
-@echo Built project %TMPORJ%... all ouput to %TMPLOG%
+@echo Built project %TMPPRJ% in 32-bits... all ouput to %TMPLOG%
 
 @set SIMGEAR_DIR=C:\FG\17\install\msvc100\simgear
 @set ZLIBDIR=C:\FG\17\3rdParty
@@ -56,7 +56,7 @@ set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
 @set CMOPTS=%CMOPTS% -DCMAKE_PREFIX_PATH=%SIMGEAR_DIR%
 @set CMOPTS=%CMOPTS% -DCMAKE_INSTALL_PREFIX=%TMPINST%
 
-@echo Commence build %DATE% at %TIME% > %TMPLOG%
+@echo Build of '%TMPPRJ% in 32-bits - begin %DATE% at %TIME% > %TMPLOG%
 @echo set Qt4_DIR=%Qt4_DIR% >> %TMPLOG%
 @echo Set SIMGEAR_DIR=%SIMGEAR_DIR%
 @echo Set QTDIR=%QTDIR% >> %TMPLOG%
