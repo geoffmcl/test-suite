@@ -251,6 +251,7 @@ set( test_SRCS
     ${dir}/test-http.cxx
     ${dir}/test-ofstream.cxx
     ${dir}/test-rand.cxx
+    ${dir}/test-bad-alloc.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 
@@ -277,6 +278,7 @@ set( test_HDRS
     ${dir}/test-http.hxx
     ${dir}/test-ofstream.hxx
     ${dir}/test-rand.hxx
+    ${dir}/test-bad-alloc.hxx
     )
 
 if (TEST_MMFIO)

@@ -65,6 +65,7 @@
 #include "test-http.hxx"
 #include "test-ofstream.hxx"
 #include "test-rand.hxx"
+#include "test-bad-alloc.hxx"
 
 extern void test_strtoimax();
 
@@ -1004,6 +1005,7 @@ static TESTLIST testList[] = {
     { 37, "http_get", test_http },
     { 38, "ofstream", test_ofstream },
     { 39, "test_rand", test_rand },
+    { 40, "test_bad_alloc", test_bad_alloc },
 
     //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION
