@@ -3,8 +3,8 @@
 @set TMPLOG=bldlog-1.txt
 @set BUILD_RELDBG=0
 @echo Build of '%TMPPRJ% in 64-bits 
-@REM if NOT EXIST X:\nul goto NOXDIR
-@set CONTONERR=1
+@if NOT EXIST X:\nul goto NOXDIR
+@set CONTONERR=0
 
 @REM ############################################
 @REM NOTE: MSVC 10 INSTALL LOCATION
@@ -64,15 +64,18 @@
 @REM A 64-bit build of simgear
 @set SIMGEAR_DIR=F:\Projects\fg-64\install\SimGear
 @set ZLIBDIR=F:\Projects\fg-64\3rdParty.x64
-
 @REM set SIMGEAR_DIR=C:\FG\17\install\msvc100\simgear.x64
 @REM set ZLIBDIR=C:\FG\17\3rdParty.x64
 @REM set SIMGEAR_DIR=F:\FG\18\install\msvc100\simgear
 @REM set ZLIBDIR=F:\FG\18\3rdParty
-@REM if EXIST X:\nul (
-@REM set SIMGEAR_DIR=X:\install\msvc100\simgear
-@REM set ZLIBDIR=X:\3rdParty
-@REM )
+@if EXIST X:\nul (
+@set SIMGEAR_DIR=X:\install\msvc100\simgear
+@set ZLIBDIR=X:\3rdParty
+)
+
+@if NOT EXIST %SIMGEAR_DIR%\nul goto NOSGD
+@if NOT EXIST %ZLIBDIR%\nul goto NOZLD
+
 @REM set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
 
 @REM if NOT EXIST %SIMGEAR_DIR%\nul goto NOSGD
@@ -174,6 +177,8 @@
 @echo Run setupx, or hdem3m, etc, to establish X: drive
 @echo.
 @goto ISERR
+
+
 
 :ISERR
 @endlocal
