@@ -213,6 +213,8 @@ Frequency List: 11580 11075 10890 10955 11170 0
 
 \*/
 
+#ifdef USE_SG_GEODESY
+
 char *geod2stg( SGGeod g )
 {
     char *cp = GetNxtBuf();
@@ -424,7 +426,7 @@ void test_intersect_sg()
 
 
 } /* main */
-
+#endif // #ifdef USE_SG_GEODESY
 
 #endif // #ifdef HAVE_SIMGEAR
 
@@ -503,7 +505,7 @@ void test_intersect_nosg()
 
 void test_intersect()
 {
-#ifdef HAVE_SIMGEAR  // indication simgear found
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     test_intersect_sg();
 #endif
     test_intersect_nosg();

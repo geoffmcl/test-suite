@@ -967,7 +967,8 @@ void compare_maths()
         exp = ptd->exp;
         SPRTF("lat,lon %lf,%lf, and xyz %f,%f,%f\n",
             lat, lon, ox, oy, oz );
-#ifdef HAVE_SIMGEAR
+// #ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
         SGVec3f angleAxis(ox,oy,oz);
         SGQuatf ecOrient = SGQuatf::fromAngleAxis(angleAxis);
         SGQuatf qEc2Hl = SGQuatf::fromLonLatRad((float)lon * DEG2RAD,
@@ -1023,7 +1024,8 @@ void compare_maths2()
     exp = 231;
     SPRTF("lat,lon %lf,%lf, and xyz %f,%f,%f\n",
         lat, lon, ox, oy, oz );
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     SGVec3f angleAxis(ox,oy,oz);
     SGQuatf ecOrient = SGQuatf::fromAngleAxis(angleAxis);
     SGQuatf qEc2Hl = SGQuatf::fromLonLatRad((float)lon * DEG2RAD,
@@ -1260,7 +1262,8 @@ void test_dist2()
         nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
 
     dist3 = distance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
-#ifdef HAVE_SIMGEAR // 
+//#ifdef HAVE_SIMGEAR // 
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1278,7 +1281,8 @@ void test_dist2()
     SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
         nlat[2],nlon[2], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
     dist3 = distance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1297,7 +1301,8 @@ void test_dist2()
     SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
         nlat[0],nlon[0], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
     dist3 = distance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[3],nlon[3], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1315,7 +1320,8 @@ void test_dist2()
     SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
         nlat[1],nlon[1], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
     dist3 = distance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[1],nlon[1], nlat[2],nlon[2], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1354,7 +1360,8 @@ void test_dist2()
         nlat[1],nlon[1], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
 
     dist3 = distance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[0],nlon[0], nlat[1],nlon[1]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[1],nlon[1], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1371,7 +1378,8 @@ void test_dist2()
     SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
         nlat[2],nlon[2], nlat[0],nlon[0], nlat[3],nlon[3], degs, dist3, arc );
     dist3 = distance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[2],nlon[2], nlat[3],nlon[3]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[2],nlon[2], nlat[3],nlon[3], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1389,7 +1397,8 @@ void test_dist2()
     SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
         nlat[0],nlon[0], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
     dist3 = distance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[0],nlon[0], nlat[3],nlon[3]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[0],nlon[0], nlat[3],nlon[3], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1408,7 +1417,8 @@ void test_dist2()
     SPRTF("DP: Distance of pt %lf,%lf to line %lf,%lf - %lf,%lf, deg=%lf\n is %lf (%lf)\n",
         nlat[1],nlon[1], nlat[3],nlon[3], nlat[2],nlon[2], degs, dist3, arc );
     dist3 = distance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     dist4 = SGDistance_km(nlat[1],nlon[1], nlat[2],nlon[2]) * 1000.0;
     res = sg_geo_inverse_wgs_84( nlat[1],nlon[1], nlat[2],nlon[2], &az1, &az2, &dist2 );
 #else // !#ifdef HAVE_SIMGEAR
@@ -1423,6 +1433,7 @@ void test_dist2()
 
 void test_dist2_DEPRECIATED()
 {
+    double factor;
     SPRTF("%s: *** WARNING *** this test_dist2() test is still NOT valid! WIP!\n",module);
     double lat1 = -31.696845765;
     double lon1 = 148.636770758;
@@ -1463,11 +1474,12 @@ void test_dist2_DEPRECIATED()
     SPRTF("SCONE NDB: Dist %lf (%lf)\n",dist, az1);
     //prt("SCONE NDB: Dist $dist\n");
     tot_dist += abs(dist);
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     //$res = fg_geo_inverse_wgs_84( $orlat, $orlon, $sclat, $sclon, \$az1, \$az2, \$dist );
     dist = SGDistance_km( orlat, orlon, sclat, sclon );
     az1 = distance_km( orlat, orlon, sclat, sclon );
-    double factor = dist / tot_dist;
+    factor = dist / tot_dist;
     //prt("fg dist $dist, sum $tot_dist, factor $factor\n");
     SPRTF("fg dist %lf (%lf), sum %lf, factor %lf\n", dist, az1, tot_dist, factor);
 #endif // HAVE_SIMGEAR
@@ -1482,7 +1494,8 @@ void test_dist2_DEPRECIATED()
 					  lon2, lat2, dist, az1 );
 
     SPRTF("MDUGEE VOR NDB: Dist %lf (%lf)\n",dist, az1);
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
     double clat,clon;
     res = sg_geo_inverse_wgs_84( lat1, lon1, lat2, lon2, &az1, &az2, &dist );
     res = sg_geo_direct_wgs_84( lat1, lon1, az1, (dist/2), &clat, &clon, &az2 );
@@ -1513,7 +1526,8 @@ void test_dist2_DEPRECIATED()
 
 }
 
-#ifdef HAVE_SIMGEAR  // indication simgear found
+//#ifdef HAVE_SIMGEAR  // indication simgear found
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
 
 ///////////////////////////////////////////////////////////////////////////
 /* output
@@ -1553,7 +1567,11 @@ void test_dist()
     SPRTF("\n");
 
 }
-
+#else
+void test_dist()
+{
+    SPRTF("Test has been remove due to a SImgear link problem!\n");
+}
 #endif // #ifdef HAVE_SIMGEAR  // indication simgear found
 
 

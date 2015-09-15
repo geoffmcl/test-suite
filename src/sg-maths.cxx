@@ -70,7 +70,9 @@ double distance_km(double lat1, double lon1, double lat2, double lon2)
     return ((double)id / 100.0);
 }
 
-#ifdef HAVE_SIMGEAR  // indication simgear found
+// #ifdef HAVE_SIMGEAR  // indication simgear found
+#if (defined(HAVE_SIMGEAR) && defined(USE_SG_GEODESY)) // indication simgear found
+
 // SimGear uses the Thaddeus Vincenty (TV) devised formulae 
 // from : http://www.movable-type.co.uk/scripts/latlong-vincenty.html
 // Vincenty’s formula is accurate to within 0.5mm, or 0.000015" (!), on the ellipsoid being used. 
