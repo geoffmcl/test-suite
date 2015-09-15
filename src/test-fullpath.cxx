@@ -30,7 +30,94 @@ typedef struct tagSPLITPATH {
     TCHAR ext[_MAX_EXT+2];
 }SPLITPATH, *PSPLITPATH;
 
-static SPLITPATH sp;
+static SPLITPATH sp, usp;
+
+void unix_splitpath( const char *absPath, char *pdrive, char *pdir, char *pfile, char *pext )
+{
+    size_t ii, len = strlen(absPath);
+    int c;
+    size_t lastsep, bgnoff, off;
+    if (pdrive)
+        *pdrive = 0;
+    if (pdir)
+        *pdir = 0;
+    if (pfile)
+        *pfile = 0;
+    if (pext)
+        *pext = 0;
+    ii = 0;
+    if ((len > 2) && (absPath[1] == ':')) {
+        if (pdrive) {
+            pdrive[0] = absPath[0];
+            pdrive[1] = absPath[1];
+            pdrive[2] = 0;
+        }
+        ii = 2;
+    }
+    lastsep = 0;    // no path separator
+    bgnoff = ii;
+    off = 0;
+    for (; ii < len; ii++) {
+        c = absPath[ii];
+        if ((c == '\\') || (c == '/')) {
+            lastsep = ii;
+        }
+    }
+    if (lastsep) {
+        ii = lastsep + 1;
+        for (; bgnoff < len; bgnoff++) {
+            if (pdir) {
+                pdir[off++] = absPath[bgnoff];
+            }
+            if (bgnoff == lastsep)
+                break;
+        }
+        if (pdir)
+            pdir[off] = 0;
+    }
+    lastsep = 0;    // no '.'
+    bgnoff = ii;
+    for (; ii < len; ii++) {
+        c = absPath[ii];
+        if (c == '.') {
+            lastsep = ii;
+        }
+    }
+    if (lastsep) {
+        off = 0;    
+        for (; bgnoff < len; bgnoff++) {
+            if (pfile) {
+                pfile[off++] = absPath[bgnoff];
+            }
+            if ((bgnoff + 1) == lastsep) {
+                bgnoff++;
+                break;
+            }
+        }
+        if (pfile)
+            pfile[off] = 0;
+        off = 0;    
+        for (; bgnoff < len; bgnoff++) {
+            if (pext) {
+                pext[off++] = absPath[bgnoff];
+            }
+        }
+        if (pext)
+            pext[off] = 0;
+        
+    } else {
+        off = 0;    
+        for (; bgnoff < len; bgnoff++) {
+            if (pfile) {
+                pfile[off++] = absPath[bgnoff];
+            }
+        }
+        if (pfile)
+            pfile[off] = 0;
+    }
+}
+
+
 
 void test_rel_path( const char *path )
 {
@@ -54,6 +141,13 @@ void test_rel_path( const char *path )
                 sp.fname,
                 sp.ext );
             SPRTF("_splitpath: d '%s', p '%s', f '%s', e '%s'\n", sp.drive, sp.path, sp.fname, sp.ext );
+            memset( &usp, 0, sizeof(SPLITPATH));
+            unix_splitpath( res_buffer,
+                usp.drive,
+                usp.path,
+                usp.fname,
+                usp.ext );
+            SPRTF("unix-spath: d '%s', p '%s', f '%s', e '%s'\n", usp.drive, usp.path, usp.fname, usp.ext );
 
         }
     } else {
