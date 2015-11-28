@@ -66,6 +66,7 @@
 #include "test-ofstream.hxx"
 #include "test-rand.hxx"
 #include "test-bad-alloc.hxx"
+#include "test-tidy.hxx"
 
 extern void test_strtoimax();
 
@@ -1006,6 +1007,7 @@ static TESTLIST testList[] = {
     { 38, "ofstream", test_ofstream },
     { 39, "test_rand", test_rand },
     { 40, "test_bad_alloc", test_bad_alloc },
+    { 41, "test_codset",    test_codeset   },
 
     //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION
@@ -1158,6 +1160,7 @@ int parse_args( int argc, char **argv )
 // 64-bit - PATH=X:\3rdParty.x64\bin;%PATH%
 int main( int argc, char **argv )
 {
+    //test_tidy();
     int iret = parse_args(argc,argv);
     if (iret)
         return iret;
@@ -1178,8 +1181,6 @@ int main( int argc, char **argv )
     //test_mmap();
 #endif
 #endif
-
-    //test_codeset( 1000 );
 
 #ifdef WIN32
     //test_wildcard();

@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-extern int test_codeset( int CS );
+extern void test_codeset();
 
 
 #ifdef   __cplusplus

@@ -202,12 +202,14 @@ set(${name}_SRCS
     ${dir}/utils.cxx
     ${dir}/getline.c
     ${dir}/sg-maths.cxx
+    ${dir}/vsprtf.cxx
     )
 set(${name}_HDRS
     ${dir}/sprtf.hxx
     ${dir}/utils.hxx
     ${dir}/getline.h
     ${dir}/sg-maths.hxx
+    ${dir}/vsprtf.hxx
     )
 if (MSVC)
     list(APPEND ${name}_SRCS ${dir}/winErr.cpp)
@@ -252,6 +254,7 @@ set( test_SRCS
     ${dir}/test-ofstream.cxx
     ${dir}/test-rand.cxx
     ${dir}/test-bad-alloc.cxx
+    ${dir}/test-tidy.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 
@@ -279,6 +282,7 @@ set( test_HDRS
     ${dir}/test-ofstream.hxx
     ${dir}/test-rand.hxx
     ${dir}/test-bad-alloc.hxx
+    ${dir}/test-tidy.hxx
     )
 
 if (TEST_MMFIO)

@@ -5,6 +5,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <locale.h>
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
+#ifndef SPRTF
+#define SPRTF printf
+#endif
 
 #ifndef nl_item
 #define nl_item int
@@ -371,16 +378,21 @@ char *nl_langinfo(nl_item item)
     char *l, *p;
     _locale_t lt; 
   
-    if (item != DEF_CODESET)
-        return NULL;
+    //if (item != DEF_CODESET)
+    //    return NULL;
     //p = local_charset();
     p = setlocale(LC_ALL, "");
+    //p = setlocale(LC_ALL, NULL);
     if (p) {
         printf("setlocal: %s\n", p);
     }
+
     lt = _get_current_locale();
     if (lt) {
-        //const char *ccp = get_name_from_clid( lt->locinfo );
+        int loci = (int)lt->locinfo;
+        //const char *ccp = get_name_from_clid(loci);
+        //const char *ccp2 = get_name_from_clid(item);
+        //SPRTF("Got locinfo %d (0x%08X) %s\n", loci, loci, (ccp2 ? ccp2 : "no value"));
         _free_locale(lt);
     }
     if (((l = getenv("LC_ALL"))   && *l) ||
@@ -502,22 +514,120 @@ char *nl_langinfo(nl_item item)
     return C_CODESET;
 }
 
+#ifndef EndBuf
+#define EndBuf(a) ( a + strlen(a) )
+#endif
+
+void show_hexified(char *from, int hlen, int flag)
+{
+    static char _s_hex_pad[16 * 5];
+    static char _s_asc_pad[32];
+    int i, c, off;
+    char *ph = _s_hex_pad;
+    char *pa = _s_asc_pad;
+    *ph = 0;
+    off = 0;
+    for (i = 0; i < hlen; i++) {
+        c = ( from[i] & 0xff );
+        sprintf(EndBuf(ph),"%02x ", c);
+        if ((c < ' ')||(c >= 0x7f))
+            c = '.';
+        pa[off++] = (char)c;
+        if (off == 16) {
+            pa[off] = 0;
+            SPRTF("%s %s\n", ph, pa);
+            off = 0;
+            *ph = 0;
+        }
+    }
+    if (off) {
+        pa[off] = 0;
+        while(off < 16) {
+            strcat(ph,"   ");
+            off++;
+        }
+        SPRTF("%s %s\n", ph, pa);
+    }
+}
+
+
+/* =========================================================
+typedef struct tagLOCALESIGNATURE
+{
+    DWORD lsUsb[4];
+    DWORD lsCsbDefault[2];
+    DWORD lsCsbSupported[2];
+} LOCALESIGNATURE, *PLOCALESIGNATURE,FAR *LPLOCALESIGNATURE;
+  ========================================================== */
+
+
+void test_codeset3()
+{
+    int   ret;
+    CALID calid;
+    DWORD value;
+    LOCALESIGNATURE LocSig;
+
+    value = 0;
+    memset(&LocSig,0,sizeof(LOCALESIGNATURE));
+
+    ret = GetLocaleInfo(LOCALE_USER_DEFAULT,
+                    LOCALE_ICALENDARTYPE | LOCALE_RETURN_NUMBER,
+                    (LPTSTR)&value,
+                    sizeof(value) / sizeof(TCHAR) );
+    if (ret) {
+        printf("GetLocaleInfo:1: returned %ld ... value %lu\n", ret, value);
+    } else {
+        ret = GetLastError();
+        printf("GetLocaleInfo:2: returned error %d... value %lu\n", ret, value );
+    }
+
+    calid = value;
+
+
+    ret = GetLocaleInfo(LOCALE_USER_DEFAULT,
+                    LOCALE_FONTSIGNATURE,
+                    (LPTSTR)&LocSig,
+                    sizeof(LocSig) / sizeof(TCHAR) );
+
+    if (ret) {
+        printf("GetLocaleInfo:2: returned %ld ...\n", ret);
+        show_hexified( (char *)&LocSig, sizeof(LOCALESIGNATURE), 0 );
+
+    } else {
+        ret = GetLastError();
+        printf("GetLocaleInfo:2: returned error %d... \n", ret );
+    }
+    
+}
+
+void test_codeset2()
+{
+    UINT nCodePage = CP_ACP;
+    const int cch = GetLocaleInfo(LOCALE_SYSTEM_DEFAULT,
+     LOCALE_RETURN_NUMBER|LOCALE_IDEFAULTANSICODEPAGE,
+     (LPTSTR)&nCodePage, sizeof(nCodePage) / sizeof(TCHAR) );
+
+}
 /* For a demo, compile with "gcc -W -Wall -o langinfo -D TEST langinfo.c" */
 
-int test_codeset( int CS )
-{
-    char *cs = nl_langinfo(CS);
+void test_codeset() // 41 - show current code set
+{   int CS;
+    char *cs;
+
+    CS = GetACP();
+    printf("GetACP returned %u, 0x%08X\n", CS, CS );
+    test_codeset3();
+    cs = nl_langinfo(CS);
 	printf("nl_langinfo: returned '%s'\n", cs ? cs : "<null>");
-	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 #else // !_MSC_VER
 ///////////////////////////////////////////////////////////////////////////
-int test_codeset( int CS )
+void test_codeset()
 {
     printf("This test test_codeset(int) NEEDS to be ported to linux!\n");
-    return -1;
 }
 ///////////////////////////////////////////////////////////////////////////
 #endif // _MSC_VER
