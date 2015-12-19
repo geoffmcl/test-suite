@@ -355,14 +355,26 @@ if (MSVC)
     set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
     set_target_properties( ${name} PROPERTIES LINK_FLAGS "/level='requireAdministrator' /uiAccess='false'" )
     
-    # sockets stuff - TODO: Port to linux
-    set(name nslookup)
-    set(dir src/sockets)
-    add_executable( ${name} ${dir}/${name}.cxx )
-    target_link_libraries( ${name} ${EXTRA_LIBS} )
-    set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
-    
 endif ()
+
+######################################################################
+# sockets stuff - TODO: Port to linux
+set(name nslookup2)
+set(dir src/sockets)
+add_executable( ${name} ${dir}/${name}.cxx )
+if (EXTRA_LIBS)
+    target_link_libraries( ${name} ${EXTRA_LIBS} )
+endif ()
+if (MSVC)
+    set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+endif ()
+# deal with install - *** FIXME: NOTE SPECIAL PERSONAL INSTALL LOCATION ***
+if (MSVC)
+    install( TARGETS ${name} DESTINATION C:/MDOS )
+else ()
+    install( TARGETS ${name} DESTINATION bin )
+endif ()
+#######################################################################
 
 message(STATUS "*** set CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 message(STATUS "*** set CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
