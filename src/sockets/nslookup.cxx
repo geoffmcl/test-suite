@@ -165,19 +165,20 @@ typedef std::vector<struct sockaddr> vSA;
 #define MX_NAME_BUF 2048
 static char node[MX_NAME_BUF];
 static char service[MX_NAME_BUF];
+int getDomainName( const struct sockaddr *psa, socklen_t len, int flags, int verb = 0 );
 
-int getDomainName( const struct sockaddr *psa, socklen_t len, int flags )
+int getDomainName( const struct sockaddr *psa, socklen_t len, int flags, int verb )
 {
     node[0] = 0;
     service[0] = 0;
-    int res = getnameinfo(psa, len,
-        node, MX_NAME_BUF,
-        service, MX_NAME_BUF,
-        flags );
+    int res = getnameinfo(psa, len, node, MX_NAME_BUF, service, MX_NAME_BUF, flags );
     if (res) {
-
-    } else {
-        //cout << "Node: " << node << ", Serv: " << service << endl;
+        if (verb) {
+            res = WSAGetLastError();
+	    	cout << "getaddrinfo() error: " << gai_strerror(res) << endl;
+        }
+    } else if (verb) {
+        cout << "Node: " << node << ", Serv: " << service << endl;
     }
     return res;
 }
