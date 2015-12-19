@@ -16,10 +16,18 @@
  *
  */
 
+#include <sys/types.h>
 #include <iostream>
 #include <string>
 #include <sstream>
+#ifdef WIN32
 #include <Ws2tcpip.h>
+#else
+#include <sys/socket.h>
+#include <netdb.h>
+#include <arpa/inet.h> // inet_ntop, ...
+#include <string.h> // for strlen, ...
+#endif
 #include <vector>
 #include "../utils.hxx"
 
@@ -33,6 +41,7 @@ static int add_pause = 0;
 
 void initiateWinsockFacility()
 {
+#ifdef WIN32
 	WORD wVersionRequested;
 	WSADATA wsaData;
 	int error;
@@ -47,6 +56,7 @@ void initiateWinsockFacility()
 		system("pause");
 		exit(1);
 	}
+#endif
 }
 
 int getFullAddressInformation(const char *ipAddress)
@@ -58,9 +68,11 @@ int getFullAddressInformation(const char *ipAddress)
 	if ( status != 0 )
 	{
 		cout << "getaddrinfo() error: " << gai_strerror(status) << endl;
+#ifdef WIN32
 		WSACleanup();
         if (add_pause)
             system("pause");
+#endif
 		return 1;
 	}
     return 0;
@@ -174,8 +186,10 @@ int getDomainName( const struct sockaddr *psa, socklen_t len, int flags, int ver
     int res = getnameinfo(psa, len, node, MX_NAME_BUF, service, MX_NAME_BUF, flags );
     if (res) {
         if (verb) {
+#ifdef WIN32
             res = WSAGetLastError();
 	    	cout << "getaddrinfo() error: " << gai_strerror(res) << endl;
+#endif	    	
         }
     } else if (verb) {
         cout << "Node: " << node << ", Serv: " << service << endl;
@@ -205,7 +219,6 @@ int main(int argc, char **argv)
 {
     int iret = 0;
     char *elap;
-    initiateWinsockFacility();
 
 	string targetDomain;
     if (argc < 2) {
@@ -228,6 +241,7 @@ int main(int argc, char **argv)
 
     vSTG ips;
 
+    initiateWinsockFacility();
     double begin = get_seconds(); // add timing
 
 	iret = getFullAddressInformation(targetDomain.c_str());
@@ -249,8 +263,9 @@ int main(int argc, char **argv)
 
     elap = get_elapsed_stg(begin);
 	freeaddrinfo(target);
+#ifdef WIN32
 	WSACleanup();
-
+#endif
     size_t ii, max = ips.size();
     cout << "Got " << max << " ip" << ((max == 1) ? "" : "s") << " ..." << endl;
     for (ii = 0; ii < max; ii++) {
@@ -259,10 +274,11 @@ int main(int argc, char **argv)
     }
 
     cout << "Elapsed: " << elap << " secs..." << endl;
-
+#ifdef WIN32
     if (add_pause) {
     	system("pause");
     }
+#endif
 	return 0;
 }
 
