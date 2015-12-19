@@ -354,6 +354,14 @@ if (MSVC)
     target_link_libraries( ${name} ${EXTRA_LIBS} )
     set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
     set_target_properties( ${name} PROPERTIES LINK_FLAGS "/level='requireAdministrator' /uiAccess='false'" )
+    
+    # sockets stuff - TODO: Port to linux
+    set(name nslookup)
+    set(dir src/sockets)
+    add_executable( ${name} ${dir}/${name}.cxx )
+    target_link_libraries( ${name} ${EXTRA_LIBS} )
+    set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+    
 endif ()
 
 message(STATUS "*** set CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
