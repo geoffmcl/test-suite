@@ -20,6 +20,18 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+
+// 20160101 - Suggested LIST of STDC_HEADERS (from libgd-gd-2 library source)
+#include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <float.h>
+// But these 3 are NOT in Windows
+//#include <dlfcn.h>
+//#include <inttypes.h>
+//#include <strings.h>
+
 #ifdef WIN32
 #include <Ws2tcpip.h>
 #else
