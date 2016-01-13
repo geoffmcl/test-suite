@@ -255,6 +255,7 @@ set( test_SRCS
     ${dir}/test-rand.cxx
     ${dir}/test-bad-alloc.cxx
     ${dir}/test-tidy.cxx
+    ${dir}/test-deldir.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 
@@ -283,6 +284,7 @@ set( test_HDRS
     ${dir}/test-rand.hxx
     ${dir}/test-bad-alloc.hxx
     ${dir}/test-tidy.hxx
+    ${dir}/test-deldir.hxx
     )
 
 if (TEST_MMFIO)
