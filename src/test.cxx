@@ -67,6 +67,7 @@
 #include "test-rand.hxx"
 #include "test-bad-alloc.hxx"
 #include "test-tidy.hxx"
+#include "test-text.h"
 
 extern void test_strtoimax();
 
@@ -1161,6 +1162,7 @@ int parse_args( int argc, char **argv )
 int main( int argc, char **argv )
 {
     //test_tidy();
+    //test_text();
     int iret = parse_args(argc,argv);
     if (iret)
         return iret;
