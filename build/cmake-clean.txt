@@ -4,4 +4,5 @@ tests
 magvar
 install_manifest.txt
 Test.VC.db
+nslookup2
 
