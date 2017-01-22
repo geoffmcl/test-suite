@@ -3,7 +3,12 @@
 BN=`basename $0`
 
 BLDLOG="bldlog-1.txt"
-
+TMPSG="/home/geoff/fg/next/install/simgear"
+if [ ! -d "$TMPSG" ]; then
+    echo "$BN: Can NOT locate '$TMPSG' directory"
+    echo "$BN: FIX ME to point to current SG install"
+    exit 1
+fi
 if [ -f "$BLDLOG" ]; then
 	rm -f $BLDLOG
 fi
@@ -19,7 +24,8 @@ TMPOPTS="-DCMAKE_INSTALL_PREFIX=$HOME"
 ### *****  NOTE THE SIMGEAR INSTALL ***** ###
 ### Change to suit your taste, environment ###
 ##############################################
-TMPOPTS="$TMPOPTS -DCMAKE_PREFIX_PATH:PATH=/media/Disk2/FG/fg21/install/simgear"
+TMPOPTS="$TMPOPTS -DCMAKE_PREFIX_PATH:PATH=$TMPSG"
+### TMPOPTS="$TMPOPTS -DCMAKE_PREFIX_PATH:PATH=/media/Disk2/FG/fg21/install/simgear"
 #############################################
 
 # Use -DCMAKE_BUILD_TYPE=Debug to add gdb symbols
