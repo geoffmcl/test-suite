@@ -45,6 +45,8 @@ else()
     set(TEST_MMFIO 0)
     message(STATUS "*** Memory mapping still to be ported to unix mmap")
     set(WARNING_FLAGS "${WARNING_FLAGS} -Wno-trigraphs")
+    # Need  -std=c++11 to remove some warnings
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
 set (BOOST_CXX_FLAGS "-DBOOST_MULTI_INDEX_DISABLE_SERIALIZATION -DBOOST_BIMAP_DISABLE_SERIALIZATION")
