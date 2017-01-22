@@ -3,7 +3,8 @@
 @if NOT EXIST %TMPEXE% goto NOEXE
 @set TMPPG=C:\Program Files (x86)\PostgreSQL\9.1\bin
 @if NOT EXIST "%TMPPG%" goto NOPG
-@set TMP3RD=F:\Projects\fg-64\3rdParty.x64\bin
+@set TMP3RD=X:\3rdParty.x64\bin
+@REM set TMP3RD=F:\Projects\fg-64\3rdParty.x64\bin
 @if NOT EXIST %TMP3RD%\nul goto NO3RD
 
 @set TMPCMD=

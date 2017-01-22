@@ -85,9 +85,11 @@ void test_ofstream()
     } else {
         SPRTF("%s: m_LogFile.is_open() is not open yet.\n", module );
     }
+#if defined(_MSC_VER) && (_MSC_VER < 1400)
     if (m_LogFile != cerr) {
         SPRTF("%s: m_LogFile is not cerr.\n", module );
     }
+#endif // _MSC_VER 
     set_cout_to_file(m_File);
     m_LogFile.open( m_File.c_str(), ios::out|ios::app );
     if (m_LogFile.is_open()) {

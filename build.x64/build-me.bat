@@ -1,4 +1,5 @@
 @setlocal
+@set VCVERS=14
 @set TMPPRJ=Test
 @set TMPLOG=bldlog-1.txt
 @set BUILD_RELDBG=0
@@ -10,8 +11,8 @@
 @REM NOTE: MSVC 10 INSTALL LOCATION
 @REM Adjust to suit your environment
 @REM ##########################################
-@set GENERATOR=Visual Studio 10 Win64
-@set VS_PATH=C:\Program Files (x86)\Microsoft Visual Studio 10.0
+@set GENERATOR=Visual Studio %VCVERS% Win64
+@set VS_PATH=C:\Program Files (x86)\Microsoft Visual Studio %VCVERS%.0
 @set VC_BAT=%VS_PATH%\VC\vcvarsall.bat
 @if NOT EXIST "%VS_PATH%" goto NOVS
 @if NOT EXIST "%VC_BAT%" goto NOBAT
@@ -69,8 +70,8 @@
 @REM set SIMGEAR_DIR=F:\FG\18\install\msvc100\simgear
 @REM set ZLIBDIR=F:\FG\18\3rdParty
 @if EXIST X:\nul (
-@set SIMGEAR_DIR=X:\install\msvc100\simgear
-@set ZLIBDIR=X:\3rdParty
+@set SIMGEAR_DIR=X:\install\msvc%VCVERS%0-64\simgear
+@set ZLIBDIR=X:\3rdParty.x64
 )
 
 @if NOT EXIST %SIMGEAR_DIR%\nul goto NOSGD

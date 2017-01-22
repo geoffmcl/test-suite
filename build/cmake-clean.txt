@@ -3,4 +3,5 @@ liblibutils.a
 tests
 magvar
 install_manifest.txt
+Test.VC.db
 

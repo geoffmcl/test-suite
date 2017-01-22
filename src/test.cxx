@@ -407,7 +407,9 @@ void test_wait_for()
 ////////////////////////////////////////////////////////////////////////////////////////////
 #endif // _MSC_VER
 
-#ifdef HAVE_SIMGEAR
+//#ifdef HAVE_SIMGEAR
+#if (defined(HAVE_SIMGEAR) && defined(TEST_MAG_VER))
+
 // we have simgear, so this can be compiled
 void test_magvar()
 {
@@ -950,7 +952,9 @@ static TESTLIST testList[] = {
     { 4, "secs", test_secs },
     { 5, "tmpnam", test_tmpnam },
     { 6, "string_inc", test_string_inc },
-    { 7, "math", test_math },
+#if (defined(HAVE_SIMGEAR) && defined(ADD_SG_MATH))  // indication simgear found
+	{ 7, "math", test_math },
+#endif
 #ifdef _MSC_VER
     { 8, "fullpath", test_fullpath },
     { 9, "redon", test_redon },
@@ -967,7 +971,7 @@ static TESTLIST testList[] = {
     { 15, "color", test_color },
     { 16, "floor-ceil", test_floor_ceil },
     { 17, "intersect", test_intersect },    // SG and NOT SG maths
-#ifdef HAVE_SIMGEAR  // indication simgear found
+#if (defined(HAVE_SIMGEAR) && defined(ADD_SG_MATH))  // indication simgear found
     { 18, "dist", test_dist },
 #endif // #ifdef HAVE_SIMGEAR  // indication simgear found
     { 19, "array", array_test },
@@ -1000,10 +1004,14 @@ static TESTLIST testList[] = {
     { 31, "cflog", test_cflog },    // iret = load_cf_log();
 #endif
     { 32, "array", test_array },
+#if (defined(HAVE_SIMGEAR) && defined(ADD_SG_MATH))  // indication simgear found
     { 33, "euler", compare_maths },
+#endif 
     { 34, "trim_string", test_trim },
     { 35, "area_wgs84", test_area },
-    { 36, "dist_pt2line", test_dist2 },
+#if (defined(HAVE_SIMGEAR) && defined(ADD_SG_MATH))  // indication simgear found
+	{ 36, "dist_pt2line", test_dist2 },
+#endif 
     { 37, "http_get", test_http },
     { 38, "ofstream", test_ofstream },
     { 39, "test_rand", test_rand },
@@ -1101,7 +1109,7 @@ void give_help( char *exe )
     SPRTF("\n");
     SPRTF("Usage: %s [--help] [test_index] [test_name]\n", get_file_name(exe));
     SPRTF("options:\n");
-    SPRTF(" --help (-h or -?) = This help and exit(2)\n");
+    SPRTF(" --help (-h or -?) = This help and exit(0)\n");
     SPRTF("List of available tests\n");
     PTESTLIST ptl = &testList[0];
     SPRTF("index name\n");
@@ -1131,7 +1139,7 @@ int parse_args( int argc, char **argv )
             (strcmp(arg,"-h") == 0)||
             (strcmp(arg,"-?") == 0)) {
             give_help(argv[0]);
-            return 2;
+            return 0;
         } else if ((*arg == '-') && !an && (ind != -1)) {
             SPRTF("%s: Unknown option argument '%s'! exit(1)\n", module, arg);
             return 1;

@@ -33,8 +33,10 @@
 
 @echo Built project %TMPPRJ% in 32-bits... all ouput to %TMPLOG%
 
-@set SIMGEAR_DIR=C:\FG\17\install\msvc100\simgear
-@set ZLIBDIR=C:\FG\17\3rdParty
+@REM set SIMGEAR_DIR=C:\FG\17\install\msvc100\simgear
+@set SIMGEAR_DIR=D:\FG\fg-64\install\simgear
+@set ZLIBDIR=C:\FG\18\3rdParty
+@REM set ZLIBDIR=C:\FG\17\3rdParty
 @REM set SIMGEAR_DIR=F:\FG\18\install\msvc100\simgear
 @REM set ZLIBDIR=F:\FG\18\3rdParty
 @REM if EXIST X:\nul (
@@ -55,6 +57,7 @@ set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
 @set CMOPTS=%CMOPTS% -DZLIB_ROOT=%ZLIBDIR%
 @set CMOPTS=%CMOPTS% -DCMAKE_PREFIX_PATH=%SIMGEAR_DIR%
 @set CMOPTS=%CMOPTS% -DCMAKE_INSTALL_PREFIX=%TMPINST%
+@set CMOPTS=%CMOPTS%  -DADD_SG_MATH:BOOL=ON
 
 @echo Build of '%TMPPRJ% in 32-bits - begin %DATE% at %TIME% > %TMPLOG%
 @echo set Qt4_DIR=%Qt4_DIR% >> %TMPLOG%

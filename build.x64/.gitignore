@@ -14,5 +14,6 @@ x64/*
 *.suo
 ipch/*
 *.opensdf
+*.VC.db
 
 

@@ -20,6 +20,7 @@ option( TEST_POSTGRESQL  "Turn ON to add test-sql connection"        OFF )
 option( TEST_MAG_VAR     "Turn ON to add test_magvar."               OFF  )
 option( TEST_MMFIO       "Turn ON to test memory mapping file IO"    ON   )
 option( USE_CURL_LIB     "Turn ON the use CURL library."             ON  )
+option( ADD_SG_MATH      "Turn ON some SG math tests"                ON  )
 
 message( STATUS "*** USING CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 message( STATUS "*** System: ${CMAKE_SYSTEM_NAME}" )
@@ -138,6 +139,9 @@ if (SIMGEAR_FOUND)
 else ()
     message(STATUS "*** SimGear NOT FOUND")
 endif ()
+if (SIMGEAR_FOUND AND ADD_SG_MATH)
+    add_definitions( -DADD_SG_MATH )
+endif ()
 if (TEST_CF_LOG)
     if (SIMGEAR_FOUND)
         add_definitions( -DADD_CF_LOG_TEST )
@@ -201,14 +205,12 @@ set(${name}_SRCS
     ${dir}/sprtf.cxx
     ${dir}/utils.cxx
     ${dir}/getline.c
-    ${dir}/sg-maths.cxx
     ${dir}/vsprtf.cxx
     )
 set(${name}_HDRS
     ${dir}/sprtf.hxx
     ${dir}/utils.hxx
     ${dir}/getline.h
-    ${dir}/sg-maths.hxx
     ${dir}/vsprtf.hxx
     )
 if (MSVC)
@@ -219,6 +221,10 @@ if (TEST_MMFIO)
     list(APPEND ${name}_SRCS ${dir}/MMFIODef.cpp)
     list(APPEND ${name}_HDRS ${dir}/MMFIODef.h  )
     add_definitions( -DADD_MMFIO_TEST )
+endif ()
+if (SIMGEAR_FOUND AND ADD_SG_MATH)
+    list(APPEND ${name}_SRCS ${dir}/sg-maths.cxx)
+    list(APPEND ${name}_HDRS ${dir}/sg-maths.hxx)
 endif ()
 add_library( ${name} ${${name}_SRCS} ${${name}_HDRS} )
 list(APPEND EXTRA_LIBS ${name})
@@ -232,14 +238,12 @@ set( test_SRCS
     ${dir}/cf-log.cxx
     ${dir}/test-array.c
     ${dir}/gettimeofday.c 
-    ${dir}/test-magvar.cxx
     ${dir}/test-intersect.cxx
     ${dir}/test-map.cxx
     ${dir}/global.cxx
     ${dir}/utf8/test-utf8.cxx
     ${dir}/test-codeset.c
     ${dir}/test-wildcard.cxx
-    ${dir}/test-math.cxx
     ${dir}/test-stg-inc.cxx
     ${dir}/test-color.cxx
     ${dir}/test-tmpname.cxx
@@ -263,14 +267,12 @@ set( test_HDRS
     ${dir}/cf-log.hxx
     ${dir}/test-array.h 
     ${dir}/gettimeofday.h 
-    ${dir}/test-magvar.hxx
     ${dir}/test-intersect.hxx
     ${dir}/test-map.hxx
     ${dir}/global.hxx
     ${dir}/utf8/test-utf8.hxx
     ${dir}/test-codeset.h
     ${dir}/test-wildcard.hxx
-    ${dir}/test-math.hxx
     ${dir}/test-stg-inc.hxx
     ${dir}/test-color.hxx
     ${dir}/test-tmpname.hxx
@@ -301,7 +303,14 @@ if (MSVC)
     list(APPEND test_SRCS ${dir}/test-fullpath.cxx ${dir}/test-redon.cxx)
     list(APPEND test_HDRS ${dir}/test-fullpath.hxx ${dir}/test-redon.hxx)
 endif ()
-
+if (SIMGEAR_FOUND AND TEST_MAG_VAR)
+    list(APPEND test_SRCS ${dir}/test-magvar.cxx)
+    list(APPEND test_HDRS ${dir}/test-magvar.hxx)
+endif ()
+if (SIMGEAR_FOUND AND ADD_SG_MATH)
+    list(APPEND test_SRCS ${dir}/test-math.cxx)
+    list(APPEND test_HDRS ${dir}/test-math.hxx)
+endif ()
 add_executable( ${name} ${test_SRCS} ${test_HDRS} )
 if (EXTRA_LIBS)
     target_link_libraries( ${name} ${EXTRA_LIBS} )
@@ -317,7 +326,7 @@ else ()
     install( TARGETS ${name} DESTINATION bin )
 endif ()
 
-if (SIMGEAR_FOUND)
+if (SIMGEAR_FOUND AND TEST_MAG_VAR)
     set(name magvar)
     add_definitions( -DTEST_NHV_HACKS )
     set(${name}_SRCS 
