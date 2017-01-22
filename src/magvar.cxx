@@ -47,6 +47,7 @@ int in_world_range( double lat, double lon )
 
 void give_help()
 {
+    int c;
     printf("\nmagvar [options] lat_degs lon_degs [altitude mont day year]\n");
     printf("options:\n");
     printf(" --help, -h, -? = This help and exit(2)\n");
@@ -59,6 +60,10 @@ void give_help()
     printf("The year must be in the range 0-49 for 2000-2049, or 50-99 for 1950-1999.\n");
     printf("Exit(2) with this help, exit(1) if some other error,\n");
     printf("else output the variation in degrees, and exit 0.\n");
+    printf("Use '.'+Enter keys to continue...\n");
+    while ((c = getchar()) != '.')
+        putchar(c);
+    
 }
 
 #define ISNUM(a) (( a >= '0' )&&( a <= '9' ))
