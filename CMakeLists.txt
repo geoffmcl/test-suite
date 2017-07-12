@@ -263,6 +263,7 @@ set( test_SRCS
     ${dir}/test-tidy.cxx
     ${dir}/test-deldir.cxx
     ${dir}/test-text.c
+    ${dir}/test-ptrdiff.cxx
     )
 set( test_HDRS
     ${dir}/test.hxx 

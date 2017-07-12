@@ -70,6 +70,7 @@
 #include "test-text.h"
 
 extern void test_strtoimax();
+extern int ptrdiff_main(void);
 
 extern void test_mmap();
 
@@ -687,6 +688,7 @@ void show_sizes()
 
 #endif // WIN32
 #endif // 0000000000000000000000000000000
+    ptrdiff_main();
 
 }
 
