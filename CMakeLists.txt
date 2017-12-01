@@ -199,6 +199,8 @@ if (MSVC)
 endif ()
 
 check_function_exists(asprintf HAVE_ASPRINTF)
+check_function_exists(vsnprintf HAVE_VSNPRINTF)
+check_function_exists(_vsnprintf HAVE__VSNPRINTF)
 
 # configure a header file to pass some of the CMake settings to the source code
 configure_file ( "${PROJECT_SOURCE_DIR}/test_conf.h.cmake" "${PROJECT_BINARY_DIR}/test_conf.h" )

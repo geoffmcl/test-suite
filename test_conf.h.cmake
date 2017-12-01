@@ -8,6 +8,8 @@
 #define _TEST_CONF_H_
 
 #cmakedefine HAVE_ASPRINTF 1
+#cmakedefine HAVE_VSNPRINTF 1
+#cmakedefine HAVE__VSNPRINTF 1
 
 #endif /* _TEST_CONF_H_ */
 /* eof test_conf.h.cmake -> test_conf.h */
