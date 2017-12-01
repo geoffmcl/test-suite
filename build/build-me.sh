@@ -6,8 +6,12 @@ BLDLOG="bldlog-1.txt"
 TMPSG="/home/geoff/fg/next/install/simgear"
 if [ ! -d "$TMPSG" ]; then
     echo "$BN: Can NOT locate '$TMPSG' directory"
-    echo "$BN: FIX ME to point to current SG install"
-    exit 1
+    TMPSG="/media/pi/SAMSUNG2/projects/FG/next/install/simgear"
+    if [ ! -d "$TMPSG" ]; then
+        echo "$BN: Can NOT locate '$TMPSG' directory"
+	echo "$BN: FIX ME to point to a current SG install"
+	exit 1
+    fi
 fi
 if [ -f "$BLDLOG" ]; then
 	rm -f $BLDLOG
