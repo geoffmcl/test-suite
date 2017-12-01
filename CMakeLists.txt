@@ -198,6 +198,12 @@ if (MSVC)
     endif ()
 endif ()
 
+check_function_exists(asprintf HAVE_ASPRINTF)
+
+# configure a header file to pass some of the CMake settings to the source code
+configure_file ( "${PROJECT_SOURCE_DIR}/test_conf.h.cmake" "${PROJECT_BINARY_DIR}/test_conf.h" )
+
+include_directories( ${PROJECT_BINARY_DIR} )
 ####################################################
 ### COMMON LIBRARY
 ##################
@@ -207,14 +213,18 @@ set(${name}_SRCS
     ${dir}/sprtf.cxx
     ${dir}/utils.cxx
     ${dir}/getline.c
-    ${dir}/vsprtf.cxx
     )
 set(${name}_HDRS
     ${dir}/sprtf.hxx
     ${dir}/utils.hxx
     ${dir}/getline.h
-    ${dir}/vsprtf.hxx
     )
+    
+# 'asprintf' NOT found    
+if (NOT HAVE_ASPRINTF)
+    list(APPEND ${name}_SRCS ${dir}/vsprtf.cxx)
+    list(APPEND ${name}_HDRS ${dir}/vsprtf.hxx)
+endif ()    
 if (MSVC)
     list(APPEND ${name}_SRCS ${dir}/winErr.cpp)
     list(APPEND ${name}_HDRS ${dir}/winErr.hpp)

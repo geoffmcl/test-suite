@@ -1,3 +1,4 @@
 bldlog-1.txt
 .vs
+test_conf.h
 
