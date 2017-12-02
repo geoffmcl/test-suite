@@ -9,8 +9,12 @@ if [ ! -d "$TMPSG" ]; then
     TMPSG="/media/pi/SAMSUNG2/projects/FG/next/install/simgear"
     if [ ! -d "$TMPSG" ]; then
         echo "$BN: Can NOT locate '$TMPSG' directory"
-	echo "$BN: FIX ME to point to a current SG install"
-	exit 1
+	TMPSG="/home/geoff/projects/FG/install/simgear"
+    	if [ ! -d "$TMPSG" ]; then
+	        echo "$BN: Can NOT locate '$TMPSG' directory"
+		echo "$BN: FIX ME to point to a current SG install"
+		exit 1
+	fi
     fi
 fi
 if [ -f "$BLDLOG" ]; then
