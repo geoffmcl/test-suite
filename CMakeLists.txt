@@ -1,4 +1,6 @@
-# test - 20130316 - Just testing CMAKE and other things
+# test suite - bunch of test code 
+# 20140827 repo : https://github.com/geoffmcl/test-suite
+# test - 20130316 - Initial cut
 
 cmake_minimum_required (VERSION 2.8.8)
 
@@ -13,7 +15,7 @@ project (Test)
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 option( TEST_MPFR        "Turn ON to add MPFR test."                 OFF )
-option( TEST_CGAL        "Turn ON to add MPFR test."                 OFF )
+option( TEST_CGAL        "Turn ON to add CGAL test."                 OFF )
 option( TEST_CF_LOG      "Turn ON to add CF LOG test."               OFF )
 option( USE_WSOCK2_LIB   "Turn ON to use Winsock2.h and ws2_32.lib"  ON  )
 option( TEST_POSTGRESQL  "Turn ON to add test-sql connection"        OFF )
@@ -198,14 +200,45 @@ if (MSVC)
     endif ()
 endif ()
 
+########################################################
 check_function_exists(asprintf HAVE_ASPRINTF)
+# UGH! For some reason this FAILS in Windows!!!
 check_function_exists(vsnprintf HAVE_VSNPRINTF)
 check_function_exists(_vsnprintf HAVE__VSNPRINTF)
+# An attempt to overcome the FAILS in Windows, 64-bit, 
+# and it compiles, as it should, so do HAVE_VSNPRINTF!!!
+if (NOT HAVE_VSNPRINTF)
+check_c_source_compiles(
+"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+void test(const char *frm, ...) {
+    int size = 0;
+    va_list args;
+    va_start(args, frm);
+    size = vsnprintf(NULL, size, frm, args);
+    va_end(args);
+}
+int main(int argc, char **argv) {
+    test(\"%s\", argv[0] );
+    return (0);
+}
+"
+    CAN_COMP_VSNPRINTF)
+    if (CAN_COMP_VSNPRINTF)
+        message(STATUS "*** check_function_exists(vsnprintf HAVE_VSNPRINTF) FAILED")
+        set(HAVE_VSNPRINTF 1)
+    else ()
+        message(STATUS "*** can not FIND nor COMPILE 'vsnprinf'!")
+    endif ()
+endif ()
 
 # configure a header file to pass some of the CMake settings to the source code
 configure_file ( "${PROJECT_SOURCE_DIR}/test_conf.h.cmake" "${PROJECT_BINARY_DIR}/test_conf.h" )
 
 include_directories( ${PROJECT_BINARY_DIR} )
+
 ####################################################
 ### COMMON LIBRARY
 ##################
@@ -224,6 +257,7 @@ set(${name}_HDRS
     
 # 'asprintf' NOT found    
 if (NOT HAVE_ASPRINTF)
+    # NOTE: This contains 'vsnprintf' and compiles fine?!
     list(APPEND ${name}_SRCS ${dir}/vsprtf.cxx)
     list(APPEND ${name}_HDRS ${dir}/vsprtf.hxx)
 endif ()    
