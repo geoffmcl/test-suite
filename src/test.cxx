@@ -1128,7 +1128,8 @@ int parse_args( int argc, char **argv )
 {
     int i, ind, iret = 0;
     char *arg;
-    bool fnd, an, done = false;
+    bool fnd, an;
+    int done = 0;
     SPRTF("Running %s\n", argv[0] );
     show_time();
     show_sizes();
@@ -1141,7 +1142,7 @@ int parse_args( int argc, char **argv )
             (strcmp(arg,"-h") == 0)||
             (strcmp(arg,"-?") == 0)) {
             give_help(argv[0]);
-            return 0;
+            return 2;
         } else if ((*arg == '-') && !an && (ind != -1)) {
             SPRTF("%s: Unknown option argument '%s'! exit(1)\n", module, arg);
             return 1;
@@ -1153,14 +1154,18 @@ int parse_args( int argc, char **argv )
                 fnd = find_by_name(arg);
             }
             if (fnd) {
-                done = true;
+                done++;
             } else {
                 SPRTF("%s: WARNING: No test found for '%s'!\n", module, arg );
             }
         }
     }
-    if (!done)
-        SPRTF("%s: No valid tests found on the command line?\n", module );
+    if (done) {
+        SPRTF("%s: Ran %d tests found on the command line.\n", module, done);
+    } else {
+        SPRTF("%s: No valid tests found on the command line?\n", module);
+        iret = 1;
+    }
     return iret;
 }
 
@@ -1174,8 +1179,11 @@ int main( int argc, char **argv )
     //test_tidy();
     //test_text();
     int iret = parse_args(argc,argv);
-    if (iret)
+    if (iret) {
+        if (iret == 2)
+            iret = 0;
         return iret;
+    }
     //test_round();    
     //test_open();
     //test_strtoimax();
