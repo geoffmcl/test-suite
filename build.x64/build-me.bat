@@ -121,8 +121,10 @@
 @echo Doing: 'cmake --build . --config Release' >> %TMPLOG%
 @cmake --build . --config Release >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR4
-
-@echo Appears successful...
+@echo.
+@call dirmin release\tests.exe
+@echo Appears successful build of test...
+@echo.
 
 @goto END
 
