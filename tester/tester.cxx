@@ -535,38 +535,53 @@ void test_pos()
 #endif
 }
 
+void test_fopen(char * file)
+{
+    /* we have had a **successful** 'stat' of this item - try fopen(file,"r" */
+    FILE *fp = fopen(file, "r");
+    if (fp) {
+        SPRTF("Function 'fopen(%s, \"r\")' succeeded, %p\n", file, fp);
+        fclose(fp);
+    }
+    else {
+        SPRTF("Function 'fopen(%s, \"r\")' FAILED!\n", file);
+    }
+}
+
+
 int main( int argc, char ** argv )
 {
     int   iret = 0;
     int   i;
     char * arg = NULL;
     set_log_file((char *)def_log, false);
-    printf("Running %s... v.%s, compiled %s, at %s\n", argv[0], VERSION, D_VERS, T_VERS);
+    SPRTF("Running %s... v.%s, compiled %s, at %s\n", argv[0], VERSION, D_VERS, T_VERS);
     show_proc_path();
     show_sizes();
     if (argc > 1) {
-        printf("With %d arguments...\n", argc - 1);
+        SPRTF("With %d arguments...\n", argc - 1);
         for (i = 1; i < argc; i++) {
             arg = argv[i];
             if (stat(arg,&buf) == 0) {
 #ifdef WIN32
-                printf( "%2d: [%s] stat succeeded, so...\n", i, arg );
+                SPRTF( "%2d: [%s] stat succeeded, so...\n", i, arg );
 #else
                 report( arg, &buf );
 #endif
+                test_fopen(arg);
             } else {
-                printf( "%2d: [%s] (address:%p)\n", i, arg, arg );
+                SPRTF( "%2d: [%s] (address:%p)\n", i, arg, arg );
             } 
         }
    } else {
-      printf("With no arguments...\n");
+      SPRTF("With no arguments...\n");
    }
    arg = NULL;
 
     float foo = 3.1415;
     const char *fmt = "Float 3.1415 [%.3f] ";
     printf(fmt, foo);
-    printf("[%f]\n",foo);
+    SPRTF("[%f]\n",foo);
     //printf(" Testing a MACRO...\n" );
    //assert( arg != NULL );
    //ATLAS_MACRO( arg != NULL );
