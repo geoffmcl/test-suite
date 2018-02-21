@@ -627,7 +627,7 @@ void show_time()
 }
 
 
-void show_sizes()
+static void show_sizes()
 {
     const char *msg = "UNKNOWN";
     SPRTF("Size of char %lu, short %lu, int %lu, long %lu, long long %lu, uint64_t %lu\n", 
