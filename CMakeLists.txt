@@ -437,7 +437,18 @@ else ()
     install( TARGETS ${name} DESTINATION bin )
 endif ()
 #######################################################################
+# fold this project into here
+set(name tester)
+set(dir tester)
+add_executable( ${name} ${dir}/${name}.cxx )
+if (EXTRA_LIBS)
+    target_link_libraries( ${name} ${EXTRA_LIBS} )
+endif ()
+if (MSVC)
+    set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+endif ()
 
+#######################################################################
 message(STATUS "*** set CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 message(STATUS "*** set CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
 message(STATUS "*** set CMAKE_EXE_LINKER_FLAGS = ${CMAKE_EXE_LINKER_FLAGS}")
