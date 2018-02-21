@@ -334,7 +334,7 @@ static void show_sizes()
 }
 
 /* Possible access modes... one for each octal value. */
-static char * accesses[] = {"---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"};
+static const char * accesses[] = {"---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"};
 
 void trim_buffer( char *cp )
 {
@@ -421,7 +421,7 @@ void report_full( char * name, struct stat * buffer)
     printf(" Current file size : %ld", buffer->st_size);
 
     /* type dev_t is int*/
-    printf(" device %d", buffer->st_dev);
+    printf(" device %d", (int)buffer->st_dev);
 
     /* type ino_t is unsigned  */
     printf(" Inode %lu\n", buffer->st_ino);
