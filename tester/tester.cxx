@@ -158,9 +158,6 @@ void trim_float_buf( char *pb )
    }
 }
 
-#endif
-
-
 char *get_k_num( uint64_t i64, int type = 0, int dotrim = 1 );
 
 char *get_k_num( uint64_t i64, int type, int dotrim )
@@ -242,6 +239,8 @@ char *get_k_num( uint64_t i64, int type, int dotrim )
 
    return pb;
 }
+
+#endif  // #ifndef SPRTF - ie not in external library
 
 ///////////////////////////////////////////////////////////////////
 
@@ -516,7 +515,7 @@ std::string get_basepath()
    return path;
 }
 #else // !WIN32
-#error "Need macro and port for this OS
+#error "Need macro and port for this OS!"
 #endif // WIN32 y/n
 #endif // LINUX y/n
 #endif // MAC y/n
