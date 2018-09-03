@@ -34,9 +34,10 @@ static const char *module = "test-utf8";
 
 static const char *sample = "D:\\SAVES\\OSM\\pern-b2.295-48.7508-2.305-48.7608.osm";
 // A SAMPLE UTF-8 FILE from : http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
-static const char *sample2 = "C:\\FG\\17\\test\\utf8\\UTF-8-test.txt";
+// static const char *sample2 = "C:\\FG\\17\\test\\utf8\\UTF-8-test.txt";
+static const char *sample2 = "C:\\FG\\17\\test\\src\\utf8\\UTF-8-test.txt";
 // from : http://www.w3.org/2001/06/utf-8-test/postscript-utf-8.html
-static const char *sample3 = "C:\\FG\\17\\test\\utf8\\ps-utf-8.txt";
+static const char *sample3 = "C:\\FG\\17\\test\\src\\utf8\\ps-utf-8.txt";
 
 //static const char *twochars = "\xe6\x97\xa5\xd1\x88";
 static bool do_line_test = false;
