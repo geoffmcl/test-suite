@@ -29,6 +29,11 @@ DiskType is_file_or_directory32 ( const char * path )
         return MDT_NONE;
 	if (stat(path,&buf) == 0)
 	{
+#ifdef WIN32
+        unsigned int mod = (buf.st_mode & _S_IFMT);
+        if (mod & _S_IFREG)
+            return MDT_FILE;
+#endif
 		if (buf.st_mode & M_IS_DIR)
 			return MDT_DIR;
 		else
