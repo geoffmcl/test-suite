@@ -42,6 +42,126 @@ typedef uint64_t uintmax_t;
 
 static const char *module = "strtoimax";
 
+// from : http://www.cplusplus.com/forum/general/10898/
+// Helios_dec2bin
+static std::string dec2bin(unsigned n)
+{
+    const int size = sizeof(n) * 8;
+    std::string res;
+    bool s = 0;
+    for (int a = 0; a < size; a++) {
+        bool bit = (n >> (size - 1)) ? true : false;
+        if (bit)
+            s = 1;
+        if (s)
+            res.push_back(bit + '0');
+        n <<= 1;
+    }
+    if (!res.size())
+        res.push_back('0');
+    return res;
+}
+
+// other methods 
+std::string Duoas_dec2bin(unsigned n) {
+    char result[(sizeof(unsigned) * 8) + 1];
+    unsigned index = sizeof(unsigned) * 8;
+    result[index] = '\0';
+    do result[--index] = '0' + (n & 1);
+    while (n >>= 1);
+    return std::string(result + index);
+}
+
+std::string PanGalactic_dec2bin(unsigned n) {
+    std::string res;
+    while (n) {
+        res.push_back((n & 1) + '0');
+        n >>= 1;
+    }
+    if (res.empty())
+        res = "0";
+    else
+        std::reverse(res.begin(), res.end());
+    return res;
+}
+typedef std::string(*func_p)(unsigned);
+
+unsigned rnd32() {
+    return rand() | (rand() << 15) | (rand() << 30);
+}
+
+int time_test() 
+{
+    std::stringstream ss;
+    unsigned loops = 10000000;  // 100000;
+    srand(time(0));
+    func_p array[] = {
+        &Duoas_dec2bin,
+        &PanGalactic_dec2bin,
+        &dec2bin,   // &Helios_dec2bin,
+        0
+    };
+    const char *names[] = {
+        "Duoas_dec2bin",
+        "PanGalactic_dec2bin",
+        "Helios_dec2bin",
+        0
+    };
+    SPRTF("Timing loops on 3 functions... %u iterations each... in CLOCKS_PER_SEC %u\n", loops, (unsigned)CLOCKS_PER_SEC);
+    for (int a = 0; array[a]; a++) 
+    {   // perform each function
+        unsigned t0 = clock();  // begin
+        for (unsigned b = 0; b < loops; b++)
+            array[a](rnd32());  // run function...
+        unsigned t1 = clock();  // end
+        unsigned diff = t1 - t0;
+        double secs = (double)diff / (double)CLOCKS_PER_SEC;
+        ss.str(""); // clear
+        ss << (a + 1) << ": " << (t1 - t0) << " ticks ... " << secs << " secs - " << names[a];
+        std::string s = ss.str();
+        SPRTF("%s\n", s.c_str());
+    }
+    return 0;
+}
+// stringstream format tests
+static void stringstream_tests()
+{
+    unsigned i = 123;
+    std::stringstream ss;
+    std::string s, s2, s3;
+    ss << "iomanip std::setfill('0') << std::setw(5) '" << std::setfill('0') << std::setw(5) << i << "'";
+    s = ss.str();
+    SPRTF("%s\n", s.c_str());
+    ss.str("");
+    ss << "iomanip std::setfill(' ') << std::setw(5) '" << std::setfill(' ') << std::setw(5) << i << "'";
+    s = ss.str();
+    SPRTF("%s\n", s.c_str());
+
+    s = dec2bin(i);
+    s2 = Duoas_dec2bin(i);
+    s3 = PanGalactic_dec2bin(i);
+    SPRTF("dec2bin(123) = '%s', '%s', '%s'\n", s.c_str(), s2.c_str(), s3.c_str());
+
+    i = 256;
+    s = dec2bin(i);
+    s2 = Duoas_dec2bin(i);
+    s3 = PanGalactic_dec2bin(i);
+    SPRTF("dec2bin(256) = '%s', '%s', '%s'\n", s.c_str(), s2.c_str(), s3.c_str());
+    i = 128;
+    s = dec2bin(i);
+    s2 = Duoas_dec2bin(i);
+    s3 = PanGalactic_dec2bin(i);
+    SPRTF("dec2bin(128) = '%s', '%s', '%s'\n", s.c_str(), s2.c_str(), s3.c_str());
+    i = -1;
+    s = dec2bin(i);
+    s2 = Duoas_dec2bin(i);
+    s3 = PanGalactic_dec2bin(i);
+    SPRTF("dec2bin(-1) = '%s', '%s', '%s'\n", s.c_str(), s2.c_str(), s3.c_str());
+
+    time_test();
+}
+
+
 template <typename T>
   std::string NumberToString ( T Number )
   {
@@ -220,6 +340,9 @@ void test_strtoimax()
         sprintf(stg2,"%lld",(long long)res2);
         SPRTF("sprintf  : %s\n", stg2);
     }
+
+    // stringstream format tests
+    stringstream_tests();
 
     SPRTF("%s: end test strtoimax function...\n", module );
 
