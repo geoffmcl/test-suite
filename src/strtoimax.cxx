@@ -64,7 +64,9 @@ static std::string dec2bin(unsigned n)
 }
 
 // other methods 
-std::string Duoas_dec2bin(unsigned n) {
+// the fastest it seems....
+std::string Duoas_dec2bin(unsigned n) 
+{
     char result[(sizeof(unsigned) * 8) + 1];
     unsigned index = sizeof(unsigned) * 8;
     result[index] = '\0';
