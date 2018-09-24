@@ -1,23 +1,15 @@
 @setlocal
 @set TMPEXE=Release\tests.exe
 @if NOT EXIST %TMPEXE% goto NOEXE
-@set TMPPG=C:\Program Files (x86)\PostgreSQL\9.1\bin
-@if NOT EXIST "%TMPPG%" goto NOPG
-@set TMP3RD=X:\3rdParty.x64\bin
+@rem set TMPPG=C:\Program Files (x86)\PostgreSQL\9.1\bin
+@rem if NOT EXIST "%TMPPG%" goto NOPG
+@rem set TMP3RD=X:\3rdParty.x64\bin
 @REM set TMP3RD=F:\Projects\fg-64\3rdParty.x64\bin
-@if NOT EXIST %TMP3RD%\nul goto NO3RD
+@rem if NOT EXIST %TMP3RD%\nul goto NO3RD
 
-@set TMPCMD=
-:RPT
-@if "%~1x" == "x" goto GOTCMD
-@set TMPCMD=%TMPCMD% %1
-@shift
-@goto RPT
-:GOTCMD
+@rem set PATH=%TMP3RD%;%TMPPG%;%PATH%
 
-@set PATH=%TMP3RD%;%TMPPG%;%PATH%
-
-%TMPEXE% %TMPCMD%
+%TMPEXE% %*
 
 @goto END
 
