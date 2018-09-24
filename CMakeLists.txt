@@ -114,6 +114,22 @@ if (USE_CURL_LIB)
         list(APPEND EXTRA_LIBS ${CURL_LIBRARIES} )
         message(STATUS "*** CURL lib ${CURL_LIBRARIES} inc ${CURL_INCLUDE_DIRS}" )
         add_definitions( -DHAVE_CURL_LIB )
+        if (MSVC)
+            #   ZLIB_INCLUDE_DIRS   - where to find zlib.h, etc.
+            #   ZLIB_LIBRARIES      - List of libraries when using zlib.
+            #   ZLIB_FOUND          - True if zlib found.
+            find_package( ZLIB )
+            if (ZLIB_FOUND)
+                message(STATUS "*** ZLIB found inc ${ZLIB_INCLUDE_DIRS}, lib ${ZLIB_LIBRARIES}" )
+                include_directories( ${ZLIB_INCLUDE_DIRS} )
+                list(APPEND EXTRA_LIBS ${ZLIB_LIBRARIES} )
+            else ()
+                message(FATAL_ERROR "*** ZLIB NOT FOUND!" )
+            endif ()    
+            # using a local FindCURL.cmake, find static libcurls.lib here
+            add_definitions( -DCURL_STATICLIB )
+            list(APPEND EXTRA_LIBS Ws2_32 Wldap32 Crypt32 )
+        endif ()
     else ()
         message(STATUS "*** Search for CURL library FAILED" )
     
