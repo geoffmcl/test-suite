@@ -6,3 +6,5 @@ install_manifest.txt
 Test.VC.db
 nslookup2
 test_conf.h
+tester
+
