@@ -1,8 +1,9 @@
 # test suite - bunch of test code 
+# 20200528 - build in DELL03 MSVC 16 2019
 # 20140827 repo : https://github.com/geoffmcl/test-suite
 # test - 20130316 - Initial cut
 
-cmake_minimum_required (VERSION 2.8.8)
+cmake_minimum_required (VERSION 3.6)
 
 include (CheckFunctionExists)
 include (CheckCSourceCompiles)
@@ -23,6 +24,7 @@ option( TEST_MAG_VAR     "Turn ON to add test_magvar."               OFF  )
 option( TEST_MMFIO       "Turn ON to test memory mapping file IO"    ON   )
 option( USE_CURL_LIB     "Turn ON the use CURL library."             ON  )
 option( ADD_SG_MATH      "Turn ON some SG math tests"                ON  )
+option( ADD_TEST_CODESET "Turn ON some codeset tests"                OFF )
 
 message( STATUS "*** USING CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 message( STATUS "*** System: ${CMAKE_SYSTEM_NAME}" )
@@ -84,9 +86,21 @@ endif ()
 
 # find_package(Qt4 PATHS "C:/QtSDK" REQUIRED)
 #  find_package(Qt4 REQUIRED)
-### find_package(Boost   REQUIRED)
-include_directories( C:/FG/17/boost_1_53_0 )
 
+#  Boost_FOUND            - True if headers and requested libraries were found
+#  Boost_INCLUDE_DIRS     - Boost include directories
+#  Boost_LIBRARY_DIRS     - Link directories for Boost libraries
+#  Boost_LIBRARIES        - Boost component libraries to be linked
+find_package(Boost)
+if(Boost_FOUND)
+# include_directories( C:/FG/17/boost_1_53_0 )
+    message( STATUS "*** Boost found inc '${Boost_INCLUDE_DIRS}'")
+    include_directories( ${Boost_INCLUDE_DIRS} )
+    add_definitions( -DBoost_FOUND )
+else()
+    message( STATUS "*** Boost NOT FOUND")
+endif()
+    
 if (TEST_MPFR)
     add_definitions( -DADD_MPFR_TEST -DMPFR_STATIC )
     include_directories( C:/FG/17/3rdParty/include )
@@ -132,7 +146,6 @@ if (USE_CURL_LIB)
         endif ()
     else ()
         message(STATUS "*** Search for CURL library FAILED" )
-    
     endif ()
 else ()
     message(STATUS "*** No search for CURL library" )
@@ -160,9 +173,11 @@ if (SIMGEAR_FOUND)
 else ()
     message(STATUS "*** SimGear NOT FOUND")
 endif ()
+
 if (SIMGEAR_FOUND AND ADD_SG_MATH)
     add_definitions( -DADD_SG_MATH )
 endif ()
+
 if (TEST_CF_LOG)
     if (SIMGEAR_FOUND)
         add_definitions( -DADD_CF_LOG_TEST )
@@ -283,9 +298,14 @@ if (MSVC)
     list(APPEND ${name}_HDRS ${dir}/winErr.hpp)
 endif ()
 if (TEST_MMFIO)
-    list(APPEND ${name}_SRCS ${dir}/MMFIODef.cpp)
-    list(APPEND ${name}_HDRS ${dir}/MMFIODef.h  )
-    add_definitions( -DADD_MMFIO_TEST )
+    if(Boost_FOUND)
+        list(APPEND ${name}_SRCS ${dir}/MMFIODef.cpp)
+        list(APPEND ${name}_HDRS ${dir}/MMFIODef.h  )
+        add_definitions( -DADD_MMFIO_TEST )
+    else()
+        set(TEST_MMFIO 0)
+        message(STATUS "*** Memory mapping need Boost")
+    endif()
 endif ()
 if (SIMGEAR_FOUND AND ADD_SG_MATH)
     list(APPEND ${name}_SRCS ${dir}/sg-maths.cxx)
@@ -307,7 +327,6 @@ set( test_SRCS
     ${dir}/test-map.cxx
     ${dir}/global.cxx
     ${dir}/utf8/test-utf8.cxx
-    ${dir}/test-codeset.c
     ${dir}/test-wildcard.cxx
     ${dir}/test-stg-inc.cxx
     ${dir}/test-color.cxx
@@ -337,7 +356,6 @@ set( test_HDRS
     ${dir}/test-map.hxx
     ${dir}/global.hxx
     ${dir}/utf8/test-utf8.hxx
-    ${dir}/test-codeset.h
     ${dir}/test-wildcard.hxx
     ${dir}/test-stg-inc.hxx
     ${dir}/test-color.hxx
@@ -356,6 +374,12 @@ set( test_HDRS
     ${dir}/test-deldir.hxx
     ${dir}/test-text.h
     )
+
+if (ADD_TEST_CODESET)
+    list(APPEND test_SRCS ${dir}/test-codeset.c)
+    list(APPEND test_HDRS ${dir}/test-codeset.h)
+    add_definitions( -DADD_TEST_CODESET )
+endif ()
 
 if (TEST_MMFIO)
     list(APPEND test_SRCS ${dir}/test-mmap.cxx)

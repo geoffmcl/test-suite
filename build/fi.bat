@@ -14,5 +14,6 @@
 @goto RPT
 :GOTOPTS
 
-fa4 "%TMPFND%" ..\* -r -b- -x:build %TMPOPT%%
+fa4 "%TMPFND%" ..\* -r -b- -x:build -x:build.x64 -x:.git %TMPOPT%
+
 

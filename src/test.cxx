@@ -43,7 +43,9 @@
 #include "test-map.hxx"
 #include "utf8/test-utf8.hxx"
 #include "global.hxx"
+#ifdef ADD_TEST_CODESET
 #include "test-codeset.h"
+#endif // ADD_TEST_CODESET
 #include "utils.hxx"
 #include "test-wildcard.hxx"
 #include "getline.h"
@@ -1018,8 +1020,9 @@ static TESTLIST testList[] = {
     { 38, "ofstream", test_ofstream },
     { 39, "test_rand", test_rand },
     { 40, "test_bad_alloc", test_bad_alloc },
+#ifdef ADD_TEST_CODESET    
     { 41, "test_codset",    test_codeset   },
-
+#endif // ADD_TEST_CODESET
     //////////////////////////////////////////////
     // LAST ENTRY - TERMINATION
     { 0, 0, 0 }

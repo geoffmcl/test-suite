@@ -12,6 +12,7 @@
 
 static const char *module = "test-mmap";
 
+#ifdef Boost_FOUND
 typedef Osmium::Storage::ById::MmapFile<uint64_t> storage_mmap_t;
 
 void test_mmap1()
@@ -94,6 +95,14 @@ void test_mmap()
     test_mmap1();
     SPRTF("%s: done mmap test...\n", module );
 }
+#else // #ifdef Boost_FOUND
+void test_mmap()
+{
+    SPRTF("\n");
+    SPRTF("%s: No Boost, so no mmap test...\n", module);
+}
+
+#endif // #ifdef Boost_FOUND y/n
 
 
 // eof = test-mmap.cxx

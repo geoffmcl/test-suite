@@ -17,7 +17,9 @@
 #include <stdint.h>
 #ifdef _MSC_VER
 #include <Windows.h>
+#ifdef Boost_FOUND
 #include "byid.hpp"
+#endif // Boost_FOUND
 #include "winErr.hpp"
 #include "MMFIODef.h"
 #else
@@ -76,6 +78,7 @@ static DWORD getgranuality()
 }
 #endif // _MSC_VER
 
+#ifdef Boost_FOUND
 namespace Osmium {
 
     namespace Storage {
@@ -332,7 +335,7 @@ namespace Osmium {
 
 } // namespace Osmium
 
-
+#endif // #ifdef Boost_FOUND
 
 #endif // #ifndef _TEST_MMAP_HXX_
 // eof - test-mmap.hxx

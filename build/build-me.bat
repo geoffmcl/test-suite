@@ -1,8 +1,9 @@
 @setlocal
-
+@set DOINST=0
 @set TMPPRJ=Test
 @set TMPLOG=bldlog-1.txt
 @set BUILD_RELDBG=0
+@set TMPBITS=64
 @REM if NOT EXIST X:\nul goto NOXDIR
 
 @REM To help find Qt4
@@ -18,9 +19,12 @@
 @REM set Qt4_DIR=C:\QtSDK
 @REM set Qt4_DIR=C:\QtSDK\Desktop\Qt\4.8.0\msvc2010\bin
 @REM set Qt4_DIR=C:\Qt\4.8.6-x86\bin
-@set Qt4_DIR=C:\Qt\4.8.6\bin
-@call setupqt32
-@set QTDIR=%Qt4_DIR%
+@set Qt5_DIR=D:\Qt\5.14.2\msvc2017_64\bin
+@call setupqt5
+@REM set Qt4_DIR=C:\Qt\4.8.6\bin
+@REM call setupqt32
+@REM set QTDIR=%Qt4_DIR%
+@set QTDIR=%Qt5_DIR%
 @REM set QTDIR=C:\QtSDK\Desktop\Qt\4.8.0\msvc2010
 
 @REM ***************************************************
@@ -31,11 +35,13 @@
 
 @call chkmsvc %TMPPRJ%
 
-@echo Built project %TMPPRJ% in 32-bits... all ouput to %TMPLOG%
+@echo Built project %TMPPRJ% in %TMPBITS%-bits... all ouput to %TMPLOG%
 
 @REM set SIMGEAR_DIR=C:\FG\17\install\msvc100\simgear
-@set SIMGEAR_DIR=D:\FG\fg-64\install\simgear
-@set ZLIBDIR=C:\FG\18\3rdParty
+@REM set SIMGEAR_DIR=D:\FG\fg-64\install\simgear
+@set SIMGEAR_DIR=D:\FG\next2\install\msvc140-64
+@REM set ZLIBDIR=C:\FG\18\3rdParty
+@set ZLIBDIR=D:\Projects\3rdParty.x64
 @REM set ZLIBDIR=C:\FG\17\3rdParty
 @REM set SIMGEAR_DIR=F:\FG\18\install\msvc100\simgear
 @REM set ZLIBDIR=F:\FG\18\3rdParty
@@ -43,7 +49,7 @@
 @REM set SIMGEAR_DIR=X:\install\msvc100\simgear
 @REM set ZLIBDIR=X:\3rdParty
 @REM )
-set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
+@REM set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
 
 @if NOT EXIST %SIMGEAR_DIR%\nul goto NOSGD
 @if NOT EXIST %QTDIR%\nul goto NOQTD
@@ -51,7 +57,7 @@ set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
 
 @echo Set SIMGEAR_DIR=%SIMGEAR_DIR%
 @echo Set QTDIR=%QTDIR%
-@echo Set PostgreSQL_ROOT=%PostgreSQL_ROOT%
+@REM echo Set PostgreSQL_ROOT=%PostgreSQL_ROOT%
 
 @set CMOPTS=
 @set CMOPTS=%CMOPTS% -DZLIB_ROOT=%ZLIBDIR%
@@ -59,11 +65,12 @@ set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
 @set CMOPTS=%CMOPTS% -DCMAKE_INSTALL_PREFIX=%TMPINST%
 @set CMOPTS=%CMOPTS%  -DADD_SG_MATH:BOOL=ON
 
-@echo Build of '%TMPPRJ% in 32-bits - begin %DATE% at %TIME% > %TMPLOG%
-@echo set Qt4_DIR=%Qt4_DIR% >> %TMPLOG%
+@echo Build of '%TMPPRJ% in %TMPBITS%-bits - begin %DATE% at %TIME% > %TMPLOG%
+@REM echo set Qt4_DIR=%Qt4_DIR% >> %TMPLOG%
+@echo set Qt5_DIR=%Qt5_DIR% >> %TMPLOG%
 @echo Set SIMGEAR_DIR=%SIMGEAR_DIR%
 @echo Set QTDIR=%QTDIR% >> %TMPLOG%
-@echo Set PostgreSQL_ROOT=%PostgreSQL_ROOT% >> %TMPLOG%
+@REM echo Set PostgreSQL_ROOT=%PostgreSQL_ROOT% >> %TMPLOG%
 
 cmake .. %CMOPTS% >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR1
@@ -81,6 +88,12 @@ cmake --build . --config Release >> %TMPLOG% 2>&1
 
 @echo Appears successful build of %TMPPRJ%...
 @echo.
+@if NOT "%DOINST%x" == "1x" (
+@echo No install configured... Set DOINST=1
+@echo.
+@goto END
+)
+
 @echo Continue to install Release magvar and tests into %TMPINST%
 @echo Only Ctrl+C aborts... all other keys continue..
 @echo.
@@ -129,7 +142,7 @@ cmake --build . --config Release --target INSTALL >> %TMPLOG% 2>&1
 @echo ERROR: cmake install
 @goto ISERR
 
-:NOXDIR
+@REM :NOXDIR
 @echo.
 @echo Oops, no X: directory found! Needed for simgear, etc
 @echo Run setupx, or hdem3m, etc, to establish X: drive
