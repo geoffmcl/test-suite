@@ -45,7 +45,7 @@ void test_rand( void )
     time_t tt = time (NULL);
    // Seed the random-number generator with the current time so that
    // the numbers will be different every time we run.
-    printf("%s: test_rand - seed %ld\n", module, tt );
+    printf("%s: test_rand - seed %ld\n", module, (long)tt );
    srand( (unsigned)tt);
 
    SimpleRandDemo( 10 );

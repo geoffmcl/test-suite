@@ -196,7 +196,7 @@ int test_tmain(int argc, TCHAR *argv[])
       {
          filesize.LowPart = ffd.nFileSizeLow;
          filesize.HighPart = ffd.nFileSizeHigh;
-         _tprintf(TEXT("  %s   %ld bytes\n"), ffd.cFileName, filesize.QuadPart);
+         _tprintf(TEXT("  %s   %lld bytes\n"), ffd.cFileName, filesize.QuadPart);
       }
    }
    while (FindNextFile(hFind, &ffd) != 0);
