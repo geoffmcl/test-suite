@@ -5,6 +5,10 @@
 
 cmake_minimum_required (VERSION 3.6)
 
+if(COMMAND cmake_policy)
+  cmake_policy (SET CMP0074 NEW)
+endif()
+
 include (CheckFunctionExists)
 include (CheckCSourceCompiles)
 include (CheckCXXSourceCompiles)
@@ -30,7 +34,7 @@ message( STATUS "*** USING CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_V
 message( STATUS "*** System: ${CMAKE_SYSTEM_NAME}" )
 
 # Setup MSVC 3rd party directories
-include( ConfigureMsvc3rdParty )
+# include( ConfigureMsvc3rdParty )
 
 if(WIN32 AND MSVC)
     # turn off various warnings
@@ -93,7 +97,6 @@ endif ()
 #  Boost_LIBRARIES        - Boost component libraries to be linked
 find_package(Boost)
 if(Boost_FOUND)
-# include_directories( C:/FG/17/boost_1_53_0 )
     message( STATUS "*** Boost found inc '${Boost_INCLUDE_DIRS}'")
     include_directories( ${Boost_INCLUDE_DIRS} )
     add_definitions( -DBoost_FOUND )
