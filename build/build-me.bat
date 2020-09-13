@@ -30,7 +30,7 @@
 @REM ***************************************************
 @REM NOTE WELL: FIXME: NOTE SPECIAL INSTALL PREFIX
 @REM ***************************************************
-@set TMPINST=C:/MDOS
+@set TMPINST=D:\Projects\3rdParty.x64
 @REM ***************************************************
 
 @call chkmsvc %TMPPRJ%
@@ -41,7 +41,7 @@
 @REM set SIMGEAR_DIR=D:\FG\fg-64\install\simgear
 @set SIMGEAR_DIR=D:\FG\next2\install\msvc140-64
 @REM set ZLIBDIR=C:\FG\18\3rdParty
-@set ZLIBDIR=D:\Projects\3rdParty.x64
+@REM set ZLIBDIR=D:\Projects\3rdParty.x64
 @REM set ZLIBDIR=C:\FG\17\3rdParty
 @REM set SIMGEAR_DIR=F:\FG\18\install\msvc100\simgear
 @REM set ZLIBDIR=F:\FG\18\3rdParty
@@ -50,20 +50,20 @@
 @REM set ZLIBDIR=X:\3rdParty
 @REM )
 @REM set PostgreSQL_ROOT=C:\Program Files (x86)\PostgreSQL\9.1
+@set Boost_ROOT=D:\FG\next\windows-3rd-party
+
 
 @if NOT EXIST %SIMGEAR_DIR%\nul goto NOSGD
 @if NOT EXIST %QTDIR%\nul goto NOQTD
-@if NOT EXIST %ZLIBDIR%\nul goto NOZLD
-
-@echo Set SIMGEAR_DIR=%SIMGEAR_DIR%
-@echo Set QTDIR=%QTDIR%
-@REM echo Set PostgreSQL_ROOT=%PostgreSQL_ROOT%
+@REM if NOT EXIST %ZLIBDIR%\nul goto NOZLD
+@if NOT EXIST %Boost_ROOT%\nul goto NOBOOST
 
 @set CMOPTS=
-@set CMOPTS=%CMOPTS% -DZLIB_ROOT=%ZLIBDIR%
+@REM set CMOPTS=%CMOPTS% -DZLIB_ROOT=%ZLIBDIR%
 @set CMOPTS=%CMOPTS% -DCMAKE_PREFIX_PATH=%SIMGEAR_DIR%
 @set CMOPTS=%CMOPTS% -DCMAKE_INSTALL_PREFIX=%TMPINST%
-@set CMOPTS=%CMOPTS%  -DADD_SG_MATH:BOOL=ON
+@set CMOPTS=%CMOPTS% -DADD_SG_MATH:BOOL=ON
+@set CMOPTS=%CMOPTS% -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 @echo Build of '%TMPPRJ% in %TMPBITS%-bits - begin %DATE% at %TIME% > %TMPLOG%
 @REM echo set Qt4_DIR=%Qt4_DIR% >> %TMPLOG%
@@ -71,19 +71,32 @@
 @echo Set SIMGEAR_DIR=%SIMGEAR_DIR%
 @echo Set QTDIR=%QTDIR% >> %TMPLOG%
 @REM echo Set PostgreSQL_ROOT=%PostgreSQL_ROOT% >> %TMPLOG%
+@echo Set Boost_ROOT=%Boost_ROOT%
 
-cmake .. %CMOPTS% >> %TMPLOG% 2>&1
+@echo Doing: 'cmake .. %CMOPTS%'
+@echo. >> %TMPLOG%
+@echo Doing: 'cmake .. %CMOPTS%' >> %TMPLOG%
+@cmake .. %CMOPTS% >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR1
 
-cmake --build . --config Debug >> %TMPLOG% 2>&1
+@echo Doing: 'cmake --build . --config Debug'
+@echo. >> %TMPLOG%
+@echo Doing: 'cmake --build . --config Debug' >> %TMPLOG%
+@cmake --build . --config Debug >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR4
 
 @if "%BUILD_RELDBG%x" == "0x" goto DNRELDBG
-cmake --build . --config RelWithDebInfo >> %TMPLOG% 2>&1
+@echo Doing: cmake --build . --config RelWithDebInfo
+@echo. >> %TMPLOG%
+@echo Doing: cmake --build . --config RelWithDebInfo >> %TMPLOG%
+@cmake --build . --config RelWithDebInfo >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR2
 :DNRELDBG
 
-cmake --build . --config Release >> %TMPLOG% 2>&1
+@echo Doing: 'cmake --build . --config Release'
+@echo. >> %TMPLOG%
+@echo Doing: 'cmake --build . --config Release' >> %TMPLOG%
+@cmake --build . --config Release >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR3
 
 @echo Appears successful build of %TMPPRJ%...
@@ -99,7 +112,10 @@ cmake --build . --config Release >> %TMPLOG% 2>&1
 @echo.
 @pause
 
-cmake --build . --config Release --target INSTALL >> %TMPLOG% 2>&1
+@echo Doing: 'cmake --build . --config Release --target INSTALL'
+@echo. >> %TMPLOG%
+@echo Doing: 'cmake --build . --config Release --target INSTALL' >> %TMPLOG%
+@cmake --build . --config Release --target INSTALL >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR5
 
 @fa4 " -- " %TMPLOG%
@@ -118,7 +134,7 @@ cmake --build . --config Release --target INSTALL >> %TMPLOG% 2>&1
 @echo Note: Qt directory %QTDIR% does NOT EXIST! *** FIX ME ***
 @goto ISERR
 
-:NOZLD
+@REM :NOZLD
 @echo Note: ZLIB direcotry %ZLIBDIR% does NOT EXIST! *** FIX ME ***
 @goto ISERR
 
@@ -148,6 +164,11 @@ cmake --build . --config Release --target INSTALL >> %TMPLOG% 2>&1
 @echo Run setupx, or hdem3m, etc, to establish X: drive
 @echo.
 @goto ISERR
+
+:NOBOOST
+@echo NOT EXIST %Boost_ROOT%!
+@goto ISERR
+
 
 :ISERR
 @endlocal
