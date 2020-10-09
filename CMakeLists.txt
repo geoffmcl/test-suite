@@ -20,6 +20,7 @@ project (Test)
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 option( TEST_MPFR        "Turn ON to add MPFR test."                 OFF )
+option( ADD_TEST_MPFR    "Turn ON to add MPFR test-mpfr exe."        OFF )
 option( TEST_CGAL        "Turn ON to add CGAL test."                 OFF )
 option( TEST_CF_LOG      "Turn ON to add CF LOG test."               OFF )
 option( USE_WSOCK2_LIB   "Turn ON to use Winsock2.h and ws2_32.lib"  ON  )
@@ -29,6 +30,9 @@ option( TEST_MMFIO       "Turn ON to test memory mapping file IO"    ON   )
 option( USE_CURL_LIB     "Turn ON the use CURL library."             ON  )
 option( ADD_SG_MATH      "Turn ON some SG math tests"                ON  )
 option( ADD_TEST_CODESET "Turn ON some codeset tests"                OFF )
+if (ADD_TEST_MPFR)
+    set(TEST_MPFR 1)
+endif ()
 
 message( STATUS "*** USING CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 message( STATUS "*** System: ${CMAKE_SYSTEM_NAME}" )
@@ -103,12 +107,68 @@ if(Boost_FOUND)
 else()
     message( STATUS "*** Boost NOT FOUND")
 endif()
-    
+
+#  GMP_FOUND          - True if gmp found.
+#  GMP_INCLUDE_DIRS   - where to find gmp.h
+#  GMP_LIBRARIES      - library when using gmp
+find_package(GMP)
+if(GMP_FOUND)
+    message( STATUS "*** GMP found inc '${GMP_INCLUDE_DIRS}', lib '${GMP_LIBRARIES}'")
+else()
+    message( STATUS "*** GMP NOT FOUND inc '${GMP_INCLUDE_DIRS}', lib '${GMP_LIBRARIES}'")
+endif()
+
+#  MPFR_FOUND          - True if MPFR found.
+#  MPFR_INCLUDE_DIRS   - where to find mpfr.h
+#  MPFR_LIBRARIES      - library when using MPFR
+find_package(MPFR)
+if(MPFR_FOUND)
+    message( STATUS "*** MPFR found inc '${MPFR_INCLUDE_DIRS}', lib '${MPFR_LIBRARIES}'")
+else()
+    message( STATUS "*** MPFR NOT FOUND inc '${MPFR_INCLUDE_DIRS}', lib '${MPFR_LIBRARIES}'")
+endif()
+
+# from: https://github.com/CGAL/cgal/wiki/How-to-use-CGAL-with-CMake-or-your-own-build-system
+# target_link_libraries(my_executable CGAL::CGAL), or WITH Qt5
+# find_package(CGAL REQUIRED COMPONENTS Qt5 Core)
+# if(CGAL_FOUND AND CGAL_Qt5_FOUND)
+# target_link_libraries(test_ CGAL::CGAL CGAL::CGAL_Qt5 CGAL::CGAL_Core)
+find_package(CGAL)
+if(CGAL_FOUND)
+    if( TARGET CGAL::CGAL )
+        get_target_property(CGAL_INCLUDE_DIRS CGAL::CGAL INTERFACE_INCLUDE_DIRECTORIES)
+        get_target_property(CGAL_DEFS CGAL::CGAL INTERFACE_COMPILE_DEFINITIONS)
+        #if("${CGAL_DEFS}" MATCHES "CGAL_STATIC")
+        #    get_target_property(CGAL_LIBRARY_DEBUG CGAL::CGAL IMPORTED_LOCATION_DEBUG)
+        #    get_target_property(CGAL_LIBRARY_RELEASE CGAL::CGAL IMPORTED_LOCATION_RELEASE)
+        #else()
+        #    get_target_property(CGAL_LIBRARY_DEBUG CGAL::CGAL IMPORTED_IMPLIB_DEBUG)
+        #    get_target_property(CGAL_LIBRARY_RELEASE CGAL::CGAL IMPORTED_IMPLIB_RELEASE)
+        #endif()
+        #get_target_property(CGAL_LINK_INTERFACE CGAL::CGAL IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE) # same for debug
+        #list(APPEND CGAL_LIBRARIES ${CGAL_LINK_INTERFACE})
+        #message(STATUS "*** CGAL libs ${CGAL_LIBRARY_DEBUG} ${CGAL_LIBRARY_RELEASE}")
+        message(STATUS "*** CGAL inc '${CGAL_INCLUDE_DIRS}',defs '${CGAL_DEFS}'")
+    endif()
+    if(CGAL_Qt5_FOUND)
+        message( STATUS "*** CGAL core and Qt5 found" )
+    else()
+        message( STATUS "*** CGAL found" )
+    endif()
+else()
+    message( STATUS "*** CGAL NOT FOUND!" )
+endif()
+
 if (TEST_MPFR)
-    add_definitions( -DADD_MPFR_TEST -DMPFR_STATIC )
-    include_directories( C:/FG/17/3rdParty/include )
-    link_directories( C:/FG/17/3rdParty/lib )
-    list(APPEND EXTRA_LIBS optimized mpfr debug mpfrd)
+    if(MPFR_FOUND AND GMP_FOUND)
+        add_definitions( -DADD_MPFR_TEST -DMPFR_STATIC )
+        include_directories( ${MPFR_INCLUDE_DIRS} )
+        # link_directories( C:/FG/17/3rdParty/lib )
+        list(APPEND EXTRA_LIBS ${GMP_LIBRARIES} ${MPFR_LIBRARIES})
+    else()
+        set(TEST_MPFR 0)
+        message(FATAL_ERROR "*** TEST_MPFR requested, BUT MPFR_FOUND or GMP_FOUND NOT found!")
+    endif()
 endif ()
 
 if (TEST_CGAL)
@@ -492,11 +552,49 @@ if (MSVC)
     set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
 endif ()
 
+if (TEST_MPFR AND ADD_TEST_MPFR)
+    set(name test-mpfr)
+    set(dir src)
+    add_executable( ${name} ${dir}/${name}.cxx )
+    if (EXTRA_LIBS)
+        message( STATUS "*** target_link_libraries( ${name} ${EXTRA_LIBS} )")
+        target_link_libraries( ${name} ${EXTRA_LIBS} )
+    endif ()
+    if (MSVC)
+        set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+    endif ()
+endif()
+
+if(WIN32)
+    set(name test-console)
+    set(dir src)
+    add_executable( ${name} ${dir}/${name}.cxx )
+    if (EXTRA_LIBS)
+        target_link_libraries( ${name} ${EXTRA_LIBS} )
+    endif ()
+    if (MSVC)
+        set_target_properties( ${name} PROPERTIES DEBUG_POSTFIX d )
+    endif ()
+endif(WIN32)
+
 #######################################################################
 message(STATUS "*** set CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 message(STATUS "*** set CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
 message(STATUS "*** set CMAKE_EXE_LINKER_FLAGS = ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "*** set CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+
+##################################################################
+######## DEBUG ONLY - Try to look at ALL vars defined
+if (LIST_ALL_VARIABLES)
+    message(STATUS "******** SHOW ALL VARS *********")
+    get_cmake_property(_variableNames VARIABLES)
+    foreach (_variableName ${_variableNames})
+        message(STATUS "=== ${_variableName}=${${_variableName}}")
+    endforeach()
+    message(STATUS "******** END LIST *********")
+endif ()    
+##################################################################
+
 
 # eof
 

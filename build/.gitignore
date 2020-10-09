@@ -25,4 +25,5 @@ nslookup2
 test_conf.h
 tester
 x64/*
+.vs/*
 
